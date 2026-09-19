@@ -33,16 +33,11 @@ const LIST_PROPERTY_CTA = {
   badge: "Free",
 } as const;
 
-const SOON_NAV_IDS = new Set<string>(["flights", "trains", "bus"]);
+const SOON_NAV_IDS = new Set<string>(["flights", "trains", "bus", "cabs", "activities"]);
 
 const EASE_MAIN_NAV: EaseNavItem[] = [
-  { id: "holidays",   label: "HOLIDAYS",   href: "/packages"   },
   { id: "hotels",     label: "HOTELS",     href: "/hotels"     },
-  { id: "cabs",       label: "CABS",       href: "/cabs"       },
-  { id: "activities", label: "ACTIVITIES", href: "/activities" },
-  { id: "flights",    label: "FLIGHTS",    href: "/flights"    },
-  { id: "trains",     label: "TRAINS",     href: "/trains"     },
-  { id: "bus",        label: "BUS",        href: "/bus"        },
+  { id: "holidays",   label: "HOLIDAYS",   href: "/packages"   },
 ];
 
 export function Navbar({

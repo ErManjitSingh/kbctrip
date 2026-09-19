@@ -108,7 +108,7 @@ export async function apiGetRaw<T>(
 
 /**
  * Returns the backend base URL for direct server-side calls.
- * Reads from env vars — set HOTELS_API_URL=http://localhost:8000 in .env.development.
+ * Reads from env vars — set KBC_BOOKING_API_URL=http://localhost:4000/api in .env.development.
  */
 export function getBackendBaseUrl(): string {
   const url =
@@ -118,7 +118,7 @@ export function getBackendBaseUrl(): string {
   if (!url) {
     throw new Error(
       "[services/api] Backend URL is not configured.\n" +
-        "Add HOTELS_API_URL=http://localhost:8000 to your .env.development file.",
+        "Add KBC_BOOKING_API_URL=http://localhost:4000/api to your .env.development file.",
     );
   }
 

@@ -28,6 +28,8 @@ type HotelBookingPaymentStepProps = {
   processing: boolean;
   paymentError?: string | null;
   isMockOrder?: boolean;
+  /** When true, KBC has no Razorpay keys — confirm hold without charge. */
+  confirmWithoutPayment?: boolean;
   onBack: () => void;
   onPay: () => void;
 };
@@ -47,6 +49,7 @@ export function HotelBookingPaymentStep({
   processing,
   paymentError,
   isMockOrder,
+  confirmWithoutPayment,
   onBack,
   onPay,
 }: HotelBookingPaymentStepProps) {
@@ -56,9 +59,13 @@ export function HotelBookingPaymentStep({
     <div className="grid gap-5 lg:grid-cols-[1fr_340px] lg:gap-6">
       <div className="space-y-4">
         <section className="rounded-lg border border-[#e0e0e0] bg-white p-4 shadow-sm sm:p-5">
-          <h2 className="text-base font-bold">Pay securely with Razorpay</h2>
+          <h2 className="text-base font-bold">
+            {confirmWithoutPayment ? "Confirm your stay" : "Pay securely with Razorpay"}
+          </h2>
           <p className="mt-2 text-[13px] leading-relaxed text-[#616161]">
-            {paymentPlan === "advance_40"
+            {confirmWithoutPayment
+              ? "Online payment is not configured for this property yet. Confirming will finalize your hold without charging a card. You can pay at the property if required."
+              : paymentPlan === "advance_40"
               ? "Pay 40% now in the secure Razorpay popup to confirm your stay. The remaining 60% is payable at the hotel at check-in."
               : "UPI, cards, net banking, and wallets — powered by Razorpay. You’ll complete payment in a secure popup after clicking Pay Now."}
           </p>
@@ -120,8 +127,10 @@ export function HotelBookingPaymentStep({
             )}
           >
             {processing
-              ? (isMockOrder ? "Confirming…" : "Opening Razorpay…")
-              : isMockOrder
+              ? (confirmWithoutPayment || isMockOrder ? "Confirming…" : "Opening Razorpay…")
+              : confirmWithoutPayment
+                ? `Confirm booking · ₹ ${formatInrAmount(payNow)}`
+                : isMockOrder
                 ? `[TEST] Simulate Pay ₹ ${formatInrAmount(payNow)}`
                 : `Pay ₹ ${formatInrAmount(payNow)}`}
           </button>

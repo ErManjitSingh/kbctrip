@@ -18,7 +18,6 @@ export function SiteFooter() {
             <Link href="/flights">Flights</Link>
             <Link href="/trains">Trains</Link>
             <Link href="/buses">Buses</Link>
-            <Link href="/cabs">Cabs</Link>
             <Link href="/packages">Packages</Link>
           </nav>
           <nav className="footer-column" aria-label="Company information">

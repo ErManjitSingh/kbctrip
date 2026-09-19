@@ -70,27 +70,38 @@ export const adminPartnersApi = {
 export const adminPropertiesApi = {
   async createProperty(payload: Record<string, unknown>): Promise<{ id: string; name: string; slug: string }> {
     const name = String(payload.name ?? 'Untitled property');
-    const slug = slugify(name) || `property-${Date.now()}`;
-    const id = `wiz_${Date.now().toString(36)}`;
+    let slug = slugify(name) || `property-${Date.now()}`;
+    let id = `wiz_${Date.now().toString(36)}`;
+    let provisioned = false;
 
-    // Best-effort: provision a real property on the first platform tenant (name only on KBC API).
+    // Best-effort: provision a real property on a platform tenant (KBC API accepts name).
+    // Room types / rates still come from kbc-booking seed or tenant dashboard inventory.
     try {
       const tenants = await api.get<TenantSummary[]>('/platform/tenants');
       const tenantId = payload.partner_id
         ? String(payload.partner_id)
-        : tenants[0]?.id;
+        : tenants.find((t) => t.id !== 'kbc-platform')?.id ?? tenants[0]?.id;
       if (tenantId && tenantId !== 'kbc-platform') {
-        await api.post(`/platform/tenants/${tenantId}/properties`, { name });
+        const created = await api.post<{ id?: string; name?: string; slug?: string }>(
+          `/platform/tenants/${tenantId}/properties`,
+          { name },
+        );
+        if (created?.id) id = created.id;
+        if (created?.slug) slug = created.slug;
+        if (created?.name) {
+          /* keep wizard name as source of truth for local draft */
+        }
+        provisioned = true;
       }
     } catch {
-      /* local draft still saved */
+      /* local draft still saved — run kbc-booking prisma seed for inventory */
     }
 
     const draft: HotelWizardDraft = {
       id,
       name,
       slug,
-      payload,
+      payload: { ...payload, _kbcProvisioned: provisioned },
       createdAt: new Date().toISOString(),
     };
     const drafts = loadDrafts();

@@ -12,9 +12,10 @@ import {
 import { HotelTagBadgeList } from "@/components/hotels/hotel-tag-badge";
 import { formatHotelDateFromIso } from "@/components/hotels/hotels-search-fields";
 import { useAuthOptional } from "@/contexts/auth-context";
+import { useGuestAuth } from "@/components/GuestAuthProvider";
 import type { HotelDetailBundle } from "@/lib/hotels-api";
 import { upsertCachedBooking } from "@/lib/booking-cache-storage";
-import { createHotelBooking, fetchHotelBookingById, isConfirmedBookingStatus, verifyHotelBookingPayment, type BookingWithOrder } from "@/lib/hotels-bookings-api";
+import { confirmHotelBookingWithoutPayment, createHotelBooking, fetchHotelBookingById, isConfirmedBookingStatus, verifyHotelBookingPayment, type BookingWithOrder } from "@/lib/hotels-bookings-api";
 import {
   hotelBookingNights,
   hotelDetailHref,
@@ -147,6 +148,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
   const router = useRouter();
   const searchParams = useSearchParams();
   const auth = useAuthOptional();
+  const guestAuth = useGuestAuth();
 
   const roomTypeId = searchParams.get("roomType") ?? "";
   const ratePlanId = searchParams.get("rate") ?? "";
@@ -593,7 +595,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
     setFormError(null);
 
     try {
-      const token = auth?.getAccessToken();
+      const token = guestAuth.token ?? auth?.getAccessToken() ?? null;
 
       if (!effectiveCheckIn || !effectiveCheckOut) {
         setFormError("Please select valid check-in and check-out dates.");
@@ -609,9 +611,12 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
       // Children aged 12+ count as adults for occupancy
       const adultsForBooking = displayAdults + childrenAges.filter((a) => a >= 12).length;
 
+      const propertySlug = hotel.hotelSlug || hotel.id;
       const created: BookingWithOrder = await createHotelBooking(token, {
+        property_slug: propertySlug,
         hotel_id: hotel.id,
         room_type_id: roomType.id,
+        rate_plan_id: ratePlan.id,
         check_in: effectiveCheckIn,
         check_out: effectiveCheckOut,
         adults: adultsForBooking,
@@ -627,7 +632,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
         },
         payment_plan: paymentPlan,
         ...mealPlanPayloadFromRatePlan(ratePlan),
-      }, { "X-Idempotency-Key": idempotencyKeyRef.current });
+      });
 
       // Reset idempotency key so a back-and-retry creates a fresh booking
       idempotencyKeyRef.current = crypto.randomUUID();
@@ -642,14 +647,14 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
       setBookingRef(created.confirmation_number);
       persistPendingCheckout(created.id);
 
-      if (paymentPlan === "pay_at_hotel") {
+      if (paymentPlan === "pay_at_hotel" || created.kbc_confirm_without_razorpay || isConfirmedBookingStatus(created.status)) {
         setStep("confirmed");
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
 
-      // ── Open Razorpay directly — no separate payment step ────────────────
-      const keyId   = created.razorpay_key_id ?? getRazorpayKeyId();
+      // Prefer key from KBC pay/order response only (no Unotrips fallback).
+      const keyId   = created.razorpay_key_id || getRazorpayKeyId();
       const orderId = created.razorpay_order_id;
 
       // Explicit local mock orders skip the Razorpay popup.
@@ -695,6 +700,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
                 token ?? created.guest_checkout_token,
                 created.id,
                 response,
+                propertySlug,
               );
               const confirmed = verified as unknown as BookingWithOrder;
               setApiBooking(confirmed);
@@ -723,22 +729,35 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
   };
 
   const handlePay = async () => {
-    const token = auth?.getAccessToken() ?? guestCheckoutToken;
-    const keyId = apiBooking?.razorpay_key_id ?? getRazorpayKeyId();
+    const token = guestAuth.token ?? auth?.getAccessToken() ?? guestCheckoutToken;
+    const keyId = apiBooking?.razorpay_key_id || getRazorpayKeyId();
     const orderId = apiBooking?.razorpay_order_id;
     const bookingId = apiBookingId;
+    const propertySlug = apiBooking?.property_slug || hotel.hotelSlug || hotel.id;
     const activePaymentPlan = apiBooking?.payment_plan === "advance_40" ? "advance_40" : paymentPlan;
 
     if (!bookingId) {
       setFormError("Booking session expired. Please go back and create the booking again.");
       return;
     }
-    if (!keyId) {
-      setFormError("Razorpay is not configured. Add NEXT_PUBLIC_RAZORPAY_KEY_ID on the server.");
-      return;
-    }
-    if (!orderId) {
-      setFormError("Payment order missing from booking. Please contact support with your booking ID.");
+
+    // No KBC Razorpay keys — confirm hold without charge.
+    if (apiBooking?.kbc_confirm_without_razorpay || !keyId || !orderId) {
+      setProcessing(true);
+      setFormError(null);
+      try {
+        const confirmed = await confirmHotelBookingWithoutPayment(propertySlug, bookingId);
+        setApiBooking(confirmed);
+        setBookingRef(confirmed.confirmation_number || bookingRef);
+        if (auth?.user?.id) upsertCachedBooking(auth.user.id, confirmed);
+        if (guestAuth.guest?.id) upsertCachedBooking(guestAuth.guest.id, confirmed);
+        setStep("confirmed");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (err) {
+        setFormError(err instanceof Error ? err.message : "Could not confirm booking.");
+      } finally {
+        setProcessing(false);
+      }
       return;
     }
 
@@ -757,7 +776,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
           razorpay_order_id:   orderId,
           razorpay_payment_id: `pay_mock_${Date.now()}`,
           razorpay_signature:  "mock_signature",
-        });
+        }, propertySlug);
         const confirmed = verified as unknown as BookingWithOrder;
         const nextBooking: BookingWithOrder = {
           ...(apiBooking ?? {
@@ -812,7 +831,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
         onDismiss: () => setProcessing(false),
         onSuccess: async (response) => {
           try {
-            const verified = await verifyHotelBookingPayment(token, bookingId, response);
+            const verified = await verifyHotelBookingPayment(token, bookingId, response, propertySlug);
             const confirmed = verified as unknown as BookingWithOrder;
             const nextBooking: BookingWithOrder = {
               ...(apiBooking ?? {
@@ -1129,6 +1148,7 @@ export function HotelTravellersView({ pathSlug, hotelId, bundle }: HotelTravelle
                   processing={processing}
                   paymentError={formError}
                   isMockOrder={ALLOW_MOCK_RAZORPAY && apiBooking?.razorpay_order_id?.startsWith("order_mock_")}
+                  confirmWithoutPayment={Boolean(apiBooking?.kbc_confirm_without_razorpay) || (!apiBooking?.razorpay_order_id && !apiBooking?.razorpay_key_id)}
                   onBack={() => { setStep("travellers"); setApiBooking(null); }}
                   onPay={() => void handlePay()}
                 />

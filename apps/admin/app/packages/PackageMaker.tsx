@@ -246,6 +246,18 @@ export function PackageMaker({ packageId }: { packageId?: string }) {
       setTab('basics');
       return;
     }
+    const itineraryReady = form.itinerary.some(
+      (day) => Boolean(day.title.trim() || day.summary.trim()),
+    );
+    if (form.published && !itineraryReady) {
+      push({
+        tone: 'danger',
+        title: 'Itinerary required',
+        detail: 'Add at least one day with a title or summary before publishing. Uncheck Published to save as draft.',
+      });
+      setTab('itinerary');
+      return;
+    }
     setBusy(true);
     try {
       if (packageId) {

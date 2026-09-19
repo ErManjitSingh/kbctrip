@@ -7,7 +7,7 @@
  * Three fields: Destination · Travel Date · Travellers
  *
  * Features:
- *  - Destination autocomplete from /v1/packages/destinations
+ *  - Destination autocomplete from KBC marketplace packages
  *  - Single date picker (departure date)
  *  - Multi-room traveller dropdown (max 4 rooms, 4 guests/room)
  *  - URL-param based navigation — all state lives in the URL
@@ -271,11 +271,20 @@ export function PackageSearchBox({
   // ── Load popular destinations on mount ───────────────────────────────────
 
   useEffect(() => {
-    fetch("/api/hotels/v1/packages/destinations/popular")
-      .then((r) => r.json())
-      .then((data) => {
-        const list = Array.isArray(data) ? data : (data?.data ?? []);
-        setPopular(list.slice(0, 8));
+    // Destinations from KBC marketplace packages (no Unotrips :8000).
+    import("@/lib/booking-api")
+      .then(({ listHolidayPackages }) => listHolidayPackages({ limit: 48, page: 1 }))
+      .then((catalog) => {
+        const seen = new Map<string, Destination>();
+        for (const pack of catalog?.packages ?? []) {
+          const name = (pack.destination ?? "").trim();
+          if (!name) continue;
+          const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          if (!seen.has(slug)) {
+            seen.set(slug, { id: slug, slug, name, state: null, package_count: 1 });
+          }
+        }
+        setPopular(Array.from(seen.values()).slice(0, 8));
       })
       .catch(() => {});
   }, []);
@@ -288,12 +297,20 @@ export function PackageSearchBox({
       return;
     }
     setDestLoading(true);
-    const qs = new URLSearchParams({ search: debouncedQuery, limit: "8" });
-    fetch(`/api/hotels/v1/packages/destinations?${qs}`)
-      .then((r) => r.json())
-      .then((data) => {
-        const list = Array.isArray(data) ? data : (data?.data ?? []);
-        setDests(list.slice(0, 8));
+    const q = debouncedQuery.toLowerCase();
+    import("@/lib/booking-api")
+      .then(({ listHolidayPackages }) => listHolidayPackages({ destination: debouncedQuery, limit: 24, page: 1 }))
+      .then((catalog) => {
+        const seen = new Map<string, Destination>();
+        for (const pack of catalog?.packages ?? []) {
+          const name = (pack.destination ?? "").trim();
+          if (!name || !name.toLowerCase().includes(q)) continue;
+          const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          if (!seen.has(slug)) {
+            seen.set(slug, { id: slug, slug, name, state: null, package_count: 1 });
+          }
+        }
+        setDests(Array.from(seen.values()).slice(0, 8));
       })
       .catch(() => setDests([]))
       .finally(() => setDestLoading(false));

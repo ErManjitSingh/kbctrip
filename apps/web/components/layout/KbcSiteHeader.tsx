@@ -9,12 +9,9 @@ import '@/components/layout/kbc-site-header.css';
 
 const NAV_LINKS = [
   { label: 'Hotels', href: '/hotels' },
-  { label: 'Flights', href: '/flights' },
-  { label: 'Trains', href: '/trains' },
-  { label: 'Buses', href: '/bus' },
-  { label: 'Cabs', href: '/cabs' },
   { label: 'Packages', href: '/packages' },
   { label: 'Offers', href: '/#offers' },
+  // Flights / trains / buses / cabs deferred until KBC owns those APIs.
 ] as const;
 
 /** Routes that keep their own chrome (partner / ops shells). */

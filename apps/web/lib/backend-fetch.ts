@@ -1,28 +1,16 @@
-﻿/**
- * Returns the backend origin (scheme + host + port, no trailing slash).
- *
- * Resolution order (first non-empty value wins):
- *   1. HOTELS_API_URL          — server-side env var (Route Handlers, RSC)
- *   2. NEXT_PUBLIC_HOTELS_API_URL — build-time public env var (fallback)
- *
- * Set these in .env.development:
- *   HOTELS_API_URL=http://localhost:8000
- *   NEXT_PUBLIC_HOTELS_API_URL=http://localhost:8000
- *
- * If neither is set, throws in development so you notice immediately.
- * In production the build will fail at the call site if the var is missing.
+/**
+ * Backend origin for leftover Next.js proxies.
+ * Guest hotels/packages/auth use booking-api.ts (KBC) directly.
+ * Defaults to kbc-booking — never Unotrips :8000.
  */
+
 export function getBackendOrigin(): string {
   const origin =
+    process.env.KBC_BOOKING_API_URL?.trim().replace(/\/$/, "").replace(/\/api$/, "") ||
+    process.env.NEXT_PUBLIC_KBC_BOOKING_API_URL?.trim().replace(/\/$/, "").replace(/\/api$/, "") ||
     process.env.HOTELS_API_URL?.trim().replace(/\/$/, "") ||
-    process.env.NEXT_PUBLIC_HOTELS_API_URL?.trim().replace(/\/$/, "");
-
-  if (!origin) {
-    throw new Error(
-      "[backend-fetch] Backend URL is not configured.\n" +
-        "Add HOTELS_API_URL=http://localhost:8000 to your .env.development file.",
-    );
-  }
+    process.env.NEXT_PUBLIC_HOTELS_API_URL?.trim().replace(/\/$/, "") ||
+    "http://localhost:4000";
 
   return origin;
 }
@@ -70,7 +58,7 @@ function timeoutSignal(ms: number): AbortSignal {
 
 export async function pingBackend(origin = getBackendOrigin(), timeoutMs = 55_000): Promise<void> {
   try {
-    await fetch(`${origin}/docs`, {
+    await fetch(`${origin}/api/health`, {
       method: "GET",
       signal: timeoutSignal(timeoutMs),
       cache: "no-store",

@@ -67,6 +67,8 @@ import { apiJson } from "@/lib/api";
 import {
   listProperties,
   getPropertyDetail,
+  getAvailability,
+  getRoomTypes,
   type MarketplaceProperty,
 } from "@/lib/booking-api";
 
@@ -140,12 +142,12 @@ type ApiRates = {
 
 export type ApiRoomType = {
   id: string;
-  hotel_id: string;
+  hotel_id?: string;
   name: string;
   description: string;
   max_occupancy: number;
-  bed_type: string;
-  size_sqft: number;
+  bed_type?: string | null;
+  size_sqft?: number | null;
   amenities: string[];
   images: string[];
   price_per_night: number;
@@ -166,6 +168,18 @@ export type ApiRoomType = {
   total_price?: number | null;
   nightly_breakdown?: { date: string; price: number }[];
   extra_bed_price?: number | null;
+  /** Real KBC rate plan rows — used for hold (ratePlanId). */
+  _kbcRatePlans?: {
+    ratePlanId: string;
+    name: string;
+    refundable: boolean;
+    mealPlan: string | null;
+    roomSubtotalMinor: number;
+    taxMinor: number;
+    chargesMinor: number;
+    promotionDiscountMinor: number;
+    totalMinor: number;
+  }[];
 };
 
 export type ApiHotelPolicies = {
@@ -296,6 +310,40 @@ function roomTaxes(pricePerNight: number): number {
 }
 
 function buildRoomRatePlans(room: ApiRoomType): HotelRoomRatePlan[] {
+  // Prefer real KBC ratePlanIds so hold/confirm can book the selected plan.
+  if (room._kbcRatePlans?.length) {
+    return room._kbcRatePlans.map((rp, index) => {
+      const price = Math.max(0, Math.round(rp.roomSubtotalMinor / 100));
+      const taxes = Math.max(0, Math.round(rp.taxMinor / 100));
+      const total = Math.max(0, Math.round(rp.totalMinor / 100));
+      const meal = (rp.mealPlan ?? "").toLowerCase();
+      const packageName =
+        rp.name ||
+        (meal.includes("breakfast") && meal.includes("dinner")
+          ? "Half Board (MAP)"
+          : meal.includes("breakfast")
+            ? "With Breakfast (CP)"
+            : meal.includes("all") || meal.includes("full")
+              ? "Full Board (AP)"
+              : "Room Only (EP)");
+      return {
+        id: rp.ratePlanId,
+        packageName,
+        benefits: rp.mealPlan ? [rp.mealPlan] : ["As per rate plan"],
+        roomBasePrice: price,
+        mealAddOn: 0,
+        originalPrice: price,
+        price,
+        taxes,
+        total: total || price + taxes,
+        discountAmount: Math.max(0, Math.round((rp.promotionDiscountMinor ?? 0) / 100)),
+        nonRefundable: !rp.refundable,
+        couponCode: "",
+        showBestValueBadge: index === 0,
+      };
+    });
+  }
+
   const web = room.rates?.website;
   // The backend's `rate_plan_prices` amounts are for the complete selected
   // stay (one room). The room UI and checkout multiply its plan figures by
@@ -588,7 +636,11 @@ export function mapApiRoomsToHotelRoomTypes(
   rooms: ApiRoomType[],
 ): HotelRoomType[] {
   return rooms
-    .filter((r) => r.available && (r.price_per_night > 0 || (r.rates?.website?.room?.ep ?? 0) > 0))
+    .filter((r) => {
+      const hasKbc = Boolean(r._kbcRatePlans?.length);
+      const hasPrice = r.price_per_night > 0 || (r.rates?.website?.room?.ep ?? 0) > 0;
+      return (r.available || hasKbc) && (hasPrice || hasKbc);
+    })
     .map((room) => {
       const image = room.images[0] ?? hotel.images[0] ?? "";
       const tags  = [
@@ -948,37 +1000,50 @@ export async function fetchHotelDetail(
   checkOut?: string,
 ): Promise<ApiHotelDetail | null> {
   void city;
-  void checkIn;
-  void checkOut;
   try {
     const detail = await getPropertyDetail(hotelSlug);
-    const listing = mapMarketplacePropertyToListing({
-      id: hotelSlug,
-      name: detail.name,
-      slug: detail.slug,
-      city: detail.city,
-      state: detail.state,
-      country: detail.country,
-      description: detail.description,
-      photos: detail.photos ?? [],
-      amenities: detail.amenities ?? [],
-      currency: detail.currency,
-      startingPriceMinor: null,
-    });
-    // Prefer catalog price when available
-    try {
-      const catalog = await listProperties(detail.city ?? undefined, 1, 100);
-      const match = catalog.properties.find((p) => p.slug === hotelSlug);
-      if (match) {
-        return propertyDetailToApiHotelDetail(detail, mapMarketplacePropertyToListing(match));
-      }
-    } catch {
-      /* use listing without price */
-    }
-    return propertyDetailToApiHotelDetail(detail, listing);
+    if (!detail) return null;
+
+    const defaultIn = checkIn || isoDaysFromNowSafe(7);
+    const defaultOut = checkOut || isoDaysFromNowSafe(8);
+
+    const [catalogRooms, availability, catalog] = await Promise.all([
+      getRoomTypes(hotelSlug),
+      getAvailability(hotelSlug, defaultIn, defaultOut, 2, 0),
+      listProperties(detail.city ?? undefined, 1, 100).catch(() => null),
+    ]);
+
+    const rooms = mapKbcRoomsToApiRoomTypes(availability, catalogRooms);
+    const match = catalog?.properties?.find((p) => p.slug === hotelSlug);
+    const listing = match
+      ? mapMarketplacePropertyToListing(match)
+      : mapMarketplacePropertyToListing({
+          id: hotelSlug,
+          name: detail.name,
+          slug: detail.slug,
+          city: detail.city,
+          state: detail.state,
+          country: detail.country,
+          description: detail.description,
+          photos: detail.photos ?? [],
+          amenities: detail.amenities ?? [],
+          currency: detail.currency,
+          startingPriceMinor: rooms[0]
+            ? Math.round((rooms[0].price_per_night ?? 0) * 100)
+            : null,
+        });
+
+    return propertyDetailToApiHotelDetail(detail, listing, rooms);
   } catch {
     return null;
   }
+}
+
+function isoDaysFromNowSafe(days: number): string {
+  const date = new Date();
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 export async function fetchRelatedHotels(

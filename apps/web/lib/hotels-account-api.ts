@@ -1,20 +1,16 @@
 /**
- * Account API — profile & bookings
- * @see https://unohotels-backend.onrender.com/docs
+ * Account API — profile & bookings via KBC guest endpoints.
  */
 
-import { apiDataWithAuth } from "@/lib/api";
+import {
+  getGuestBookings,
+  getGuestBooking,
+  getGuestMe,
+  updateGuestMe,
+  type GuestBookingSummary,
+} from "@/lib/booking-api";
 import type { AuthUser } from "@/lib/hotels-auth-api";
-
-/** Browser → /api/account/* (server proxy with Render wake-up). SSR → /v1/account/* direct. */
-function accountApiPath(segment: string): string {
-  const path = segment.startsWith("/") ? segment : `/${segment}`;
-  const normalized = path.startsWith("/v1/account") ? path : `/v1/account${path}`;
-  if (typeof window !== "undefined") {
-    return `/api/account${normalized.replace(/^\/v1\/account/, "")}`;
-  }
-  return normalized;
-}
+import { ApiError } from "@/lib/api";
 
 export type UserBooking = {
   id: string;
@@ -64,8 +60,65 @@ export type UserBooking = {
   updated_at: string;
 };
 
+function nightsBetween(checkIn: string, checkOut: string): number {
+  const a = new Date(`${checkIn}T12:00:00`);
+  const b = new Date(`${checkOut}T12:00:00`);
+  return Math.max(1, Math.round((b.getTime() - a.getTime()) / 86_400_000));
+}
+
+function mapGuestBooking(row: GuestBookingSummary): UserBooking {
+  const now = new Date().toISOString();
+  return {
+    id: row.id,
+    confirmation_number: row.reference,
+    status: row.status,
+    hotel_id: row.property.slug,
+    hotel_slug: row.property.slug,
+    hotel_name: row.property.name,
+    hotel_city: row.property.city ?? "",
+    hotel_thumbnail: "",
+    room_type_id: "",
+    room_name: row.roomType,
+    check_in: row.checkIn,
+    check_out: row.checkOut,
+    nights: nightsBetween(row.checkIn, row.checkOut),
+    adults: 2,
+    children: 0,
+    rooms: 1,
+    total_amount: Math.round((row.totalMinor ?? 0) / 100),
+    currency: row.property.currency || "INR",
+    created_at: now,
+    updated_at: now,
+  };
+}
+
+function profileToAuthUser(profile: {
+  id: string;
+  email: string;
+  name: string;
+  phone: string | null;
+}): AuthUser {
+  const now = new Date().toISOString();
+  return {
+    id: profile.id,
+    email: profile.email,
+    name: profile.name,
+    phone: profile.phone,
+    avatar: null,
+    role: "guest",
+    is_verified: true,
+    is_active: true,
+    created_at: now,
+    updated_at: now,
+    phone_verified: Boolean(profile.phone),
+    email_verified: true,
+  };
+}
+
 export async function fetchUserProfile(accessToken: string): Promise<AuthUser> {
-  return apiDataWithAuth<AuthUser>(accountApiPath("/v1/account/profile"), accessToken);
+  const profile = await getGuestMe(accessToken);
+  if (!profile) throw new ApiError("Session expired.", 401);
+  return profileToAuthUser(profile);
 }
 
 export const fetchAccountProfile = fetchUserProfile;
@@ -74,34 +127,50 @@ export async function updateAccountProfile(
   accessToken: string,
   payload: { name?: string; phone?: string | null },
 ): Promise<AuthUser> {
-  return apiDataWithAuth<AuthUser>(accountApiPath("/v1/account/profile"), accessToken, {
-    method: "PUT",
-    body: JSON.stringify(payload),
+  const profile = await updateGuestMe(accessToken, {
+    name: payload.name,
+    phone: payload.phone ?? undefined,
   });
+  return profileToAuthUser(profile);
 }
 
 export async function fetchUserBookings(accessToken: string): Promise<UserBooking[]> {
-  const data = await apiDataWithAuth<UserBooking[] | { items?: UserBooking[] }>(
-    "/v1/bookings",
-    accessToken,
-  );
-  return Array.isArray(data) ? data : (data.items ?? []);
+  const data = await getGuestBookings(accessToken);
+  if (!data) return [];
+  return [...(data.upcoming ?? []), ...(data.past ?? [])].map(mapGuestBooking);
 }
 
 export async function fetchBookingById(accessToken: string, bookingId: string): Promise<UserBooking> {
-  return apiDataWithAuth<UserBooking>(`/v1/bookings/${bookingId}`, accessToken);
+  const view = await getGuestBooking(accessToken, bookingId);
+  if (!view) throw new ApiError("Booking not found", 404);
+  const now = new Date().toISOString();
+  return {
+    id: view.id,
+    confirmation_number: view.reference,
+    status: view.status,
+    hotel_id: view.property?.slug ?? "",
+    hotel_slug: view.property?.slug,
+    hotel_name: view.property?.name ?? "",
+    hotel_city: view.property?.city ?? "",
+    hotel_thumbnail: "",
+    room_type_id: "",
+    room_name: view.roomType,
+    check_in: view.checkIn,
+    check_out: view.checkOut,
+    nights: nightsBetween(view.checkIn, view.checkOut),
+    adults: 2,
+    children: 0,
+    rooms: 1,
+    total_amount: Math.round((view.totalMinor ?? 0) / 100),
+    currency: view.property?.currency || "INR",
+    created_at: now,
+    updated_at: now,
+  };
 }
 
 export async function changeAccountPassword(
-  accessToken: string,
-  payload: { current_password: string; new_password: string },
+  _accessToken: string,
+  _payload: { current_password: string; new_password: string },
 ): Promise<{ message?: string }> {
-  return apiDataWithAuth<{ message?: string }>(
-    accountApiPath("/v1/account/change-password"),
-    accessToken,
-    {
-      method: "POST",
-      body: JSON.stringify(payload),
-    },
-  );
+  throw new ApiError("Password change is not available on KBC guest accounts yet.", 501);
 }

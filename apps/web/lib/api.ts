@@ -1,13 +1,15 @@
 /**
- * Uno Hotels API client (auth, hotels, bookings)
- * Browser: ONLY /api/hotels (Next.js proxy) — no direct backend URLs
- * Server: HOTELS_API_URL direct to backend (set in .env.development)
+ * Legacy API client helpers.
+ * Guest hotels/packages/auth use booking-api.ts (KBC) directly.
+ * Remaining callers should not depend on Unotrips :8000.
  */
 
 export const API_DOCS_URL = `${
+  process.env.KBC_BOOKING_API_URL?.trim().replace(/\/$/, "").replace(/\/api$/, "") ||
+  process.env.NEXT_PUBLIC_KBC_BOOKING_API_URL?.trim().replace(/\/$/, "").replace(/\/api$/, "") ||
   process.env.HOTELS_API_URL?.trim().replace(/\/$/, "") ||
   process.env.NEXT_PUBLIC_HOTELS_API_URL?.trim().replace(/\/$/, "") ||
-  "http://localhost:8000"
+  "http://localhost:4000"
 }/docs`;
 
 const FETCH_TIMEOUT_MS = 90_000;
@@ -61,20 +63,16 @@ export function getPublicApiBase(): string {
 
 /**
  * Server-side direct backend URL (Route Handlers, RSC).
- * Reads HOTELS_API_URL from .env.development.
- * Set HOTELS_API_URL=http://localhost:8000 for local development.
+ * Prefers KBC_BOOKING_API_URL / NEXT_PUBLIC_KBC_BOOKING_API_URL.
+ * Defaults to KBC booking at http://localhost:4000/api.
  */
 export function getServerApiBase(): string {
   const url =
+    process.env.KBC_BOOKING_API_URL?.trim().replace(/\/$/, "") ||
+    process.env.NEXT_PUBLIC_KBC_BOOKING_API_URL?.trim().replace(/\/$/, "") ||
     process.env.HOTELS_API_URL?.trim().replace(/\/$/, "") ||
-    process.env.NEXT_PUBLIC_HOTELS_API_URL?.trim().replace(/\/$/, "");
-
-  if (!url) {
-    throw new Error(
-      "[api] Backend URL is not configured.\n" +
-        "Add HOTELS_API_URL=http://localhost:8000 to your .env.development file.",
-    );
-  }
+    process.env.NEXT_PUBLIC_HOTELS_API_URL?.trim().replace(/\/$/, "") ||
+    "http://localhost:4000/api";
 
   return url;
 }
@@ -102,9 +100,9 @@ function isAuthOrAccountPath(path: string): boolean {
 
 function unreachableMessage(path: string): string {
   if (isAuthOrAccountPath(path)) {
-    return "Could not reach auth service. Is the backend running on http://localhost:8000?";
+    return "Could not reach auth service. Is kbc-booking running on http://localhost:4000?";
   }
-  return "Could not reach Hotels API. Is the backend running on http://localhost:8000?";
+  return "Could not reach KBC booking API. Is kbc-booking running on http://localhost:4000?";
 }
 
 function buildUrl(path: string): string {
