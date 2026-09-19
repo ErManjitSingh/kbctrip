@@ -1,0 +1,12 @@
+{
+  "name": "kbctrip",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "pnpm --filter @kbctrip/web exec next dev --port 3002",
+    "dev:admin": "pnpm --filter @kbctrip/admin exec next dev --port 3003",
+    "dev:mobile": "pnpm --filter @kbctrip/mobile start",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

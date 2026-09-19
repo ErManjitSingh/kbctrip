@@ -1,0 +1,228 @@
+"use client";
+
+/**
+ * src/components/home/hero-glass-navbar.tsx
+ *
+ * Homepage-only floating navbar. Persistent for the whole page (fixed to the
+ * top of the viewport, not just the hero) — starts as a semi-transparent
+ * glass pill over the cinematic hero image, then smoothly resolves to a
+ * solid white bar once the visitor scrolls past it. Same real nav links,
+ * same auth actions, same "List Your Property" CTA as the site-wide Navbar,
+ * just a different shell. The shared `Navbar` component (used on every other
+ * page) is untouched; this exists only so the hero can look the way it
+ * should without changing navigation anywhere else on the site.
+ */
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  Bus, Building2, Car, Menu, Trees,
+  Plane, TicketCheck, TrainFront, X,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { AuthNavActions } from "@/components/auth/auth-nav-actions";
+import { BrandLogo } from "@/components/BrandLogo";
+import { PARTNER_PORTAL_URL } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+
+type NavItem = { id: string; label: string; href: string; icon: typeof Plane };
+
+const NAV_ITEMS: NavItem[] = [
+  { id: "holidays",   label: "Holidays",   href: "/packages",   icon: Trees },
+  { id: "hotels",     label: "Hotels",     href: "/hotels",     icon: Building2 },
+  { id: "cabs",       label: "Cabs",       href: "/cabs",       icon: Car },
+  { id: "activities", label: "Activities", href: "/activities", icon: TicketCheck },
+  { id: "flights",    label: "Flights",    href: "/flights",    icon: Plane },
+  { id: "trains",     label: "Trains",     href: "/trains",     icon: TrainFront },
+  { id: "bus",        label: "Bus",        href: "/bus",        icon: Bus },
+];
+
+const SOON_IDS = new Set(["flights", "trains", "bus"]);
+
+export type HeroGlassNavbarProps = {
+  activeId?: string;
+  solid?: boolean;
+  combinedAuth?: boolean;
+  showActiveUnderline?: boolean;
+  /** Keep navigation labels dark when the navbar sits over a light hero. */
+  darkText?: boolean;
+  /**
+   * Keep glass chrome + light (white) labels even after scroll.
+   * Use on immersive pages (login/signup) where the backdrop stays dark.
+   */
+  forceOverlay?: boolean;
+  /** Detail pages can hand off the viewport to their own sticky booking bar. */
+  hideOnScroll?: boolean;
+  /** A flush top shell with only lower corners, used on booking detail pages. */
+  flushDetailShell?: boolean;
+};
+
+export function HeroGlassNavbar({
+  activeId,
+  solid = false,
+  combinedAuth = false,
+  showActiveUnderline = true,
+  hideOnScroll = false,
+  darkText = false,
+  forceOverlay = false,
+  flushDetailShell = false,
+}: HeroGlassNavbarProps) {
+  const [scrolled, setScrolled] = useState(false);
+  const [hiddenOnScroll, setHiddenOnScroll] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (forceOverlay) {
+      setScrolled(false);
+      return;
+    }
+    const onScroll = () => {
+      setScrolled(solid || window.scrollY > 72);
+      // On detail pages the booking rail is the scroll-stage header. Hide the
+      // navigation immediately, before the rail reaches the sticky position.
+      if (hideOnScroll) setHiddenOnScroll(window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [solid, hideOnScroll, forceOverlay]);
+
+  const resolvedScrolled = forceOverlay ? false : solid || scrolled;
+  const useLightLabels = forceOverlay || (!resolvedScrolled && !darkText);
+
+  return (
+    <header className={cn(
+      "fixed left-0 right-0 z-50 w-full transition-[transform,opacity,top] duration-150 ease-out top-[var(--uno-top-banner-height,0px)]",
+      flushDetailShell
+        ? "px-0 pt-0"
+        : "px-4 pt-4 sm:px-6 sm:pt-5 lg:px-8 max-[900px]:pt-3",
+      hiddenOnScroll && "pointer-events-none -translate-y-[calc(100%+1rem)] opacity-0",
+    )}>
+      <div
+        className={cn(
+          "mx-auto flex w-full max-w-[1320px] items-center gap-2 border px-3 py-2 transition-all duration-500 sm:gap-3 sm:px-4 max-[900px]:max-w-[1180px] max-[900px]:py-1.5",
+          flushDetailShell
+            ? "min-h-[92px] rounded-b-[26px] rounded-t-none px-5 py-3 sm:px-6"
+            : "rounded-2xl",
+          resolvedScrolled
+            ? "border-slate-200/80 bg-white/95 shadow-[0_8px_30px_-12px_rgba(15,23,42,0.25)] backdrop-blur-md"
+            : "border-white/20 bg-white/[0.14] shadow-[0_8px_32px_-12px_rgba(0,0,0,0.4),inset_0_1px_0_0_rgba(255,255,255,0.25)] backdrop-blur-xl",
+        )}
+      >
+        <div
+          className={cn(
+            "flex shrink-0 items-center rounded-xl transition-all",
+            !resolvedScrolled && "bg-white/95 px-2 py-1.5 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.3)]",
+          )}
+        >
+          <BrandLogo size="sm" className="!gap-2" />
+        </div>
+
+        <nav className="mx-auto hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1" aria-label="Services">
+          {NAV_ITEMS.map(({ id, label, href, icon: Icon }) => {
+            const active = id === activeId;
+            return (
+              <motion.div key={id} whileHover={{ y: -1 }} whileTap={{ scale: 0.97 }} className="relative">
+                <Link
+                  href={href}
+                  className={cn(
+                    "relative flex items-center gap-2 rounded-full px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-colors xl:px-4 max-[900px]:gap-1.5 max-[900px]:px-2.5 max-[900px]:py-2 max-[900px]:text-[13px]",
+                    useLightLabels
+                      ? active && showActiveUnderline ? "text-white" : "text-white hover:text-white"
+                      : active && showActiveUnderline ? "text-primary" : "text-[#424242] hover:text-primary",
+                  )}
+                >
+                  <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={2} aria-hidden />
+                  {label}
+                  {active && showActiveUnderline && (
+                    <motion.span
+                      layoutId="hero-nav-underline"
+                      className={cn(
+                        "absolute inset-x-3 -bottom-0.5 h-[2.5px] rounded-full",
+                        resolvedScrolled && !forceOverlay ? "bg-primary" : "bg-amber-300 shadow-[0_0_8px_1px_rgba(252,211,77,0.7)]",
+                      )}
+                      transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                    />
+                  )}
+                </Link>
+                {SOON_IDS.has(id) && (
+                  <span className="pointer-events-none absolute -right-1.5 -top-1.5 whitespace-nowrap rounded-full bg-red-500 px-1.5 py-0.5 text-[8px] font-bold leading-none tracking-wide text-white shadow-sm">
+                    Soon
+                  </span>
+                )}
+              </motion.div>
+            );
+          })}
+        </nav>
+
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <Link
+            href={PARTNER_PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "hidden items-center gap-2 rounded-full border px-3.5 py-2 text-[13px] font-semibold transition lg:inline-flex max-[900px]:px-3 max-[900px]:py-1.5 max-[900px]:text-[12px]",
+              useLightLabels
+                ? "border-white/25 text-white hover:border-white/45 hover:bg-white/10"
+                : "border-slate-200 text-[#424242] hover:border-primary/40 hover:text-primary",
+            )}
+          >
+            <Building2 className="h-[18px] w-[18px]" strokeWidth={1.8} aria-hidden />
+            List Your Property
+            <span className={cn("text-[10px] font-bold uppercase", useLightLabels ? "text-amber-300" : "text-primary")}>Free</span>
+          </Link>
+
+          <AuthNavActions
+            variant={useLightLabels ? "overlay" : "ease"}
+            combined={combinedAuth}
+            className="hidden sm:flex"
+          />
+
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition lg:hidden",
+              useLightLabels ? "text-white hover:bg-white/10" : "text-[#424242] hover:bg-slate-100",
+            )}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div className="mx-auto mt-2 w-full max-w-[1400px] overflow-visible rounded-2xl border border-slate-200 bg-white shadow-xl lg:hidden">
+          <nav className="grid grid-cols-4 gap-1 p-3" aria-label="Services">
+            {NAV_ITEMS.map(({ id, label, href, icon: Icon }) => (
+              <Link
+                key={id}
+                href={href}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "relative flex flex-col items-center gap-1.5 rounded-xl px-2 py-3 text-[11px] font-semibold",
+                  id === activeId ? "bg-orange-50 text-primary" : "text-[#424242]",
+                )}
+              >
+                <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
+                {label}
+                {SOON_IDS.has(id) && (
+                  <span className="pointer-events-none absolute right-1 top-1 rounded-full bg-red-500 px-1 py-px text-[7px] font-bold leading-none text-white">Soon</span>
+                )}
+              </Link>
+            ))}
+          </nav>
+          <div className="border-t border-slate-100 p-3">
+            <AuthNavActions
+              variant="ease"
+              combined={combinedAuth}
+              layout="inline"
+              onNavigate={() => setOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}

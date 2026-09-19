@@ -1,0 +1,40 @@
+{
+  "name": "@kbctrip/web",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.20",
+    "@radix-ui/react-navigation-menu": "^1.2.22",
+    "@radix-ui/react-slot": "^1.3.3",
+    "@tanstack/react-query": "^5.102.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "framer-motion": "^13.2.0",
+    "lucide-react": "^0.468.0",
+    "next": "15.5.22",
+    "react": "19.1.1",
+    "react-day-picker": "^10.0.1",
+    "react-dom": "19.1.1",
+    "react-pageflip": "^2.0.3",
+    "recharts": "^3.10.1",
+    "swiper": "^14.2.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.5.6",
+    "postcss": "^8.5.28",
+    "tailwindcss": "3.4.17",
+    "typescript": "^5.7.2"
+  }
+}

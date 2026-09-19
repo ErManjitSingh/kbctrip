@@ -1,0 +1,1920 @@
+// @ts-nocheck -- legacy customizer panels below are being retired behind the new detail layout.
+"use client";
+
+/**
+ * src/components/packages/package-detail-view.tsx
+ *
+ * Final production-ready package detail page.
+ *
+ * Tabs:
+ *   Itinerary   — day pills → activity cards (sightseeing + activity toggles inline)
+ *   Stay        — hotel tiers per destination + rooms/travellers config
+ *   Transfers   — cab/vehicle selection
+ *   Activities  — day accordion with sightseeing + activity toggles
+ *   Summary     — trip stats + route + current config
+ *   Inclusions  — what's included/excluded + trip-level add-ons
+ *   Terms       — T&C accordion
+ *   Book        — traveller form + token/full payment + success screen
+ *
+ * DATA SOURCES (in order of priority):
+ *   1. GET /v1/packages/{slug}/day-options — hotel/cab/sightseeing/activities/addons
+ *   2. Demo data from package-customizer-data.ts — fallback if backend returns empty
+ *
+ * PRICE FLOW:
+ *   All pricing is authoritative from the backend via useFulfillmentPrice().
+ *   POST /v1/packages/{slug}/fulfillment-price called on every selection change (debounced 600ms).
+ *   Razorpay: charged the authoritative server total, never the frontend estimate
+ */
+
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  useCallback, useEffect, useMemo, useRef, useState, type FormEvent,
+} from "react";
+import { useRouter } from "next/navigation";
+import {
+  BedDouble, BookOpen, Building2, Calendar, Car, Check, ChevronDown,
+  ChevronRight, CircleCheck, CircleX, Lock, MapPin,
+  MessageCircle, Mountain, Phone, PlaneTakeoff, ShieldCheck,
+  Snowflake, Star, UtensilsCrossed, Users,
+} from "lucide-react";
+
+import { Footer }                from "@/components/layout/Footer";
+import { PackagePhotoGrid }      from "@/components/packages/package-photo-grid";
+import { GlacialStylePackageDetail } from "@/components/packages/glacial-style-package-detail";
+import { PackageBookingSuccess } from "@/components/packages/PackageBookingSuccess";
+import { ActivitiesTab }         from "@/components/packages/ActivitiesTab";
+import { ChangeHotelModal }      from "@/components/packages/change-hotel-modal";
+import { ChangeVehicleModal }   from "@/components/packages/change-vehicle-modal";
+import { TripBrochureModal }    from "@/components/packages/trip-brochure-modal";
+import { cn, formatInrAmount }   from "@/lib/utils";
+import { SITE }                  from "@/lib/constants";
+import { formatTourType, packageDetailHref } from "@/lib/packages";
+import {
+  packageWhatsAppPrefill, siteWhatsAppChatUrl, siteTelHref,
+} from "@/lib/site-contact";
+import type { TourPackage }      from "@/lib/constants";
+import { usePackageBooking }     from "@/hooks/use-package-booking";
+import { useAuth }               from "@/contexts/auth-context";
+import { BookingAuthModal }      from "@/components/hotels/booking-auth-modal";
+import { useDayOptions }         from "@/hooks/useDayOptions";
+import {
+  encodeRooms, roomsLabel,
+  type RoomConfig,
+} from "@/hooks/useRoomsConfig";
+import {
+  travellerRoomsToLegacy,
+  legacyToTravellerRooms,
+  autoDistributeAdults,
+  travellerSummary,
+  type TravellerRoom,
+} from "@/lib/rooms-utils";
+
+import {
+  INCLUSIONS, EXCLUSIONS, TERMS_AND_CONDITIONS,
+  fmtINR,
+  type AddonOption,
+  type StaySelection,
+  staySelectionIndex,
+} from "@/lib/package-customizer-data";
+import { useFulfillmentPrice } from "@/hooks/use-fulfillment-price";
+import { PackageBookingSummary } from "@/components/packages/pricing";
+import AffordabilityWidget from "@/components/payments/AffordabilityWidget";
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+const TABS = [
+  { id: "itinerary",   label: "Itinerary",  Icon: Calendar       },
+  { id: "stay",        label: "Stay",       Icon: BedDouble      },
+  { id: "transfers",   label: "Transfers",  Icon: Car            },
+  { id: "activities",  label: "Activities", Icon: Mountain       },
+  { id: "summary",     label: "Summary",    Icon: Building2      },
+  { id: "inclusions",  label: "Inclusions", Icon: Check          },
+  { id: "terms",       label: "Terms",      Icon: CircleCheck    },
+  { id: "book",        label: "Book Now",   Icon: Lock           },
+] as const;
+
+type TabId = typeof TABS[number]["id"];
+
+const ADDON_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  UtensilsCrossed, Snowflake, Mountain, ShieldCheck, PlaneTakeoff,
+};
+
+// ── Props ─────────────────────────────────────────────────────────────────────
+
+export type PackageDetailViewProps = {
+  tour:          TourPackage;
+  similar:       TourPackage[];
+  initialRooms?: RoomConfig[];
+  initialDate?:  string | null;
+  initialCab?: number;
+  /** Pre-selected hotel option IDs from checkout URL — resolved to StaySelections on init. */
+  initialHotelOptionIds?: string[];
+  checkoutOnly?: boolean;
+};
+
+// ── Stepper ───────────────────────────────────────────────────────────────────
+
+function Stepper({
+  label, sub, value, min = 0, max = 20, onDec, onInc,
+}: {
+  label: string; sub: string; value: number;
+  min?: number; max?: number;
+  onDec: () => void; onInc: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between border-b border-[#f5f5f5] py-2.5 last:border-b-0">
+      <div>
+        <p className="text-sm font-medium text-[#1a1a1a]">{label}</p>
+        <p className="text-[11px] text-[#9e9e9e]">{sub}</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <button type="button" onClick={onDec} disabled={value <= min}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e0e0e0] text-lg transition hover:border-primary hover:text-primary disabled:opacity-30">−</button>
+        <span className="min-w-[20px] text-center text-sm font-semibold">{value}</span>
+        <button type="button" onClick={onInc} disabled={value >= max}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e0e0e0] text-lg transition hover:border-primary hover:text-primary disabled:opacity-30">+</button>
+      </div>
+    </div>
+  );
+}
+
+function Shimmer({ className }: { className?: string }) {
+  return <div className={cn("animate-pulse rounded-md bg-[#eeeeee]", className)} />;
+}
+
+/** Mirrors the real hotel-card layout so the page doesn't jump when data arrives. */
+function HotelCardSkeleton() {
+  return (
+    <div className="mb-4">
+      <Shimmer className="mb-2.5 h-4 w-40" />
+      <div className="flex gap-3 rounded-xl border-[1.5px] border-[#e8e8e8] bg-white p-3.5">
+        <Shimmer className="h-16 w-20 shrink-0 sm:h-20 sm:w-24" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <Shimmer className="h-4 w-32" />
+          <Shimmer className="h-3 w-24" />
+          <Shimmer className="h-3 w-40" />
+        </div>
+        <div className="flex shrink-0 flex-col items-end justify-between gap-2">
+          <Shimmer className="h-4 w-14" />
+          <Shimmer className="h-7 w-16" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Mirrors the real cab-option card layout so the page doesn't jump when data arrives. */
+function CabCardSkeleton() {
+  return (
+    <div className="rounded-xl border-[1.5px] border-[#e8e8e8] bg-white p-4">
+      <Shimmer className="mb-2.5 h-4 w-4 rounded-full" />
+      <Shimmer className="mb-1.5 h-9 w-9 rounded-lg" />
+      <Shimmer className="mb-1.5 h-4 w-24" />
+      <Shimmer className="h-3 w-16" />
+    </div>
+  );
+}
+
+/**
+ * Shown while the live itinerary contract is loading. We deliberately do not
+ * render the demo hotels/cabs during this state: seeing a temporary fallback
+ * itinerary makes the eventual package selection look like it changed.
+ */
+function ItinerarySetupLoader({ tour }: { tour: TourPackage }) {
+  const stops = ["Mapping your route", "Reserving stays", "Preparing transfers"];
+
+  return (
+    <main className="min-h-screen bg-[#f5f7fb] px-4 pb-16 pt-24 sm:px-6 lg:px-8">
+      <section className="mx-auto overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_24px_70px_rgba(28,39,61,0.12)]">
+        <div className="relative min-h-[530px] overflow-hidden bg-[#10233f] px-6 py-10 sm:px-10 lg:px-16 lg:py-14">
+          {tour.image ? (
+            <Image src={tour.image} alt="" fill className="object-cover opacity-20 blur-sm scale-110" sizes="100vw" aria-hidden />
+          ) : null}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(255,122,0,0.38),transparent_33%),radial-gradient(circle_at_86%_85%,rgba(40,110,255,0.36),transparent_38%),linear-gradient(135deg,rgba(11,27,51,0.98),rgba(20,45,79,0.94))]" />
+          <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center text-white">
+            <div className="relative mb-7 grid h-20 w-20 place-items-center rounded-[26px] bg-white/12 ring-1 ring-white/25 backdrop-blur-md">
+              <PlaneTakeoff className="h-9 w-9 animate-[bounce_1.8s_ease-in-out_infinite] text-[#5eead4]" />
+              <span className="absolute -bottom-3 h-2 w-10 rounded-full bg-black/25 blur-sm" />
+            </div>
+            <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#5eead4]">KBC Trip is planning your escape</p>
+            <h1 className="mt-4 max-w-2xl text-3xl font-extrabold tracking-[-0.04em] sm:text-5xl">Loading your itinerary</h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">We&apos;re bringing together your verified hotels, private transfers, and day-by-day experiences for {tour.title}.</p>
+
+            <div className="mt-10 grid w-full max-w-3xl gap-3 sm:grid-cols-3">
+              {stops.map((stop, index) => (
+                <div key={stop} className="relative overflow-hidden rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-5 text-left backdrop-blur-sm">
+                  <div className="absolute inset-x-0 bottom-0 h-1 bg-white/10"><span className="block h-full bg-[#ff8a32] animate-[loader_1.9s_ease-in-out_infinite]" style={{ animationDelay: `${index * 180}ms` }} /></div>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ff8a32] text-xs font-extrabold text-white">0{index + 1}</span>
+                  <p className="mt-3 text-sm font-bold">{stop}</p>
+                  <p className="mt-1 text-xs text-white/60">Please hold on a moment</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 w-full max-w-xl">
+              <div className="h-2 overflow-hidden rounded-full bg-white/15"><span className="block h-full w-2/3 rounded-full bg-gradient-to-r from-[#0d9488] via-[#5eead4] to-[#0d9488] animate-[pulse_1.5s_ease-in-out_infinite]" /></div>
+              <p className="mt-3 text-xs font-medium text-white/60">Building a seamless trip, just for you</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <style jsx>{`@keyframes loader { 0% { width: 12%; transform: translateX(-30%); } 50% { width: 72%; } 100% { width: 12%; transform: translateX(760%); } }`}</style>
+    </main>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+
+export function PackageDetailView({
+  tour, similar, initialRooms, initialDate, initialCab = 0, initialHotelOptionIds = [], checkoutOnly = false,
+}: PackageDetailViewProps) {
+  const router = useRouter();
+  const slug      = tour.slug ?? tour.id;
+  const packageId = tour.packageId ?? tour.id;
+
+  // Declared before useDayOptions: the day-options query is keyed on the
+  // travel date and sends it to the backend, which needs it to price rooms.
+  const [travelDate, setTravelDate] = useState(
+    initialDate ?? new Date().toISOString().slice(0, 10),
+  );
+
+  // ── Day options from backend ──────────────────────────────────────────────
+  const {
+    isLoading: optLoading,
+    hotelGroups, cabOptions, addonOptions, days,
+    // Token terms are per-package config (token_type: percent|fixed,
+    // token_amount). Never hard-code a percentage here - Ops owns it.
+    tokenType: pkgTokenType, tokenAmount: pkgTokenValue,
+    // Authoritative selling price from the day-options payload.
+    // Falls back to tour.priceINR (via effectiveBasePrice below) if not yet loaded.
+    basePrice,
+  } = useDayOptions(slug, travelDate, tour);
+
+
+
+  // New package payloads carry the authoritative selling price in
+  // day-options.base_price. The package list/detail summary can still be
+  // cached from the legacy shape, so never let that stale value drive totals
+  // when the new payload has supplied a price.
+  const effectiveBasePrice = basePrice ?? tour.priceINR;
+
+  // ── Customiser state ──────────────────────────────────────────────────────
+  const [rooms, setRooms] = useState<RoomConfig[]>(
+    // A package's quoted price is built for its standard two-adult booking.
+    initialRooms ?? [{ adults: 2, children: 0 }],
+  );
+
+  // New traveller state with child ages — single source of truth going forward.
+  // Syncs to legacy `rooms` for backward compat with checkout / fulfillment.
+  const [travellerRooms, setTravellerRooms] = useState<TravellerRoom[]>(
+    () => legacyToTravellerRooms(initialRooms ?? [{ adults: 2, children: 0 }]),
+  );
+
+  /** Called by the new TravellerSelector — updates both states. */
+  const handleTravellerRoomsChange = useCallback((next: TravellerRoom[]) => {
+    setTravellerRooms(next);
+    setRooms(travellerRoomsToLegacy(next));
+  }, []);
+  // Inline checkout validation. Replaces a blocking alert() that named no
+  // field, moved no focus, and looked like a browser error rather than the
+  // product.
+  // Guest's chosen advance percentage. null = use the package floor.
+  // The server clamps whatever we send, so this is UI convenience only.
+  const [tokenPercent, setTokenPercent] = useState<number | null>(null);
+  // Bumped every time a new total lands, to replay the settle tint. An
+  // alternating animation class restarts the animation without remounting.
+  const [priceSettle, setPriceSettle] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [shakeKey, setShakeKey] = useState(0);
+  useEffect(() => {
+    if (shakeKey === 0) return;
+    const first = Object.keys(fieldErrors)[0];
+    if (!first) return;
+    const el = document.querySelector(
+      `#package-checkout-form [name="${first}"]`,
+    ) as HTMLElement | null;
+    el?.focus({ preventScroll: true });
+    // shakeKey alone drives this: it changes on every failed submit, whereas
+    // fieldErrors may be referentially equal for the same repeated mistake.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shakeKey]);
+
+  const [selectedHotels, setSelectedHotels] = useState<StaySelection[]>([]);
+  const [selectedCab,    setSelectedCab]    = useState<number>(initialCab);
+  const [addons,         setAddons]         = useState<AddonOption[]>([]);
+  const [payType,        setPayType]        = useState<"token" | "full">("token");
+  /**
+   * Which card the guest picked on the checkout page. Distinct from `payType`
+   * because "full" and "emi" are the same payable amount but different Razorpay
+   * method hints — and only "emi" expands to show the affordability widget.
+   * Kept in sync with payType at every mutation site.
+   */
+  const [payOption,      setPayOption]      = useState<"full" | "token" | "emi">("token");
+
+  // Activities/sightseeing selected IDs
+  const [selectedSight,  setSelectedSight]  = useState<Set<string>>(new Set());
+  const [selectedActs,   setSelectedActs]   = useState<Set<string>>(new Set());
+
+
+
+  // ── Initialise selections when data loads ─────────────────────────────────
+  useEffect(() => {
+    if (!hotelGroups.length) return;
+    setSelectedHotels(hotelGroups.map((group, gi) => {
+      // Restore from checkout URL if option IDs were provided
+      const restoredId = initialHotelOptionIds[gi];
+      const restoredIdx = restoredId
+        ? group.opts.findIndex((o) => o.id === restoredId)
+        : -1;
+      const idx = restoredIdx >= 0 ? restoredIdx : 0;
+      const opt = group.opts[idx];
+      return {
+        stayId: group.stayId ?? "",
+        optionId: opt?.id ?? "",
+        hotelId: opt?.hotelId ?? "",
+        roomTypeId: null,
+        hotelName: opt?.name ?? "",
+        roomName: null,
+        upgradePrice: opt?.extra ?? 0,
+      };
+    }));
+  }, [hotelGroups]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!addonOptions.length) return;
+    setAddons(addonOptions.map((a) => ({ ...a })));
+  }, [addonOptions]);
+
+  useEffect(() => {
+    // Pre-select default sightseeing and activities
+    const sightDefaults = new Set<string>();
+    const actDefaults   = new Set<string>();
+    for (const day of days) {
+      for (const s of day.sightseeing) {
+        if (s.is_optional && s.is_selected_by_default) sightDefaults.add(s.id);
+      }
+      for (const a of day.activities) {
+        if (a.is_optional && a.is_selected_by_default) actDefaults.add(a.link_id);
+      }
+    }
+    setSelectedSight(sightDefaults);
+    setSelectedActs(actDefaults);
+  }, [days]);
+
+
+
+  // ── Tab + UI state ────────────────────────────────────────────────────────
+  const [activeTab,    setActiveTab]    = useState<TabId>("itinerary");
+  const [activeDay,    setActiveDay]    = useState(1);
+  const [openTermIdx,  setOpenTermIdx]  = useState<number | null>(null);
+  const [changeHotelDestIdx, setChangeHotelDestIdx] = useState<number | null>(null);
+  const [changeHotelMode, setChangeHotelMode] = useState<"hotel" | "room">("hotel");
+  const [changeVehicleOpen, setChangeVehicleOpen] = useState(false);
+  const [showBrochure, setShowBrochure] = useState(false);
+  const tabBarRef = useRef<HTMLDivElement>(null);
+
+  // ── Booking ───────────────────────────────────────────────────────────────
+  const { state: bookState, book: doBook, payBalance, reset: resetBook } = usePackageBooking(slug);
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  const switchTab = useCallback((id: TabId) => {
+    setActiveTab(id);
+    setTimeout(() => tabBarRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+  }, []);
+
+  const changeRoom = useCallback((roomIdx: number, field: "adults" | "children", delta: number) => {
+    setRooms((prev) => prev.map((r, i) => {
+      if (i !== roomIdx) return r;
+      const v = r[field] + delta;
+      if (field === "adults")   return { ...r, adults:   Math.max(1, Math.min(4, v)) };
+      if (field === "children") return { ...r, children: Math.max(0, Math.min(3, v)) };
+      return r;
+    }));
+  }, []);
+
+  const addRoom = useCallback(() => {
+    if (rooms.length >= 4) return;
+    setRooms((prev) => [...prev, { adults: 1, children: 0 }]);
+  }, [rooms.length]);
+
+  const removeRoom = useCallback((idx: number) => {
+    setRooms((prev) => prev.filter((_, i) => i !== idx));
+    setSelectedHotels((prev) => prev); // hotel selections stay per-destination not per-room
+  }, []);
+
+  const updateTravellers = useCallback((adults: number) => {
+    const nextTravellerRooms = autoDistributeAdults(adults);
+    setTravellerRooms(nextTravellerRooms);
+    setRooms(travellerRoomsToLegacy(nextTravellerRooms));
+  }, []);
+
+  const toggleAddon = useCallback((id: string) => {
+    setAddons((prev) => prev.map((a) => a.id === id ? { ...a, on: !a.on } : a));
+  }, []);
+
+  const toggleSight = useCallback((id: string) => {
+    setSelectedSight((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
+
+  const toggleAct = useCallback((linkId: string) => {
+    setSelectedActs((prev) => {
+      const next = new Set(prev);
+      next.has(linkId) ? next.delete(linkId) : next.add(linkId);
+      return next;
+    });
+  }, []);
+
+  // ── Backend-authoritative price (replaces all frontend arithmetic) ────────
+  const hotelUpgradeTotal = useMemo(
+    () => selectedHotels.reduce((sum, stay) => sum + Math.max(0, stay.upgradePrice || 0), 0),
+    [selectedHotels],
+  );
+  const cabUpgradeTotal = cabOptions[selectedCab]?.extra ?? 0;
+  const addonsPriceTotal = useMemo(() => {
+    const adults = rooms.reduce((sum, room) => sum + Math.max(0, room.adults), 0);
+    const billable = Math.max(adults, 1);
+    return addons
+      .filter((a) => a.on)
+      .reduce((sum, a) => sum + Math.max(0, a.price) * billable, 0);
+  }, [addons, rooms]);
+
+  const {
+    isLoading:            priceLoading,
+    hasPrice,
+    isStale:              priceStale,
+    grandTotal,
+    tokenAmount:          token,
+    // Aliased: `tokenPercent` above is the guest's requested advance (now
+    // dormant). This one is the platform percentage the backend applied, used
+    // only to label "Pay 40% today".
+    tokenPercent:         appliedTokenPercent,
+    balanceAmount,
+    hotelUpgrade,
+    cabUpgrade,
+    volvoBusCost,
+    activitiesTotal,
+    addonsTotal,
+    basePackagePrice,
+    totalAdults:          priceTotalAdults,
+    totalGuests:          priceTotalGuests,
+    minTokenPercent,
+    isComplete:           priceIsComplete,
+    tokenPaymentAvailable,
+    raw:                  priceRaw,
+  } = useFulfillmentPrice({
+    slug,
+    packageId,
+    travelDate,
+    rooms,
+    selectedHotels: selectedHotels
+      .filter((s) => s.optionId && !s.optionId.endsWith("-default"))
+      .map((s) => ({ option_id: s.optionId, room_type_id: s.roomTypeId })),
+    selectedCabOptionId:    cabOptions[selectedCab]?.id ?? null,
+    tokenPercent,
+    selectedSightseeingIds: Array.from(selectedSight).filter((id) => !id.startsWith("demo-")),
+    selectedActivityLinkIds: Array.from(selectedActs).filter((id) => !id.startsWith("demo-")),
+    selectedAddonIds:       addons.filter((a) => a.on).map((a) => a.id).filter((id) => !id.startsWith("demo-")),
+    enabled: !optLoading,
+    basePricePerPerson: effectiveBasePrice,
+    hotelUpgradeTotal,
+    cabUpgradeTotal,
+    addonsTotal: addonsPriceTotal,
+    packageTokenPercent: typeof pkgTokenValue === "number" ? pkgTokenValue : 40,
+  });
+
+  useEffect(() => {
+    // Only once a real, non-stale figure has arrived — a mid-flight value
+    // would flash a number the guest is not being charged.
+    if (!hasPrice || priceLoading || priceStale) return;
+    setPriceSettle((n) => n + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grandTotal, token, hasPrice, priceLoading, priceStale]);
+
+  // Amount shown on the Book / Pay button
+  const payAmt = payType === "token" && tokenPaymentAvailable ? token : grandTotal;
+
+  useEffect(() => {
+    // Wait for a real price before deciding. tokenPaymentAvailable is false
+    // while the first pricing call is in flight, so without the hasPrice
+    // guard this fired immediately and locked every guest into "full" —
+    // the part-payment option could never be the default.
+    if (!hasPrice) return;
+    if (!tokenPaymentAvailable && payType === "token") setPayType("full");
+    if (!tokenPaymentAvailable && payOption === "token") setPayOption("full");
+  }, [optLoading, hasPrice, tokenPaymentAvailable, payType, payOption]);
+
+  // ── Gallery images ────────────────────────────────────────────────────────
+  const galleryImages = useMemo(() => {
+    const imgs = tour.galleryImages?.length
+      ? tour.galleryImages
+      : tour.image
+        ? [tour.image, ...Array(4).fill("https://images.unsplash.com/photo-1469854523086-cc02fe7d8800?w=600&q=80")]
+        : [];
+    return imgs.slice(0, 12);
+  }, [tour]);
+
+  // The brochure should feel immediate when a visitor opens it. Prime the
+  // package gallery while the detail page is being read, rather than waiting
+  // until the modal has already started its hardcover animation.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sources = Array.from(new Set([tour.image, ...galleryImages].filter(Boolean))).slice(0, 12);
+    sources.forEach((src) => {
+      const image = new window.Image();
+      image.decoding = "async";
+      image.src = src;
+      void image.decode?.().catch(() => undefined);
+    });
+  }, [galleryImages, tour.image]);
+
+  // ── Build selected option IDs for booking ─────────────────────────────────
+
+  const getSelectedIds = useCallback(() => {
+    const hotels = selectedHotels
+      .filter((s) => s.optionId && !s.optionId.endsWith("-default"))
+      .map((s) => ({ option_id: s.optionId, room_type_id: s.roomTypeId }));
+    const cabId = cabOptions[selectedCab]?.id ?? null;
+    const addonIds = addons.filter((a) => a.on).map((a) => a.id).filter((id) => !id.startsWith("demo-"));
+    const sightIds = Array.from(selectedSight).filter((id) => !id.startsWith("demo-"));
+    const actIds   = Array.from(selectedActs).filter((id) => !id.startsWith("demo-"));
+    return { hotels, cabId, addonIds, sightIds, actIds };
+  }, [selectedHotels, selectedCab, cabOptions, addons, selectedSight, selectedActs]);
+
+  // ── Book handler ──────────────────────────────────────────────────────────
+
+  /**
+   * Validate the traveller form, create the booking, open Razorpay.
+   *
+   * `paymentType` and `preferredMethod` are passed in rather than read from
+   * state: the payment cards below book on click, and a setState in the same
+   * tick would not be visible here yet.
+   *
+   * The traveller fields cannot be skipped — /book needs name, email and phone
+   * to create the order — so "click card → Razorpay opens" still runs this
+   * validation first and surfaces field errors if anything is missing.
+   */
+  const submitBooking = useCallback(async (
+    form: HTMLFormElement,
+    paymentType: "full" | "token",
+    preferredMethod?: "emi",
+    // Analytics only — the card the guest actually clicked.
+    selectedPaymentOption?: "full" | "token" | "emi",
+  ) => {
+    const name  = (form.querySelector("[name=guestName]")  as HTMLInputElement)?.value.trim()  || "";
+    const email = (form.querySelector("[name=guestEmail]") as HTMLInputElement)?.value.trim()  || "";
+    const phone = (form.querySelector("[name=guestPhone]") as HTMLInputElement)?.value.trim()  || "";
+    const date  = (form.querySelector("[name=travelDate]") as HTMLInputElement)?.value.trim()  || null;
+    const notes = (form.querySelector("[name=specialReq]") as HTMLTextAreaElement)?.value.trim() || null;
+
+    // Validate shape, not just presence: the old check accepted "x" as an
+    // email and sent it straight to the booking API.
+    const errs: Record<string, string> = {};
+    if (!name) {
+      errs.guestName = "Please enter your full name";
+    }
+    if (!email) {
+      errs.guestEmail = "Please enter your email address";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      errs.guestEmail = "That email address doesn't look right";
+    }
+    if (!phone) {
+      errs.guestPhone = "Please enter your mobile number";
+    } else if (phone.replace(/\D/g, "").length < 10) {
+      errs.guestPhone = "Enter a valid 10-digit mobile number";
+    }
+
+    setFieldErrors(errs);
+    if (Object.keys(errs).length > 0) {
+      setShakeKey((k) => k + 1);
+      // Send the user to the problem rather than making them hunt for it.
+      // Focus is applied in an effect below, once the remounted inputs exist.
+      const firstInvalid = form.querySelector(
+        `[name="${Object.keys(errs)[0]}"]`,
+      ) as HTMLElement | null;
+      firstInvalid?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    const { hotels, cabId, addonIds, sightIds, actIds } = getSelectedIds();
+
+    await doBook({
+      package_slug:               slug,
+      guest_name:                 name,
+      guest_email:                email,
+      guest_phone:                phone,
+      rooms,
+      travel_date:                date,
+      special_requests:           notes,
+      selected_hotels:            hotels,
+      selected_cab_option_id:     cabId,
+      selected_sightseeing_ids:   sightIds,
+      selected_activity_link_ids: actIds,
+      selected_addon_ids:         addonIds,
+      payment_type:               paymentType,
+      // Must travel with the booking: the guest may have chosen 75%, and
+      // the server recomputes the charge from this percentage.
+      token_percent:              paymentType === "token" ? tokenPercent : null,
+      preferred_method:           preferredMethod,
+      selected_payment_option:    selectedPaymentOption ?? paymentType,
+    });
+  }, [slug, rooms, tokenPercent, getSelectedIds, doBook]);
+
+  /**
+   * The single submit path for both checkout forms. Carries the chosen card
+   * through: "emi" books the full amount but asks Razorpay to open on the EMI
+   * tab. The amount itself still comes from the backend — the method is only
+   * a hint, exactly as documented in razorpay-checkout.ts.
+   */
+  const handleConfirmAndPay = useCallback((e: FormEvent) => {
+    e.preventDefault();
+    return submitBooking(
+      e.target as HTMLFormElement,
+      payType,
+      payOption === "emi" ? "emi" : undefined,
+      payOption,
+    );
+  }, [submitBooking, payType, payOption]);
+
+  const isBooking  = ["loading", "awaiting_payment", "verifying"].includes(bookState.phase);
+  const { user, isAuthenticated } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const fullStars  = Math.min(5, Math.round(tour.rating));
+  const currentDay = tour.itinerary?.find((d) => d.day === activeDay) ?? tour.itinerary?.[0];
+
+  // ── Itinerary day helpers (all derived from real data — no fabricated fields) ─
+
+  /** Real calendar date per day, only when the visitor picked a travel date upstream (?date=). */
+  const dateForDay = useCallback((dayNum: number): Date | null => {
+    if (!travelDate) return null;
+    const parsed = new Date(travelDate);
+    if (Number.isNaN(parsed.getTime())) return null;
+    const d = new Date(parsed);
+    d.setDate(d.getDate() + (dayNum - 1));
+    return d;
+  }, [travelDate]);
+
+  const dayDateLabel = useCallback((dayNum: number): string | null => {
+    const d = dateForDay(dayNum);
+    return d ? d.toLocaleDateString("en-US", { day: "numeric", month: "short", weekday: "short" }) : null;
+  }, [dateForDay]);
+
+  /** First day number of a given hotelGroups destination leg (1-indexed, cumulative real nights). */
+  const destStartDayOf = useCallback((destIdx: number): number => {
+    if (destIdx <= 0) return 1;
+    return 1 + hotelGroups.slice(0, destIdx).reduce((s, h) => s + h.nights, 0);
+  }, [hotelGroups]);
+
+  /** Which real hotel destination-leg (from hotelGroups) a given itinerary day falls in,
+   *  derived from each destination's real `nights` count — not a fabricated mapping. */
+  const destForDay = useCallback((dayNum: number) => {
+    let cursor = 1;
+    for (const dest of hotelGroups) {
+      const end = cursor + dest.nights;
+      if (dayNum >= cursor && dayNum <= end) return dest;
+      cursor = end;
+    }
+    return hotelGroups[hotelGroups.length - 1];
+  }, [hotelGroups]);
+
+  const destIndexOf = useCallback(
+    (destName: string) => hotelGroups.findIndex((h) => h.dest === destName),
+    [hotelGroups],
+  );
+
+  const transfersCount = Math.max(0, hotelGroups.length - 1);
+
+  /** Total meals, parsed from real inclusion text (e.g. "5 Breakfasts + 5 Dinners"). */
+  const totalMeals = (tour.inclusions ?? []).reduce((sum, inc) => {
+    const m = inc.match(/(\d+)\s*(Breakfast|Lunch|Dinner|Meals?)/i);
+    return m ? sum + parseInt(m[1]!, 10) : sum;
+  }, 0);
+
+  // ── Sidebar component ─────────────────────────────────────────────────────
+
+  const Sidebar = () => (
+    <div className="overflow-hidden rounded-2xl border border-[#e8e8e8] bg-white shadow-[0_2px_20px_-8px_rgba(15,23,42,0.12)]">
+      <div className="border-b border-[#f0f0f0] bg-gradient-to-br from-white to-[#fafafa] px-5 py-4">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#9e9e9e]">Total price</p>
+        {priceLoading && !hasPrice ? (
+          <div className="mt-1 h-8 w-32 animate-pulse rounded bg-[#eeeeee]" />
+        ) : (
+          <p className={cn("mt-1 text-[2rem] font-bold leading-none tracking-tight text-[#1a1a1a]", priceStale && "opacity-60")}>
+            ₹{fmtINR(grandTotal)}
+          </p>
+        )}
+        <p className="mt-1.5 text-[11px] text-[#9e9e9e]">{roomsLabel(rooms)}</p>
+        {priceRaw?.gst_result && (
+          <p className="mt-1 text-[10px] text-[#9e9e9e]">
+            Incl. GST {Math.round((priceRaw.gst_result.gst_rate ?? 0.05) * 100)}%
+          </p>
+        )}
+      </div>
+      <div className="space-y-1.5 px-5 py-4 text-[12px]">
+        <div className="flex justify-between text-[#616161]"><span>Base</span><span className="font-medium text-[#424242]">₹{fmtINR(basePackagePrice)}</span></div>
+        {hotelUpgrade > 0 && <div className="flex justify-between text-[#616161]"><span>Hotel upgrade</span><span className="font-medium text-[#424242]">+₹{fmtINR(hotelUpgrade)}</span></div>}
+        {cabUpgrade > 0 && <div className="flex justify-between text-[#616161]"><span>Vehicle upgrade</span><span className="font-medium text-[#424242]">+₹{fmtINR(cabUpgrade)}</span></div>}
+        {activitiesTotal > 0 && <div className="flex justify-between text-[#616161]"><span>Activities &amp; sightseeing</span><span className="font-medium text-[#424242]">+₹{fmtINR(activitiesTotal)}</span></div>}
+        {addonsTotal > 0 && <div className="flex justify-between text-[#616161]"><span>Add-ons</span><span className="font-medium text-[#424242]">+₹{fmtINR(addonsTotal)}</span></div>}
+        {priceRaw?.gst_result && priceRaw.gst_result.total_gst > 0 && (
+          <div className="flex justify-between text-[#616161]" title={priceRaw.gst_result.gst_label}><div><span>Fees &amp; Taxes</span><span className="block text-[10px] text-[#9E9E9E]">GST {Math.round((priceRaw.gst_result.gst_rate ?? 0.05) * 100)}%</span></div><span className="font-medium text-[#424242]">+₹{fmtINR(priceRaw.gst_result.total_gst)}</span></div>
+        )}
+        <div className="flex justify-between border-t border-dashed border-[#e0e0e0] pt-2 text-sm font-bold text-[#1a1a1a]"><span>Total</span><span>₹{fmtINR(grandTotal)}</span></div>
+      </div>
+      <div className="px-5 pb-5">
+        <button type="button" onClick={() => {
+            if (!isAuthenticated) { setShowLoginModal(true); }
+            else { switchTab("book"); }
+          }}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-white shadow-[0_8px_20px_-6px_rgba(15,118,110,0.5)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-6px_rgba(15,118,110,0.55)]">
+          <Lock className="h-4 w-4" aria-hidden />
+          Book · ₹{fmtINR(payAmt)}
+        </button>
+        {tokenPaymentAvailable && (
+          <p className="mt-2 text-center text-[11px] font-semibold text-emerald-700">
+            Pay just ₹{fmtINR(token)} to confirm today
+          </p>
+        )}
+        <p className="mt-1.5 flex items-center justify-center gap-1 text-[10px] text-[#9e9e9e]">
+          <ShieldCheck className="h-3 w-3" aria-hidden />Secured by Razorpay
+        </p>
+      </div>
+    </div>
+  );
+
+  const goToPackageCheckout = useCallback(() => {
+    const params = new URLSearchParams({
+      rooms: encodeRooms(rooms),
+      date: travelDate,
+      cab: String(selectedCab),
+      hotels: selectedHotels.map((s) => s.optionId).filter(Boolean).join(","),
+    });
+    router.push(`/packages/${encodeURIComponent(slug)}/checkout?${params.toString()}`);
+  }, [router, slug, rooms, travelDate, selectedCab, selectedHotels]);
+
+  // ── Dedicated checkout summary page ───────────────────────────────────────
+  if (checkoutOnly) {
+    return (
+      <>
+        <main className="min-h-screen bg-[#f5f5f5] text-[#212121] antialiased">
+          <div className="border-b border-[#e0e0e0] bg-white pt-[112px] sm:pt-[104px]">
+          <div className="mx-auto flex w-full max-w-[1320px] items-center gap-6 px-4 py-3 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-2 text-[13px] font-bold text-[#212121]"><span className="grid h-6 w-6 place-items-center rounded-full bg-[#212121] text-[11px] text-white">1</span>Review &amp; Travellers</div>
+            <div className="h-px w-12 bg-[#d7dce2]" />
+            <div className="flex items-center gap-2 text-[13px] text-[#9E9E9E]"><span className="grid h-6 w-6 place-items-center rounded-full border border-[#d7dce2] text-[11px]">2</span>Payment</div>
+          </div>
+        </div>
+        <div className="mx-auto grid w-full max-w-[1320px] gap-4 px-4 py-5 pb-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
+          {bookState.phase === "success" && bookState.result ? <div className="lg:col-span-2"><PackageBookingSuccess result={bookState.result} tourTitle={tour.title} onPayBalance={bookState.result.status === "token_paid" ? () => payBalance(bookState.result!.booking_id, { name: "", email: "", phone: "" }) : undefined} /></div> : <>
+            <section className="space-y-4">
+              <div className="rounded-xl border border-[#e8e8e8] bg-white p-5 shadow-sm sm:p-6">
+                <div className="flex items-start justify-between gap-4"><div><p className="text-[11px] font-bold uppercase tracking-widest text-[#0f766e]">Package booking</p><h1 className="mt-1 text-xl font-extrabold text-[#172033]">Review your trip</h1><p className="mt-1 text-[13px] text-[#757575]">Check the details below before continuing to payment.</p></div><button type="button" onClick={() => router.back()} className="text-[12px] font-bold text-[#0f766e] hover:underline">← Change trip</button></div>
+                <div className="mt-5 grid gap-4 border-t border-[#f0f0f0] pt-5 sm:grid-cols-[88px_1fr]">
+                  <div className="relative h-16 w-[88px] overflow-hidden rounded-lg bg-slate-100"><Image src={tour.image ?? ""} alt={tour.title} fill unoptimized className="object-cover" sizes="88px" /></div>
+                  <div><h2 className="text-[15px] font-extrabold text-[#1a1a1a]">{tour.title}</h2><p className="mt-1 text-[12px] text-[#757575]">{tour.location || "India"} · {tour.durationNights} nights / {tour.durationDays} days</p><div className="mt-2 flex flex-wrap gap-2 text-[11px] font-semibold text-[#424242]"><span className="rounded-full bg-[#fafafa] px-2.5 py-1">{roomsLabel(rooms)}</span><span className="rounded-full bg-[#fafafa] px-2.5 py-1">Travel date: {travelDate}</span></div></div>
+                </div>
+              </div>
+              <form id="package-checkout-form" onSubmit={handleConfirmAndPay} noValidate className="rounded-xl border border-[#e8e8e8] bg-white shadow-sm">
+                <div className="border-b border-[#f0f0f0] bg-[#fafafa] px-5 py-4"><div className="flex items-center gap-2"><span className="grid h-6 w-6 place-items-center rounded-full border-2 border-[#0f766e] text-[11px] font-extrabold text-[#0f766e]">2</span><div><h2 className="text-[14px] font-bold">Traveller details</h2><p className="text-[11px] text-[#9E9E9E]">Name and contact details for booking confirmation</p></div></div></div>
+                <div className="p-5 sm:p-6"><div className="grid gap-4 sm:grid-cols-2">{[{ name: "guestName", label: "Full name", type: "text", value: user?.name ?? "" }, { name: "guestEmail", label: "Email address", type: "email", value: user?.email ?? "" }, { name: "guestPhone", label: "Mobile number", type: "tel", value: user?.phone ?? "" }, { name: "travelDate", label: "Travel date", type: "date", value: travelDate }].map((field) => <label key={field.name} className="block text-[12px] font-semibold text-[#424242]">{field.label} <span className="text-[#0f766e]">*</span><input name={field.name} required type={field.type} defaultValue={field.value} aria-invalid={Boolean(fieldErrors[field.name])} aria-describedby={fieldErrors[field.name] ? `${field.name}-err` : undefined} onInput={() => fieldErrors[field.name] && setFieldErrors((p) => { const n = { ...p }; delete n[field.name]; return n; })} className={cn("mt-1.5 h-11 w-full rounded-lg border px-3 text-[13px] outline-none focus:ring-2", fieldErrors[field.name] ? "border-[#d92d20] bg-[#fffbfa] focus:border-[#d92d20] focus:ring-[#d92d20]/15" + (shakeKey % 2 === 0 ? " motion-safe:animate-shake" : " motion-safe:animate-shake-alt") : "border-[#e0e0e0] focus:border-[#0f766e] focus:ring-[#0f766e]/10")} />{fieldErrors[field.name] && <span id={`${field.name}-err`} role="alert" className="mt-1 block text-[11px] font-semibold text-[#d92d20]">{fieldErrors[field.name]}</span>}</label>)}</div><label className="mt-4 block text-[12px] font-semibold text-[#424242]">Special requests <span className="font-normal text-[#9E9E9E]">(optional)</span><textarea name="specialReq" rows={3} className="mt-1.5 w-full resize-none rounded-lg border border-[#e0e0e0] px-3 py-2.5 text-[13px] outline-none focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/10" placeholder="Any dietary needs or special requests" /></label>{bookState.phase === "error" && <p className="mt-4 rounded-lg bg-[#fff5f5] p-3 text-[12px] font-medium text-[#c62828]">{bookState.message}</p>}<div className="mt-6">
+                  <p className="mb-2.5 text-[12px] font-bold text-[#1a1a1a]">How would you like to pay?</p>
+                  {/* Selection, not submission. These used to book immediately on
+                      click; they now choose a method and the sidebar's "Continue
+                      to payment" submits it. That is what lets the EMI row expand
+                      to show Razorpay's live plans before the guest commits. */}
+                  <div role="radiogroup" aria-label="Payment option" className="grid gap-3 sm:grid-cols-3">
+                    {[
+                      // `amt` is intentionally absent on "full" and "emi": both
+                      // charge the grand total, which the Price Summary already
+                      // states authoritatively. Only the token card carries an
+                      // amount, because its figure is information found nowhere
+                      // else on the page.
+                      { id: "full" as const, title: "Pay in Full", amt: null, sub: "Pay the entire amount now", enabled: true, note: "Instant confirmation" },
+                      { id: "token" as const, title: pkgTokenType === "percent" ? `Pay ${Math.round(Number(pkgTokenValue) || 0)}% now` : "Pay token amount", amt: `₹${fmtINR(token)}`, sub: "Balance before travel", enabled: tokenPaymentAvailable, note: tokenPaymentAvailable ? null : "Not enabled for this package" },
+                      // Deliberately sparse: when this card is selected the live
+                      // Razorpay widget renders right beneath it with the real
+                      // monthly figure, the eligible providers and "View plans".
+                      // Anything more here is the same information twice.
+                      { id: "emi" as const, title: "Pay with EMI", amt: null, sub: "Monthly instalments", enabled: true, note: null },
+                    ].map((opt) => {
+                      const selected = payOption === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          disabled={!opt.enabled || isBooking || !priceIsComplete}
+                          onClick={() => {
+                            if (!opt.enabled) return;
+                            setPayOption(opt.id);
+                            // EMI charges the full amount; only the token tile
+                            // switches the payable amount.
+                            setPayType(opt.id === "token" ? "token" : "full");
+                          }}
+                          className={cn(
+                            "relative rounded-xl border-[1.5px] p-3.5 text-left transition",
+                            !opt.enabled
+                              ? "cursor-not-allowed border-[#eee] bg-[#fafafa] opacity-70"
+                              : selected
+                                ? "border-primary bg-teal-50/40 shadow-[0_4px_16px_-6px_rgba(15,118,110,0.25)]"
+                                : "border-[#e8e8e8] bg-white hover:-translate-y-0.5 hover:border-primary hover:bg-teal-50/40 hover:shadow-[0_10px_22px_-12px_rgba(15,118,110,0.5)]",
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-[1.5px]",
+                                selected ? "border-primary bg-primary" : "border-[#d0d0d0]",
+                              )}
+                              aria-hidden
+                            >
+                              {selected && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                            </span>
+                            <span className="text-[12px] font-bold text-[#1a1a1a]">{opt.title}</span>
+                          </span>
+                          {opt.amt && (
+                            <span className="mt-1 block text-[17px] font-extrabold leading-none text-[#0f766e]">{opt.amt}</span>
+                          )}
+                          <span className={cn("block text-[10px] leading-relaxed text-[#757575]", opt.amt ? "mt-1.5" : "mt-1")}>{opt.sub}</span>
+                          {opt.note && <span className="mt-1 block text-[10px] text-[#9E9E9E]">{opt.note}</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Live plans for the EMI choice. Full width BELOW the row, not
+                      inside the card: the three cards are grid cells of equal
+                      height, so expanding one would stretch all three — and the
+                      widget is an interactive cross-origin iframe that cannot be
+                      nested inside a <button> without swallowing its clicks. */}
+                  {payOption === "emi" && (
+                    <div className="mt-3 rounded-xl border-[1.5px] border-primary/40 bg-teal-50/30 p-3">
+                      <AffordabilityWidget
+                        amountInr={grandTotal}
+                        enabled={hasPrice && !priceLoading && !priceStale && priceIsComplete}
+                      />
+                    </div>
+                  )}
+                  <p className="mt-2.5 text-[10px] text-[#9E9E9E]">Continue to payment opens the secure Razorpay window for the selected amount.</p>
+                </div></div>
+              </form>
+            </section>
+            {/* ── Price Summary ────────────────────────────────────────────
+                Base → upgrades → taxes → total → EMI & Offers slot → CTA.
+                Composed from @/components/packages/pricing; the figures, the
+                submit target and the disabled conditions are unchanged. */}
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <PackageBookingSummary
+                basePriceInr={basePackagePrice}
+                basePriceNote={
+                  priceTotalGuests > 0
+                    ? `₹${fmtINR(Math.round(basePackagePrice / priceTotalGuests))} × ${priceTotalGuests} ${priceTotalGuests === 1 ? "guest" : "guests"}`
+                    : undefined
+                }
+                lines={[
+                  { label: "Hotel upgrades", amountInr: hotelUpgrade },
+                  { label: "Volvo bus (return ticket)", amountInr: volvoBusCost },
+                  { label: "Vehicle upgrade", amountInr: cabUpgrade },
+                  { label: "Activities & sightseeing", amountInr: activitiesTotal },
+                  { label: "Add-ons", amountInr: addonsTotal },
+                ]}
+                taxInr={priceRaw?.gst_result?.total_gst ?? 0}
+                taxRate={priceRaw?.gst_result?.gst_rate ?? 0.05}
+                totalInr={grandTotal}
+                payAmountInr={payAmt}
+                tokenAmountInr={tokenPaymentAvailable ? token : null}
+                payOption={payOption}
+                tokenPercent={appliedTokenPercent}
+                guestCount={priceTotalGuests}
+                guestSummary={travellerSummary(travellerRooms)}
+                loading={!hasPrice}
+                stale={(priceLoading || priceStale) && hasPrice}
+                formId="package-checkout-form"
+                ctaDisabled={!priceIsComplete}
+                ctaBusy={isBooking}
+                ctaNotice={
+                  Object.keys(fieldErrors).length > 0 ? (
+                    <p
+                      role="alert"
+                      className="rounded-lg bg-[#fffbfa] p-2.5 text-center text-[11px] font-semibold text-[#d92d20]"
+                    >
+                      Please complete your traveller details above
+                    </p>
+                  ) : null
+                }
+                totalClassName={cn(
+                  "rounded px-1",
+                  priceSettle % 2 === 0
+                    ? "motion-safe:animate-price-settle"
+                    : "motion-safe:animate-price-settle-alt",
+                )}
+              />
+            </aside>
+          </>}
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  // The package-detail route intentionally uses its own transactional layout.
+  // It is separate from the glossy marketing navbar used on the home/packages pages.
+  return (
+    <>
+      <GlacialStylePackageDetail
+          tour={tour}
+          images={galleryImages}
+          roomsLabel={roomsLabel(rooms)}
+          total={grandTotal}
+          tokenType={pkgTokenType}
+          tokenAmount={token}
+          loadingJourney={optLoading}
+          initialDate={travelDate}
+          hotelGroups={hotelGroups as any[]}
+          cabOptions={cabOptions as any[]}
+          selectedHotels={selectedHotels}
+          selectedCab={selectedCab}
+          travellerRooms={travellerRooms}
+          priceLoading={priceLoading}
+          hasPrice={hasPrice}
+          basePackagePrice={basePackagePrice}
+          hotelUpgrade={hotelUpgrade}
+          cabUpgrade={cabUpgrade}
+          volvoBusCost={volvoBusCost}
+          activitiesTotal={activitiesTotal}
+          addonsTotal={addonsTotal}
+          gstResult={priceRaw?.gst_result ?? null}
+          onBook={goToPackageCheckout}
+          onViewBrochure={() => setShowBrochure(true)}
+          onEnquire={() => setShowLoginModal(true)}
+          onChangeHotel={(index) => { setChangeHotelMode("hotel"); setChangeHotelDestIdx(index); }}
+          onChangeRoom={(index) => { setChangeHotelMode("room"); setChangeHotelDestIdx(index); }}
+          onChangeCab={() => setChangeVehicleOpen(true)}
+          onChangeTravellerRooms={handleTravellerRoomsChange}
+          onChangeDate={setTravelDate}
+        />
+
+      {/* ── You may also like ──────────────────────────────────────────────
+          Discovery rail above the footer. Uses only the `similar` packages
+          already fetched for this page — no additional API call. */}
+      {similar.length > 0 && (
+        <section className="border-t border-[#eef0f3] bg-[#fafbfc]">
+          <div className="mx-auto w-full max-w-[1400px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+            <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-[22px] font-extrabold tracking-tight text-[#0f172a] sm:text-[26px]">
+                  You may also like
+                </h2>
+                <p className="mt-1.5 text-[13px] text-[#64748b]">
+                  Handpicked trips travellers book alongside this one
+                </p>
+              </div>
+              <Link
+                href="/packages"
+                className="group inline-flex items-center gap-1 text-[13px] font-bold text-primary hover:underline"
+              >
+                View all packages
+                <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+
+            <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {similar.slice(0, 4).map((p) => {
+                // Badge text: the most specific place name available on the
+                // package, taken from the denormalized `location` string.
+                const place = (p.location ?? "").split(",")[0]?.trim();
+                const nights = p.durationNights ?? Math.max(0, (p.durationDays ?? 1) - 1);
+                return (
+                  <li key={p.id} className="h-full">
+                    <Link
+                      href={`${packageDetailHref(p)}?rooms=${encodeRooms(rooms)}`}
+                      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#e6e9ee] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_18px_40px_-18px_rgba(15,23,42,0.28)]"
+                    >
+                      {/* 16:9 hero */}
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                        <Image
+                          src={p.image}
+                          alt={p.title}
+                          fill
+                          className="object-cover transition duration-700 group-hover:scale-[1.06]"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                        {/* legibility scrim for the badge */}
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-transparent" />
+                        {place && (
+                          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-[#0f172a] shadow-sm backdrop-blur">
+                            <MapPin className="h-3 w-3 text-primary" aria-hidden />
+                            {place}
+                          </span>
+                        )}
+                        {p.discountPct ? (
+                          <span className="absolute right-3 top-3 rounded-full bg-primary px-2.5 py-1 text-[11px] font-extrabold text-white shadow-sm">
+                            {p.discountPct}% OFF
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {/* Body */}
+                      <div className="flex flex-1 flex-col p-4">
+                        {(p.rating > 0 || (p.reviewCount ?? 0) > 0) && (
+                          <div className="mb-2 flex items-center gap-2 text-[11px]">
+                            {p.rating > 0 && (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-[#f0fdf4] px-1.5 py-0.5 font-bold text-[#15803d]">
+                                <Star className="h-3 w-3 fill-current" aria-hidden />
+                                {p.rating.toFixed(1)}
+                              </span>
+                            )}
+                            {(p.reviewCount ?? 0) > 0 && (
+                              <span className="inline-flex items-center gap-1 text-[#64748b]">
+                                <Users className="h-3 w-3" aria-hidden />
+                                {p.reviewCount} booked
+                              </span>
+                            )}
+                          </div>
+                        )}
+
+                        <h3 className="line-clamp-2 text-[14px] font-bold leading-snug text-[#0f172a] transition group-hover:text-primary">
+                          {p.title}
+                        </h3>
+
+                        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[#64748b]">
+                          <span className="inline-flex items-center gap-1">
+                            <Calendar className="h-3.5 w-3.5 shrink-0 text-[#94a3b8]" aria-hidden />
+                            {nights}N / {p.durationDays}D
+                          </span>
+                          {place && (
+                            <span className="inline-flex min-w-0 items-center gap-1">
+                              <MapPin className="h-3.5 w-3.5 shrink-0 text-[#94a3b8]" aria-hidden />
+                              <span className="truncate">{place}</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Price pinned to the bottom so cards align */}
+                        <div className="mt-auto pt-4">
+                          <p className="text-[10px] font-semibold uppercase tracking-wide text-[#94a3b8]">
+                            Starting from
+                          </p>
+                          <p className="mt-0.5 flex items-baseline gap-2">
+                            <span className="text-[19px] font-extrabold leading-none tracking-tight text-[#0f172a]">
+                              ₹{formatInrAmount(p.priceINR)}
+                            </span>
+                            {p.oldPriceINR ? (
+                              <span className="text-[12px] text-[#94a3b8] line-through">
+                                ₹{formatInrAmount(p.oldPriceINR)}
+                              </span>
+                            ) : null}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      <Footer />
+      <TripBrochureModal
+        open={showBrochure}
+        onClose={() => setShowBrochure(false)}
+        tour={tour}
+        stays={hotelGroups.map((group) => ({
+          name: group?.opts?.[staySelectionIndex(selectedHotels[hotelGroups.indexOf(group)], group)]?.name ?? group?.dest ?? "",
+          location: group?.dest,
+          image: group?.opts?.[staySelectionIndex(selectedHotels[hotelGroups.indexOf(group)], group)]?.img,
+        })).filter((stay) => stay.name)}
+      />
+      <BookingAuthModal
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSuccess={() => {
+          setShowLoginModal(false);
+          setTimeout(() => switchTab("book"), 100);
+        }}
+      />
+      <ChangeHotelModal
+        open={changeHotelDestIdx !== null}
+        onClose={() => setChangeHotelDestIdx(null)}
+        destination={changeHotelDestIdx !== null ? hotelGroups[changeHotelDestIdx] : undefined}
+        selectedIndex={changeHotelDestIdx !== null ? (staySelectionIndex(selectedHotels[changeHotelDestIdx!], hotelGroups[changeHotelDestIdx!])) : 0}
+        mode={changeHotelMode}
+        slug={slug}
+        travelDate={travelDate}
+        selectedRoomTypeId={changeHotelDestIdx !== null ? (selectedHotels[changeHotelDestIdx]?.roomTypeId ?? null) : null}
+        checkIn={changeHotelDestIdx !== null ? dateForDay(destStartDayOf(changeHotelDestIdx)) : null}
+        onSelect={(oi, roomTypeId, roomName) => {
+          if (changeHotelDestIdx === null) return;
+          const di = changeHotelDestIdx;
+          const group = hotelGroups[di];
+          const opt = group?.opts[oi];
+          const prevSel = selectedHotels[di];
+          const hotelChanged = opt?.hotelId !== prevSel?.hotelId;
+          setSelectedHotels((prev) => {
+            const h = [...prev];
+            h[di] = {
+              stayId: group?.stayId ?? "",
+              optionId: opt?.id ?? "",
+              hotelId: opt?.hotelId ?? "",
+              // Prefer the room the guest picked in the drawer. Only fall
+              // back to clearing it when the hotel changed and no room came
+              // back (older callers / room list unavailable).
+              roomTypeId:
+                roomTypeId ?? (hotelChanged ? null : (prevSel?.roomTypeId ?? null)),
+              hotelName: opt?.name ?? "",
+              roomName:
+                roomName ?? (hotelChanged ? null : (prevSel?.roomName ?? null)),
+              upgradePrice: opt?.extra ?? 0,
+            };
+            return h;
+          });
+        }}
+      />
+      <ChangeVehicleModal
+        open={changeVehicleOpen}
+        options={cabOptions as any[]}
+        selectedIndex={selectedCab}
+        onClose={() => setChangeVehicleOpen(false)}
+        onSelect={setSelectedCab}
+      />
+    </>
+  );
+
+  /*
+   * Previous gallery-first implementation retained below temporarily while this
+   * route is migrated. It is deliberately unreachable.
+   */
+  return (
+    <>
+      <main className="min-h-screen bg-[#f4f6f8] pt-[56px] sm:pt-[64px] lg:pt-[72px]">
+        <div className="mx-auto w-full max-w-[1400px] px-3 pb-24 pt-3 sm:px-5 sm:pt-4 lg:px-8 lg:pb-0 lg:pt-5">
+
+          {/* Breadcrumb */}
+          <nav className="flex flex-wrap items-center gap-1 py-3 text-[11px] text-[#9e9e9e]" aria-label="Breadcrumb">
+            <Link href="/" className="hover:text-primary">Home</Link>
+            <ChevronRight className="h-3 w-3 shrink-0" aria-hidden />
+            <Link href="/packages" className="hover:text-primary">Packages</Link>
+            <ChevronRight className="h-3 w-3 shrink-0" aria-hidden />
+            <span className="font-medium text-[#424242] line-clamp-1">{tour.title}</span>
+          </nav>
+
+          {/* Photo grid */}
+          <PackagePhotoGrid
+            images={galleryImages}
+            tourTitle={tour.title}
+            tourType={formatTourType(tour.packageType)}
+            location={tour.location}
+            className="mb-5 lg:h-[400px]"
+          />
+
+          {/* Header */}
+          <div className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)]">
+            <div className="grid items-start gap-5 px-5 py-5 sm:px-7 sm:py-6 lg:h-[214px] lg:grid-cols-[minmax(0,1fr)_268px] lg:gap-7 lg:py-5">
+              <div className="flex min-w-0 flex-col lg:h-full">
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-md border border-primary/30 bg-teal-50 px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-primary">
+                  {formatTourType(tour.packageType)}
+                </span>
+              </div>
+              <h1 className="max-w-4xl text-[1.7rem] font-extrabold leading-[1.12] tracking-[-0.035em] text-[#152033] sm:text-[2rem]">{tour.title}</h1>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                {[
+                  { Icon: Calendar, label: `${tour.durationDays} Days / ${tour.durationNights} Nights` },
+                  tour.location && { Icon: MapPin, label: tour.location },
+                  { Icon: Users, label: roomsLabel(rooms) },
+                ].filter(Boolean).map(({ Icon, label }: any) => (
+                  <span key={label} className="inline-flex max-w-full items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold leading-snug text-[#394150] shadow-sm">
+                    <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden />{label}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-auto flex items-center gap-1.5 pt-3">
+                {tour.reviewCount > 0 ? (
+                  <>
+                    <span className="flex">{Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={cn("h-3.5 w-3.5", i < fullStars ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200")} aria-hidden />
+                    ))}</span>
+                    <span className="text-xs font-bold text-[#424242]">{(tour.rating ?? 0).toFixed(1)}</span>
+                    <span className="text-[11px] text-[#9e9e9e]">({formatInrAmount(tour.reviewCount)} reviews)</span>
+                  </>
+                ) : (
+                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-semibold text-slate-500">New listing</span>
+                )}
+              </div>
+              </div>
+              <aside className="h-fit rounded-xl border border-teal-100 bg-gradient-to-b from-teal-50/80 to-white p-4 shadow-[0_10px_28px_-20px_rgba(15,118,110,0.65)] lg:self-start">
+                <p className="text-[11px] font-semibold text-slate-500">Starting from</p>
+                <p className="mt-1 text-[1.85rem] font-extrabold leading-none tracking-tight text-primary">₹{fmtINR(tour.priceINR)}<span className="ml-1 text-sm font-bold text-slate-500">/-</span></p>
+                <p className="mt-1 text-xs text-slate-500">Per person</p>
+                <button
+                  type="button"
+                  onClick={() => { if (!isAuthenticated) setShowLoginModal(true); else switchTab("book"); }}
+                  className="mt-4 flex h-10 w-full items-center justify-center rounded-lg bg-primary px-3 text-sm font-bold text-white shadow-[0_8px_18px_-8px_rgba(15,118,110,0.7)] transition hover:bg-teal-800"
+                >
+                  <span className="mx-auto">Book Now</span><span className="text-lg">→</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowBrochure(true)}
+                  className="mt-2 flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-primary/35 bg-white text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-teal-50 hover:shadow-sm"
+                >
+                  <BookOpen className="h-4 w-4" aria-hidden /> View Trip Brochure
+                </button>
+                <button type="button" className="mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-primary/30 bg-white text-sm font-bold text-primary hover:bg-teal-50">
+                  ♡&nbsp; Save Package
+                </button>
+                <div className="mt-4 flex justify-between gap-2 text-[9px] font-semibold text-slate-500">
+                  <span>✓ Best Price Guarantee</span><span>◉ 24×7 Support</span>
+                </div>
+              </aside>
+            </div>
+            <div className="grid gap-y-4 border-t border-slate-100 bg-white px-5 py-5 sm:grid-cols-2 sm:px-7 lg:h-[84px] lg:grid-cols-5 lg:items-center lg:py-0">
+              {[
+                { Icon: BedDouble, text: `${tour.durationNights} Nights`, sub: "Accommodation" },
+                { Icon: Building2, text: `${rooms.length} Room${rooms.length === 1 ? "" : "s"}`, sub: "Stay configuration" },
+                { Icon: UtensilsCrossed, text: "Meals included", sub: "Breakfast & dinner" },
+                { Icon: Car, text: "Private vehicle", sub: "Transfers & sightseeing" },
+                { Icon: MapPin, text: "Pickup & drop", sub: "Airport / railway station" },
+              ].map(({ Icon, text, sub }, index) => (
+                <div key={text} className={cn("flex items-center gap-3 px-2", index > 0 && "lg:border-l lg:border-slate-100 lg:pl-5")}>
+                  <Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.8} aria-hidden />
+                  <div><p className="text-[11px] font-bold text-slate-700">{text}</p><p className="text-[10px] text-slate-500">{sub}</p></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tab bar + content */}
+          <div className="rounded-2xl border border-[#e8e8e8] bg-white shadow-[0_2px_20px_-8px_rgba(15,23,42,0.1)]">
+            <div className="flex items-stretch border-b border-[#e8e8e8] px-2 sm:px-4">
+              <div ref={tabBarRef} className="relative flex min-w-0 flex-1 overflow-x-auto" role="tablist">
+              {TABS.filter((tab) => tab.id !== "book").map((tab) => {
+                const TabIcon = tab.Icon;
+                return (
+                <button key={tab.id} type="button" role="tab"
+                  aria-selected={activeTab === tab.id}
+                  onClick={() => switchTab(tab.id)}
+                  className={cn(
+                    "relative flex shrink-0 flex-1 items-center justify-center gap-1.5 min-w-[92px] px-3 py-4 text-center text-[11px] font-bold tracking-wide transition sm:text-xs",
+                    activeTab === tab.id ? "text-primary" : "text-[#757575] hover:text-[#424242]",
+                  )}
+                >
+                  <TabIcon className="h-4 w-4" strokeWidth={1.8} aria-hidden />
+                  {tab.label}
+                  {activeTab === tab.id && (
+                    <motion.span
+                      layoutId="package-tab-indicator"
+                      className="absolute inset-x-0 -bottom-px h-[2px] bg-primary"
+                      transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                    />
+                  )}
+                </button>
+              )})}
+              </div>
+              <button
+                type="button"
+                onClick={() => { if (!isAuthenticated) setShowLoginModal(true); else switchTab("book"); }}
+                className="my-3 hidden shrink-0 rounded-lg bg-primary px-6 text-sm font-bold text-white shadow-[0_8px_18px_-10px_rgba(15,118,110,0.8)] transition hover:bg-teal-800 lg:inline-flex lg:items-center lg:gap-2"
+              >
+                Book Now <span aria-hidden>→</span>
+              </button>
+            </div>
+
+            <div className="p-4 sm:p-5">
+              <div className="block">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+
+              {/* ═══ ITINERARY ═══ */}
+              {activeTab === "itinerary" && (
+                <section>
+                  {tour.itinerary?.length ? (
+                    <>
+                      {/* Trip summary strip — all real, derived from actual package data */}
+                      <div className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl bg-teal-50/60 px-4 py-3">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-white px-3 py-1 text-[11px] font-bold text-primary">
+                          {(tour.itinerary?.length ?? 0)} Day Plan
+                        </span>
+                        {transfersCount > 0 && (
+                          <span className="text-[12px] text-[#616161]"><b className="font-bold text-[#1a1a1a]">{transfersCount}</b> Transfer{transfersCount === 1 ? "" : "s"}</span>
+                        )}
+                        {hotelGroups.length > 0 && (
+                          <span className="text-[12px] text-[#616161]"><b className="font-bold text-[#1a1a1a]">{hotelGroups.length}</b> Hotel{hotelGroups.length === 1 ? "" : "s"}</span>
+                        )}
+                        {totalMeals > 0 && (
+                          <span className="text-[12px] text-[#616161]"><b className="font-bold text-[#1a1a1a]">{totalMeals}</b> Meals</span>
+                        )}
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-[150px_1fr] sm:gap-5">
+                        {/* Day timeline */}
+                        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:overflow-visible sm:pb-0">
+                          {(tour.itinerary ?? []).map((d) => {
+                            const dateLabel = dayDateLabel(d.day);
+                            const active = activeDay === d.day;
+                            return (
+                              <button key={d.day} type="button" onClick={() => setActiveDay(d.day)}
+                                className={cn("shrink-0 rounded-xl px-3.5 py-2.5 text-left transition sm:shrink",
+                                  active ? "bg-[#1a1a1a] text-white shadow-sm" : "bg-[#fafafa] text-[#616161] hover:bg-[#f0f0f0]")}>
+                                <p className={cn("text-[10px] font-semibold uppercase tracking-wide", active ? "text-white/70" : "text-[#9e9e9e]")}>Day {d.day}</p>
+                                <p className="text-[12px] font-bold">{dateLabel ?? `Stop ${d.day}`}</p>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Day detail */}
+                        {currentDay && (() => {
+                          const dest = destForDay(currentDay.day);
+                          const destIdx = dest ? destIndexOf(dest.dest) : -1;
+                          const selectedOpt = dest && destIdx >= 0 ? dest.opts[staySelectionIndex(selectedHotels[destIdx], hotelGroups[destIdx])] : undefined;
+                          const isNewDestDay = destIdx > 0 && currentDay.day === destStartDayOf(destIdx);
+                          const dayReal = days.find((dd) => dd.day_number === currentDay.day);
+
+                          return (
+                            <article className="rounded-2xl border border-[#e8e8e8] bg-white p-5 shadow-sm sm:p-6">
+                              <div className="mb-4 flex flex-wrap items-center gap-2.5">
+                                <span className="rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
+                                  Day {currentDay.day}
+                                </span>
+                                {dayDateLabel(currentDay.day) && (
+                                  <span className="text-[11px] font-semibold text-[#9e9e9e]">{dayDateLabel(currentDay.day)}</span>
+                                )}
+                                <h3 className="w-full text-base font-bold leading-snug text-[#1a1a1a] sm:w-auto sm:text-lg">
+                                  {currentDay.title.trim()}
+                                </h3>
+                              </div>
+
+                              <p className="whitespace-pre-line text-[13px] leading-relaxed text-[#424242] sm:text-sm">
+                                {currentDay.body.trim()}
+                              </p>
+
+                              {isNewDestDay && (
+                                <div className="mt-4 flex items-center gap-3 rounded-xl border border-sky-100 bg-sky-50/60 p-3">
+                                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm">
+                                    <Car className="h-4 w-4" aria-hidden />
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Transfer</p>
+                                    <p className="truncate text-[12px] font-semibold text-[#1a1a1a]">{cabOptions[selectedCab]?.name ?? "Private vehicle"}</p>
+                                  </div>
+                                  <button type="button" onClick={() => switchTab("transfers")}
+                                    className="shrink-0 text-[11px] font-bold text-sky-700 underline">Change</button>
+                                </div>
+                              )}
+
+                              {dest && selectedOpt && (
+                                <div className="mt-4 flex gap-3 rounded-xl border border-emerald-100 bg-emerald-50/40 p-3">
+                                  <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                                    {selectedOpt.img ? (
+                                      <Image src={selectedOpt.img} alt="" fill unoptimized className="object-cover" sizes="80px" />
+                                    ) : (
+                                      <Building2 className="m-auto h-full w-6 text-slate-300" aria-hidden />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-[10px] font-bold uppercase tracking-wide text-emerald-700">Hotel · {dest.dest}</p>
+                                    <p className="truncate text-[12px] font-bold text-[#1a1a1a]">{selectedOpt.name}</p>
+                                    <span className="flex">{Array.from({ length: 5 }).map((_, i) => (
+                                      <Star key={i} className={cn("h-2.5 w-2.5", i < selectedOpt.stars ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200")} aria-hidden />
+                                    ))}</span>
+                                  </div>
+                                  <button type="button" onClick={() => setChangeHotelDestIdx(destIdx)}
+                                    className="shrink-0 self-start text-[11px] font-bold text-emerald-700 underline">Change</button>
+                                </div>
+                              )}
+
+                              {dayReal && (dayReal.sightseeing.length > 0 || dayReal.activities.length > 0) && (
+                                <div className="mt-4 flex flex-wrap gap-1.5">
+                                  {dayReal.sightseeing.map((s) => (
+                                    <span key={s.id} className="rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-semibold text-teal-800">{s.name}</span>
+                                  ))}
+                                  {dayReal.activities.map((a) => (
+                                    <span key={a.id} className="rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-semibold text-teal-800">{a.name}</span>
+                                  ))}
+                                </div>
+                              )}
+                            </article>
+                          );
+                        })()}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="rounded-xl border border-dashed border-[#e0e0e0] bg-[#fafafa] p-6 text-center">
+                      <p className="text-sm font-medium text-[#616161]">Day-wise itinerary is being finalized for this package.</p>
+                      <p className="mt-1 text-[12px] text-[#9e9e9e]">Message us on WhatsApp and we&apos;ll share the full day-by-day plan.</p>
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* ═══ STAY ═══ */}
+              {activeTab === "stay" && (
+                <section>
+                  <h2 className="mb-1 text-base font-bold text-[#1a1a1a]">Your stay</h2>
+                  <p className="mb-5 text-[12px] text-[#9e9e9e]">Your hotel, room type, and occupancy per destination. Price updates live in the sidebar.</p>
+                  {optLoading && (
+                    <div aria-live="polite" aria-busy="true">
+                      <span className="sr-only">Loading hotel options…</span>
+                      <Shimmer className="mb-6 h-40 w-full rounded-2xl" />
+                      <HotelCardSkeleton />
+                      <HotelCardSkeleton />
+                    </div>
+                  )}
+                  {!optLoading && (
+                    <>
+                      {/* Room configuration */}
+                      <div className="mb-6 rounded-2xl border border-[#e8e8e8] bg-[#fafafa] px-4 py-1 sm:px-5">
+                        <p className="pt-3 text-[10px] font-bold uppercase tracking-widest text-[#9e9e9e]">Rooms &amp; Travellers</p>
+                        {rooms.map((room, idx) => (
+                          <div key={idx} className="border-b border-[#f0f0f0] py-3 last:border-b-0">
+                            <div className="mb-1 flex items-center justify-between">
+                              <span className="text-[11px] font-bold uppercase tracking-widest text-[#9e9e9e]">Room {idx + 1}</span>
+                              {idx > 0 && (
+                                <button type="button" onClick={() => removeRoom(idx)}
+                                  className="text-[11px] font-semibold text-[#DC2626] hover:underline">Remove</button>
+                              )}
+                            </div>
+                            <Stepper label="Adults" sub="12+ years" value={room.adults} min={1} max={4}
+                              onDec={() => changeRoom(idx, "adults", -1)} onInc={() => changeRoom(idx, "adults", 1)} />
+                            <Stepper label="Children" sub="2–11 years" value={room.children} min={0} max={3}
+                              onDec={() => changeRoom(idx, "children", -1)} onInc={() => changeRoom(idx, "children", 1)} />
+                          </div>
+                        ))}
+                        {rooms.length < 4 && (
+                          <button type="button" onClick={addRoom}
+                            className="my-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#d0d0d0] bg-white py-2.5 text-[12px] font-semibold text-[#616161] transition hover:border-primary hover:text-primary">
+                            + Add Another Room
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Current hotel per destination — same rich data + modal as the Itinerary tab */}
+                      {hotelGroups.map((dest, di) => {
+                        const opt = dest.opts[staySelectionIndex(selectedHotels[di], hotelGroups[di])];
+                        if (!opt) return null;
+                        return (
+                          <div key={dest.dest} className="mb-4">
+                            <div className="mb-2.5 flex items-center gap-1.5 text-sm font-bold text-[#1a1a1a]">
+                              <Building2 className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+                              {dest.dest}
+                              <span className="text-[11px] font-normal text-[#9e9e9e]">({dest.nights} night{dest.nights === 1 ? "" : "s"})</span>
+                            </div>
+                            <div className="flex gap-3 rounded-xl border-[1.5px] border-[#e8e8e8] bg-white p-3.5">
+                              <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-slate-100 sm:h-20 sm:w-24">
+                                {opt.img ? (
+                                  <Image src={opt.img} alt="" fill unoptimized className="object-cover" sizes="96px" />
+                                ) : (
+                                  <Building2 className="m-auto h-full w-6 text-slate-300" aria-hidden />
+                                )}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-bold text-[#1a1a1a]">{opt.name}</p>
+                                <span className="flex">{Array.from({ length: 5 }).map((_, i) => (
+                                  <Star key={i} className={cn("h-3 w-3", i < opt.stars ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200")} aria-hidden />
+                                ))}</span>
+                                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[#616161]">
+                                  {opt.roomType && (
+                                    <span className="inline-flex items-center gap-1">
+                                      <BedDouble className="h-3 w-3 shrink-0 text-[#9e9e9e]" aria-hidden />{opt.roomType} Room
+                                    </span>
+                                  )}
+                                  {opt.maxGuests && (
+                                    <span className="inline-flex items-center gap-1">
+                                      <Users className="h-3 w-3 shrink-0 text-[#9e9e9e]" aria-hidden />Up to {opt.maxGuests} guests
+                                    </span>
+                                  )}
+                                </div>
+                                {opt.mealsIncluded && opt.mealsIncluded.length > 0 && (
+                                  <div className="mt-1.5 flex flex-wrap gap-1">
+                                    {opt.mealsIncluded.map((m) => (
+                                      <span key={m} className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{m} included</span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex shrink-0 flex-col items-end justify-between gap-2">
+                                {opt.extra === 0 ? (
+                                  <span className="text-[11px] font-bold text-emerald-700">Included</span>
+                                ) : (
+                                  <span className="text-[12px] font-bold text-primary">+₹{fmtINR(opt.extra)}</span>
+                                )}
+                                <div className="flex flex-wrap justify-end gap-1.5">
+                                  <button type="button" onClick={() => { setChangeHotelMode("hotel"); setChangeHotelDestIdx(di); }}
+                                    className="rounded-lg border border-primary px-3 py-1.5 text-[11px] font-bold text-primary transition hover:bg-primary hover:text-white">
+                                    Change hotel
+                                  </button>
+                                  <button type="button" onClick={() => { setChangeHotelMode("room"); setChangeHotelDestIdx(di); }}
+                                    className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-600 transition hover:border-primary hover:text-primary">
+                                    Change room
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+                </section>
+              )}
+
+              {/* ═══ TRANSFERS ═══ */}
+              {activeTab === "transfers" && (
+                <section>
+                  <h2 className="mb-1 text-base font-bold text-[#1a1a1a]">Select your vehicle</h2>
+                  <p className="mb-5 text-[12px] text-[#9e9e9e]">One vehicle for all intercity transfers and local sightseeing.</p>
+                  {optLoading && (
+                    <div className="grid grid-cols-2 gap-3" aria-live="polite" aria-busy="true">
+                      <span className="sr-only">Loading vehicle options…</span>
+                      <CabCardSkeleton /><CabCardSkeleton /><CabCardSkeleton /><CabCardSkeleton />
+                    </div>
+                  )}
+                  {!optLoading && (
+                    <div className="grid grid-cols-2 gap-3">
+                      {cabOptions.map((cab, ci) => (
+                        <button key={cab.id} type="button" onClick={() => setSelectedCab(ci)}
+                          className={cn("relative rounded-xl border-[1.5px] p-4 text-left transition duration-200",
+                            selectedCab===ci ? "border-primary bg-teal-50/60 shadow-[0_4px_16px_-6px_rgba(15,118,110,0.25)]" : "border-[#e8e8e8] bg-white hover:border-[#99f6e4] hover:shadow-sm")}
+                          aria-pressed={selectedCab===ci}>
+                          {cab.pop && <span className="absolute -top-px right-6 rounded-b bg-[#C9A84C] px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-white">Popular</span>}
+                          <div className={cn("mb-2.5 flex h-4 w-4 items-center justify-center rounded-full border-[1.5px]", selectedCab===ci?"border-primary bg-primary":"border-[#d0d0d0]")}>
+                            {selectedCab===ci && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
+                          </div>
+                          <div className="mb-1.5 flex h-9 w-9 items-center justify-center rounded-lg bg-[#fafafa]">
+                            <Car className="h-4.5 w-4.5 text-[#616161]" aria-hidden />
+                          </div>
+                          <p className="text-xs font-bold text-[#1a1a1a]">{cab.name}</p>
+                          <p className="text-[10px] text-[#9e9e9e]">{cab.desc}</p>
+                          <p className={cn("mt-1.5 text-[11px] font-bold", cab.extra===0?"text-emerald-700":"text-primary")}>
+                            {cab.extra===0?"Included":cab.extra>0?`+₹${fmtINR(cab.extra)}`:`Save ₹${fmtINR(Math.abs(cab.extra))}`}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* ═══ ACTIVITIES ═══ */}
+              {activeTab === "activities" && (
+                <ActivitiesTab
+                  days={days}
+                  rooms={rooms}
+                  selectedItems={{ sightseeing: selectedSight, activities: selectedActs }}
+                  onToggleSight={toggleSight}
+                  onToggleActivity={toggleAct}
+                  sightseeingTotal={0}
+                  activitiesTotal={activitiesTotal}
+                />
+              )}
+
+              {/* ═══ SUMMARY ═══ */}
+              {activeTab === "summary" && (
+                <section>
+                  <h2 className="mb-3 text-base font-bold text-[#1a1a1a]">Trip at a glance</h2>
+                  <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                    {[
+                      { v: String(tour.durationDays),   l: "Days" },
+                      { v: String(tour.durationNights), l: "Nights" },
+                      { v: String(hotelGroups.length),  l: "Destinations" },
+                      { v: String(days.reduce((s, d) => s + d.sightseeing.length + d.activities.length, 0)), l: "Experiences" },
+                    ].map(({v,l}) => (
+                      <div key={l} className="rounded-xl bg-gradient-to-br from-[#fafafa] to-[#f5f5f5] px-3 py-4 text-center">
+                        <p className="text-[1.7rem] font-bold leading-none text-primary">{v}</p>
+                        <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#9e9e9e]">{l}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-2xl border border-[#e8e8e8] bg-[#fafafa] p-5">
+                    <p className="mb-3 text-[11px] font-bold uppercase tracking-widest text-[#9e9e9e]">Your configuration</p>
+                    <div className="divide-y divide-[#f0f0f0]">
+                      {[
+                        ["Travellers",  roomsLabel(rooms)],
+                        ["Hotels",      hotelGroups.map((h, i) => `${h.dest} — ${h.opts[staySelectionIndex(selectedHotels[i], hotelGroups[i])]?.name ?? ""}`).join(" · ") || "—"],
+                        ["Cab",         cabOptions[selectedCab]?.name ?? "—"],
+                        ["Sightseeing", `${selectedSight.size} selected`],
+                        ["Activities",  `${selectedActs.size} selected`],
+                        ["Add-ons",     addons.filter((a) => a.on).map((a) => a.name).join(", ") || "None"],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex flex-col gap-0.5 py-2 sm:flex-row sm:items-baseline sm:gap-2">
+                          <span className="shrink-0 text-[11px] font-semibold text-[#9e9e9e] sm:w-28">{label}</span>
+                          <span className="text-[12px] text-[#424242]">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* ═══ INCLUSIONS ═══ */}
+              {activeTab === "inclusions" && (
+                <section>
+                  <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4">
+                      <div className="mb-3 flex items-center gap-1.5 text-[12px] font-bold text-emerald-700"><CircleCheck className="h-4 w-4" aria-hidden />What&apos;s included</div>
+                      <ul className="space-y-2">
+                        {(tour.inclusions ?? INCLUSIONS).map((item) => (
+                          <li key={item} className="flex items-start gap-2 text-[11px] leading-relaxed text-[#424242]">
+                            <CircleCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" aria-hidden />{item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded-2xl border border-red-100 bg-red-50/30 p-4">
+                      <div className="mb-3 flex items-center gap-1.5 text-[12px] font-bold text-[#DC2626]"><CircleX className="h-4 w-4" aria-hidden />What&apos;s excluded</div>
+                      <ul className="space-y-2">
+                        {(tour.exclusions ?? EXCLUSIONS).map((item) => (
+                          <li key={item} className="flex items-start gap-2 text-[11px] leading-relaxed text-[#424242]">
+                            <CircleX className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#DC2626]" aria-hidden />{item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <p className="mb-2.5 text-[13px] font-bold text-[#1a1a1a]">Optional add-ons</p>
+                  <div className="divide-y divide-[#f5f5f5] overflow-hidden rounded-2xl border border-[#e8e8e8]">
+                    {addons.map((addon) => {
+                      const Icon = ADDON_ICON[addon.icon] ?? ShieldCheck;
+                      return (
+                        <button key={addon.id} type="button" onClick={() => toggleAddon(addon.id)}
+                          className={cn("flex w-full items-center gap-3 px-4 py-3.5 text-left transition", addon.on ? "bg-teal-50/50" : "hover:bg-[#fafafa]")} aria-pressed={addon.on}>
+                          <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors", addon.on ? "bg-primary/10" : "bg-[#f5f5f5]")}>
+                            <Icon className={cn("h-4 w-4", addon.on ? "text-primary" : "text-[#616161]")} aria-hidden />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[12px] font-semibold text-[#1a1a1a]">{addon.name}</p>
+                            <p className="text-[10px] text-[#9e9e9e]">{addon.note}</p>
+                          </div>
+                          <p className="shrink-0 text-[11px] font-semibold text-[#424242]">+₹{fmtINR(addon.price)}/person</p>
+                          <div className={cn("relative ml-1 h-5 w-9 shrink-0 rounded-full transition-colors", addon.on?"bg-primary":"bg-[#d0d0d0]")}>
+                            <div className={cn("absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform", addon.on?"translate-x-4":"translate-x-0.5")} />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {/* ═══ TERMS ═══ */}
+              {activeTab === "terms" && (
+                <section>
+                  <h2 className="mb-3 text-base font-bold text-[#1a1a1a]">Terms &amp; Conditions</h2>
+                  <div className="divide-y divide-[#f0f0f0] overflow-hidden rounded-2xl border border-[#e8e8e8]">
+                    {TERMS_AND_CONDITIONS.map((tc, i) => (
+                      <div key={tc.title}>
+                        <button type="button" onClick={() => setOpenTermIdx(openTermIdx===i?null:i)}
+                          className={cn("flex w-full items-center justify-between px-4 py-4 text-left transition", openTermIdx===i ? "bg-[#fafafa]" : "hover:bg-[#fafafa]")}
+                          aria-expanded={openTermIdx===i}>
+                          <span className="text-[13px] font-bold text-[#1a1a1a]">{tc.title}</span>
+                          <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#9e9e9e] transition-transform", openTermIdx===i&&"rotate-180")} aria-hidden />
+                        </button>
+                        {openTermIdx===i && (
+                          <div className="border-t border-[#f0f0f0] bg-[#fafafa] px-4 py-3.5 text-[12px] leading-relaxed text-[#616161]">{tc.body}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* ═══ BOOK ═══ */}
+              {activeTab === "book" && (
+                <section>
+                  {bookState.phase === "success" && bookState.result && (
+                    <PackageBookingSuccess
+                      result={bookState.result}
+                      tourTitle={tour.title}
+                      onPayBalance={bookState.result.status === "token_paid"
+                        ? () => payBalance(bookState.result!.booking_id, { name: "", email: "", phone: "" })
+                        : undefined}
+                    />
+                  )}
+
+                  {bookState.phase === "error" && (
+                    <div className="mb-4 rounded-2xl border border-[#FCA5A5] bg-[#FEF2F2] p-4">
+                      <p className="text-[12px] font-bold text-[#DC2626]">Payment failed</p>
+                      <p className="mt-1 text-[11px] text-[#B91C1C]">{bookState.message}</p>
+                      <button type="button" onClick={resetBook} className="mt-2 text-[11px] font-bold text-primary underline">Try again</button>
+                    </div>
+                  )}
+
+                  {isBooking && (
+                    <div className="mb-4 rounded-2xl border border-[#e8e8e8] bg-[#fafafa] p-6 text-center">
+                      <div className="mx-auto mb-3 h-7 w-7 animate-spin rounded-full border-2 border-[#e8e8e8] border-t-primary" />
+                      <p className="text-[12px] font-medium text-[#616161]">
+                        {bookState.phase==="loading"?"Creating your booking…":bookState.phase==="awaiting_payment"?"Opening payment window…":"Verifying payment…"}
+                      </p>
+                    </div>
+                  )}
+
+                  {(bookState.phase === "idle" || bookState.phase === "error") && (
+                    <form onSubmit={handleConfirmAndPay} noValidate>
+                      <h2 className="mb-4 text-base font-bold text-[#1a1a1a]">Traveller details</h2>
+                      <div className="mb-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                        {[
+                          { name:"guestName", label:"Full name *", type:"text",  auto:"name",  ph:"Your full name",   prefill: user?.name  ?? "" },
+                          { name:"guestEmail",label:"Email *",      type:"email", auto:"email", ph:"you@email.com",    prefill: user?.email ?? "" },
+                          { name:"guestPhone",label:"Phone *",      type:"tel",   auto:"tel",   ph:"+91 98765 43210",  prefill: user?.phone ?? "" },
+                          { name:"travelDate",label:"Travel date",  type:"date",  auto:"off",   ph:"",                 prefill: "" },
+                        ].map(({name,label,type,auto,ph,prefill}) => (
+                          <div key={name}>
+                            <label className="mb-1.5 block text-[11px] font-semibold text-[#616161]">{label}</label>
+                            <input name={name} required={label.includes("*")} type={type} autoComplete={auto}
+                              placeholder={ph}
+                              defaultValue={prefill}
+                              aria-invalid={Boolean(fieldErrors[name])}
+                              aria-describedby={fieldErrors[name] ? `${name}-error` : undefined}
+                              onInput={() => fieldErrors[name] && setFieldErrors((p) => {
+                                const next = { ...p }; delete next[name]; return next;
+                              })}
+                              className={cn(
+                                "block h-11 w-full rounded-xl border bg-white px-3.5 text-sm text-[#1a1a1a] placeholder:text-[#bdbdbd] transition focus:outline-none focus:ring-2",
+                                fieldErrors[name]
+                                  ? "border-[#d92d20] ring-1 ring-[#d92d20]/20 focus:border-[#d92d20] focus:ring-[#d92d20]/20" + (shakeKey % 2 === 0 ? " motion-safe:animate-shake" : " motion-safe:animate-shake-alt")
+                                  : "border-[#e0e0e0] focus:border-primary focus:ring-primary/20",
+                              )} />
+                            {fieldErrors[name] && (
+                              <p id={`${name}-error`} role="alert"
+                                className="mt-1 text-[11px] font-semibold text-[#d92d20]">
+                                {fieldErrors[name]}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                        <div className="sm:col-span-2">
+                          <label className="mb-1.5 block text-[11px] font-semibold text-[#616161]">Special requests</label>
+                          <textarea name="specialReq" rows={2} placeholder="Dietary needs, anniversary, accessibility…"
+                            className="block w-full resize-none rounded-xl border border-[#e0e0e0] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] placeholder:text-[#bdbdbd] transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+                        </div>
+                      </div>
+
+                      <p className="mb-2 text-[12px] font-bold text-[#1a1a1a]">Payment option</p>
+                      <div className={cn("mb-5 grid gap-3", tokenPaymentAvailable ? "grid-cols-2" : "grid-cols-1")}>
+                        {[
+                          ...(tokenPaymentAvailable ? [{
+                            type: "token" as const, title: "Token amount", amt: `₹${fmtINR(token)}`,
+                            sub: `₹${fmtINR(token)} now · balance due before travel`,
+                            badge: "Recommended",
+                          }] : []),
+                          { type:"full"  as const, title:"Full payment",  amt:`₹${fmtINR(grandTotal)}`, sub:"100% now · priority seat", badge: tokenPaymentAvailable ? null : "Only option" },
+                        ].map(({type,title,amt,sub,badge}) => (
+                          <button key={type} type="button" onClick={() => { setPayType(type); setPayOption(type); }}
+                            className={cn("relative rounded-xl border-[1.5px] p-4 text-left transition duration-200",
+                              payType===type?"border-primary bg-teal-50/60 shadow-[0_4px_16px_-6px_rgba(15,118,110,0.25)]":"border-[#e8e8e8] bg-white hover:border-[#99f6e4] hover:shadow-sm")}
+                            aria-pressed={payType===type}>
+                            {badge && <span className="absolute -top-px right-8 rounded-b bg-primary px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-white">{badge}</span>}
+                            <div className={cn("mb-2.5 flex h-5 w-5 items-center justify-center rounded-full border-[1.5px]", payType===type?"border-primary bg-primary":"border-[#d0d0d0]")}>
+                              {payType===type && <div className="h-2 w-2 rounded-full bg-white" />}
+                            </div>
+                            <p className="text-[12px] font-bold text-[#1a1a1a]">{title}</p>
+                            <p className="mt-0.5 text-lg font-bold text-primary">{amt}</p>
+                            <p className="mt-0.5 text-[10px] text-[#9e9e9e]">{sub}</p>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* ── EMI & Offers ─────────────────────────────────────
+                          Razorpay Affordability Widget. payAmt is the exact
+                          amount checkout will charge (token_amount when
+                          part-paying, else grand_total), so the plans the SDK
+                          returns match what the customer is about to pay.
+                          Switching between full/token re-inits the widget. */}
+                      <AffordabilityWidget
+                        className="mb-5"
+                        amountInr={payAmt}
+                        enabled={hasPrice && !priceLoading && !priceStale && priceIsComplete}
+                      />
+
+                      <button type="submit" disabled={isBooking}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-[0_8px_20px_-6px_rgba(15,118,110,0.5)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-6px_rgba(15,118,110,0.55)] disabled:pointer-events-none disabled:opacity-60">
+                        <Lock className="h-4 w-4" aria-hidden />
+                        Confirm &amp; pay ₹{fmtINR(payAmt)}
+                      </button>
+                      {payType === "token" && tokenPaymentAvailable ? (
+                        <p className="mt-1.5 text-center text-[11px] font-semibold text-emerald-700">
+                          You&apos;re paying just ₹{fmtINR(token)} now to secure your booking
+                        </p>
+                      ) : (
+                        <p className="mt-1.5 text-center text-[11px] font-semibold text-emerald-700">
+                          You&apos;re paying the full amount now to confirm your booking
+                        </p>
+                      )}
+                      <p className="mt-1 flex items-center justify-center gap-1 text-[10px] text-[#9e9e9e]">
+                        <ShieldCheck className="h-3 w-3" aria-hidden />Secured by Razorpay · No hidden charges
+                      </p>
+
+                      <div className="mt-6 rounded-2xl border border-dashed border-[#99f6e4] bg-teal-50/50 p-5 text-center">
+                        <p className="text-[13px] font-bold text-[#1a1a1a]">Want a fully custom itinerary?</p>
+                        <p className="mt-0.5 text-[11px] text-[#757575]">Different route, extra nights, special requirements — designed free.</p>
+                        <div className="mt-3.5 flex items-center justify-center gap-2">
+                          <a href={siteWhatsAppChatUrl(packageWhatsAppPrefill(tour.title))} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 rounded-xl bg-[#25D366] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                            <MessageCircle className="h-3.5 w-3.5" aria-hidden />WhatsApp
+                          </a>
+                          <a href={siteTelHref()} className="flex items-center gap-1.5 rounded-xl border border-[#e0e0e0] bg-white px-4 py-2.5 text-[12px] font-bold text-[#424242] transition hover:-translate-y-0.5 hover:shadow-sm">
+                            <Phone className="h-3.5 w-3.5" aria-hidden />Call us
+                          </a>
+                        </div>
+                      </div>
+                    </form>
+                  )}
+                </section>
+              )}
+
+              </motion.div>
+
+              </div>
+            </div>
+          </div>
+
+          {/* Similar packages — moved to the ACTIVE render tree (see the
+              return above GlacialStylePackageDetail). This legacy return is
+              unreachable, so the section never rendered from here. */}
+        </div>
+      </main>
+
+      {/* Mobile price bar */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e8e8e8] bg-white/95 px-4 py-3 shadow-[0_-4px_20px_-6px_rgba(15,23,42,0.15)] backdrop-blur-sm lg:hidden">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[10px] text-[#9e9e9e]">Total</p>
+            <p className="text-lg font-bold text-[#1a1a1a]">₹{fmtINR(grandTotal)}</p>
+          </div>
+          <button type="button" onClick={() => {
+              if (!isAuthenticated) { setShowLoginModal(true); }
+              else { switchTab("book"); }
+            }}
+            className="flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_-6px_rgba(15,118,110,0.5)] transition hover:opacity-90">
+            <Lock className="h-4 w-4" aria-hidden />Book now
+          </button>
+        </div>
+      </div>
+
+      <Footer />
+
+      {/* ── Booking auth modal — same component used across hotels + packages ── */}
+      <BookingAuthModal
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSuccess={() => {
+          setShowLoginModal(false);
+          setTimeout(() => switchTab("book"), 100);
+        }}
+      />
+
+      <ChangeHotelModal
+        open={changeHotelDestIdx !== null}
+        onClose={() => setChangeHotelDestIdx(null)}
+        destination={changeHotelDestIdx !== null ? hotelGroups[changeHotelDestIdx] : undefined}
+        selectedIndex={changeHotelDestIdx !== null ? (staySelectionIndex(selectedHotels[changeHotelDestIdx!], hotelGroups[changeHotelDestIdx!])) : 0}
+        mode={changeHotelMode}
+        slug={slug}
+        travelDate={travelDate}
+        selectedRoomTypeId={changeHotelDestIdx !== null ? (selectedHotels[changeHotelDestIdx]?.roomTypeId ?? null) : null}
+        checkIn={changeHotelDestIdx !== null ? dateForDay(destStartDayOf(changeHotelDestIdx)) : null}
+        onSelect={(oi, roomTypeId, roomName) => {
+          if (changeHotelDestIdx === null) return;
+          const di = changeHotelDestIdx;
+          const group = hotelGroups[di];
+          const opt = group?.opts[oi];
+          const prevSel = selectedHotels[di];
+          const hotelChanged = opt?.hotelId !== prevSel?.hotelId;
+          setSelectedHotels((prev) => {
+            const h = [...prev];
+            h[di] = {
+              stayId: group?.stayId ?? "",
+              optionId: opt?.id ?? "",
+              hotelId: opt?.hotelId ?? "",
+              // Prefer the room picked in the drawer; only clear on a hotel
+              // change when the drawer supplied none.
+              roomTypeId:
+                roomTypeId ?? (hotelChanged ? null : (prevSel?.roomTypeId ?? null)),
+              hotelName: opt?.name ?? "",
+              roomName:
+                roomName ?? (hotelChanged ? null : (prevSel?.roomName ?? null)),
+              upgradePrice: opt?.extra ?? 0,
+            };
+            return h;
+          });
+        }}
+      />
+    </>
+  );
+}

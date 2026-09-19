@@ -1,0 +1,186 @@
+/* Global KBC site header — same look as homepage topbar */
+
+.page-width {
+  width: min(1320px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.kbc-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 76px;
+  border-bottom: 1px solid rgba(18, 16, 20, 0.06);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(18px);
+}
+
+.kbc-site-header-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.kbc-site-header .brand {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.kbc-site-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  color: #3f3b44;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.kbc-site-nav a {
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.18s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.kbc-site-nav a:hover,
+.kbc-site-nav a.is-active {
+  color: #121014;
+}
+
+.kbc-site-nav a::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #0f766e;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+  content: '';
+}
+
+.kbc-site-nav a:hover::after,
+.kbc-site-nav a.is-active::after {
+  transform: scaleX(1);
+}
+
+.kbc-site-header-actions {
+  margin-left: 36px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.kbc-site-header .currency {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 16, 20, 0.1);
+  background: #fff;
+  color: #3f3b44;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kbc-site-header .menu-button {
+  display: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(18, 16, 20, 0.1);
+  background: #fff;
+  color: #121014;
+}
+
+.kbc-site-header .login-button {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #121014;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.kbc-site-header .login-button:hover {
+  background: #0f766e;
+}
+
+.kbc-site-header .auth-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kbc-site-header .auth-session a,
+.kbc-site-header .auth-session button {
+  color: #3f3b44;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.kbc-site-header .auth-session a:hover,
+.kbc-site-header .auth-session button:hover {
+  color: #0f766e;
+}
+
+.kbc-site-header .auth-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kbc-site-header .auth-avatar b {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #0f766e;
+  color: #fff;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .page-width {
+    width: min(100% - 30px, 720px);
+  }
+
+  .kbc-site-header {
+    height: 64px;
+  }
+
+  .kbc-site-nav {
+    display: none;
+  }
+
+  .kbc-site-header-actions {
+    margin-left: auto;
+    gap: 7px;
+  }
+
+  .kbc-site-header .menu-button {
+    display: grid;
+  }
+
+  .kbc-site-header .currency {
+    display: none;
+  }
+}
