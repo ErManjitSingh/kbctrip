@@ -329,6 +329,28 @@ export const listHolidayPackages = (query: HolidayPackageQuery = {}) => {
 export const getHolidayPackage = (slug: string) =>
   getJson<MarketplaceHolidayPackage>(`/public/marketplace-packages/${slug}`);
 
+export type PackageEnquirePayload = {
+  name: string;
+  email: string;
+  phone: string;
+  travelDate?: string;
+  adults?: number;
+  children?: number;
+  rooms?: number;
+  message?: string;
+  selections?: Record<string, unknown>;
+};
+
+export type PackageEnquireResult = {
+  enquiryId: string;
+  reference: string;
+  status: string;
+};
+
+export const createPackageEnquiry = (slug: string, payload: PackageEnquirePayload) =>
+  sendJson<PackageEnquireResult>(`/public/marketplace-packages/${encodeURIComponent(slug)}/enquire`, 'POST', payload);
+
+
 export const getPropertyDetail = (slug: string) => getJson<PropertyDetail>(`/public/${slug}/property`);
 
 export const getAvailability = (slug: string, checkIn: string, checkOut: string, adults = 2, children = 0) =>

@@ -1,5 +1,13 @@
 'use client';
 
+/**
+ * Cabs admin store — localStorage only until kbc-booking owns cab APIs.
+ * See docs/CABS_API_DESIGN.md. Do not point this at Unotrips :8000.
+ *
+ * When KBC cab platform endpoints ship, replace load/save with:
+ *   GET/POST /platform/cabs/...
+ */
+
 export type AdminCab = {
   id: string;
   name: string;

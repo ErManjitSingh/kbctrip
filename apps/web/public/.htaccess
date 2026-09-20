@@ -1,23 +1,10 @@
-# Apache static export — SPA routes + Hotels API proxy (signup/login/bookings).
-# Enable: a2enmod rewrite proxy proxy_http
+# Apache static export — SPA routes only.
+# Unotrips /api/hotels ProxyPass removed. Guest MVP uses KBC booking API in the browser.
 
 <IfModule mod_rewrite.c>
   Options -MultiViews
   RewriteEngine On
   RewriteBase /
-</IfModule>
-
-<IfModule mod_proxy.c>
-  ProxyPreserveHost Off
-  ProxyPass /api/hotels/ https://unohotels-backend.onrender.com/
-  ProxyPassReverse /api/hotels/ https://unohotels-backend.onrender.com/
-</IfModule>
-
-<IfModule mod_rewrite.c>
-  # Fallback when ProxyPass is unavailable
-  <IfModule mod_proxy.c>
-    RewriteRule ^api/hotels/(.*)$ https://unohotels-backend.onrender.com/$1 [P,L]
-  </IfModule>
 
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d

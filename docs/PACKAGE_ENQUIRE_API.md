@@ -1,7 +1,6 @@
-# Package enquire API (kbc-booking — proposed)
+# Package enquire API (shipped)
 
-Guest package “Book” today persists a **local enquiry/request** (no charge).
-When kbc-booking should own leads, add:
+Guest package “Book” posts to kbc-booking:
 
 ## `POST /public/marketplace-packages/:slug/enquire`
 
@@ -37,5 +36,6 @@ When kbc-booking should own leads, add:
 }
 ```
 
-Until this ships, the web app keeps enquiry mode (localStorage / request UI) and
-must not call Unotrips package book/pay endpoints.
+Persisted as `MarketplacePackageEnquiry`. Ops: `GET /platform/marketplace-package-enquiries` (super_admin).
+
+Web: `createPackageEnquiry` in `apps/web/lib/booking-api.ts` + `use-package-booking` (localStorage fallback if API down).

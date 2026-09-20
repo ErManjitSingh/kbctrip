@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * Package booking — KBC enquiry mode (no Unotrips / Razorpay yet).
- * Saves a local lead and returns a success result the UI already understands.
+ * Package booking — KBC enquiry API (fallback to localStorage if API unavailable).
  */
 
 import { useState, useCallback, useEffect } from "react";
 import type { RoomConfig } from "@/hooks/useRoomsConfig";
+import { createPackageEnquiry } from "@/lib/booking-api";
 
 const RECOVERY_KEY_PREFIX = "pkg_booking_";
 const RECOVERY_EXPIRY_MS = 15 * 60 * 1000;
@@ -28,6 +28,7 @@ export type PackageBookingPayload = {
   payment_type: "token" | "full";
   preferred_method?: "emi";
   selected_payment_option?: "full" | "token" | "emi";
+  estimated_total_minor?: number;
 };
 
 export type PackageBookingResult = {
@@ -78,6 +79,14 @@ function loadRecovery(slug: string): RecoveryData | null {
   }
 }
 
+function adultsFromRooms(rooms: RoomConfig[]): number {
+  return rooms.reduce((sum, room) => sum + (room.adults ?? 0), 0) || 2;
+}
+
+function childrenFromRooms(rooms: RoomConfig[]): number {
+  return rooms.reduce((sum, room) => sum + (room.children ?? 0), 0);
+}
+
 export function usePackageBooking(slug: string) {
   const [state, setState] = useState<BookingState>({ phase: "idle" });
   const [recoveryData, setRecoveryData] = useState<RecoveryData | null>(null);
@@ -94,8 +103,40 @@ export function usePackageBooking(slug: string) {
       try {
         setState({ phase: "loading", message: "Submitting your request…" });
 
-        const bookingNumber = `KBC-${Date.now().toString(36).toUpperCase()}`;
-        const bookingId = `local-${bookingNumber}`;
+        let bookingId = "";
+        let bookingNumber = "";
+        let status = "requested";
+
+        try {
+          const result = await createPackageEnquiry(slug, {
+            name: payload.guest_name.trim(),
+            email: payload.guest_email.trim(),
+            phone: payload.guest_phone.replace(/\D/g, "").slice(-10) || payload.guest_phone,
+            travelDate: payload.travel_date || undefined,
+            adults: adultsFromRooms(payload.rooms),
+            children: childrenFromRooms(payload.rooms),
+            rooms: Math.max(1, payload.rooms.length),
+            message: payload.special_requests || undefined,
+            selections: {
+              selected_hotels: payload.selected_hotels,
+              selected_cab_option_id: payload.selected_cab_option_id,
+              selected_sightseeing_ids: payload.selected_sightseeing_ids,
+              selected_activity_link_ids: payload.selected_activity_link_ids,
+              selected_addon_ids: payload.selected_addon_ids,
+              payment_type: payload.payment_type,
+              estimatedTotalMinor: payload.estimated_total_minor,
+            },
+          });
+          bookingId = result.enquiryId;
+          bookingNumber = result.reference;
+          status = result.status || "received";
+        } catch {
+          // Offline / API not migrated yet — keep a local lead so UX still works.
+          bookingNumber = `KBC-${Date.now().toString(36).toUpperCase()}`;
+          bookingId = `local-${bookingNumber}`;
+          status = "requested";
+        }
+
         try {
           localStorage.setItem(
             `pkg_lead_${slug}`,
@@ -110,15 +151,13 @@ export function usePackageBooking(slug: string) {
           /* ignore */
         }
 
-        await new Promise((r) => setTimeout(r, 450));
-
         clearRecovery(slug);
         setState({
           phase: "success",
           result: {
             booking_id: bookingId,
             booking_number: bookingNumber,
-            status: "requested",
+            status,
             payment_type: payload.payment_type,
             total_amount: 0,
             token_amount: 0,

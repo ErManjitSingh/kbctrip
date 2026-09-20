@@ -1,12 +1,15 @@
 # Cabs on KBC (Phase 4 — deferred)
 
+## Status
+
+- Guest `/cabs` is coming-soon; primary nav hides Cabs.
+- Admin `cabs-admin-store` remains localStorage until platform APIs exist.
+- Scaffold marker: `apps/api/src/cabs/cabs.scaffold.ts` (not registered in AppModule).
+
 ## Why deferred
 
-`kbc-booking` has **no cab domain** today (quotes, partners, vehicles, payouts).
-Guest `/cabs` and admin `cabs-admin-store` (localStorage) are Unotrips-shaped
-shells. Shipping paid cabs without KBC APIs would reintroduce `:8000` traffic.
-
-MVP hides Cabs from the primary nav and shows a coming-soon page.
+`kbc-booking` has **no cab domain tables** yet (quotes, partners, vehicles, payouts).
+Shipping paid cabs without KBC APIs would reintroduce Unotrips `:8000` traffic.
 
 ## Proposed kbc-booking surfaces
 

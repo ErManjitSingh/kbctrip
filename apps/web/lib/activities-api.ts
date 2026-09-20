@@ -115,7 +115,15 @@ export async function fetchActivities(params: FetchActivitiesParams = {}): Promi
 
 // Server-side fetch (for RSC / page.tsx)
 export async function fetchActivitiesServer(params: FetchActivitiesParams = {}): Promise<ActivitiesResponse> {
-  const BACKEND = process.env.BACKEND_URL ?? "http://localhost:8000";
+  // Activities product is deferred; do not default to Unotrips :8000.
+  const BACKEND =
+    process.env.BACKEND_URL?.trim() ||
+    process.env.KBC_BOOKING_API_URL?.trim().replace(/\/api$/, "") ||
+    process.env.NEXT_PUBLIC_KBC_BOOKING_API_URL?.trim().replace(/\/api$/, "") ||
+    "";
+  if (!BACKEND) {
+    return { items: [], total: 0, page: 1, limit: 12, total_pages: 0 };
+  }
   const qs = new URLSearchParams();
   if (params.page)        qs.set("page",        String(params.page));
   if (params.limit)       qs.set("limit",       String(params.limit));

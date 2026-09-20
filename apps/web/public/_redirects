@@ -1,3 +1,3 @@
-﻿# Netlify — proxy Hotels API
-/api/hotels/*  https://unohotels-backend.onrender.com/:splat  200
-
+﻿# Unotrips hotels proxy removed — guest MVP uses NEXT_PUBLIC_KBC_BOOKING_API_URL.
+# Keep file so Netlify deploy does not resurrect old ProxyPass.
+# /api/hotels and /api/packages Next routes return 410.
