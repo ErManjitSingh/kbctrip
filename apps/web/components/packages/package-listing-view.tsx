@@ -220,7 +220,7 @@ export function PackageListingView({
             </div>
 
             <div className="mt-4 grid items-start gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[minmax(0,290px)_1fr] lg:gap-8">
-              <div className="self-start lg:sticky lg:top-[4.75rem] lg:z-40 lg:max-h-[calc(100vh-5.25rem)] lg:overflow-y-auto lg:pr-1">
+              <div className="sticky top-[calc(env(safe-area-inset-top)+3.5rem)] z-30 self-start rounded-xl border border-[#d5e0dc] bg-white/95 p-1 shadow-sm backdrop-blur-md lg:static lg:z-40 lg:max-h-[calc(100vh-5.25rem)] lg:overflow-y-auto lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none lg:sticky lg:top-[4.75rem] lg:pr-1">
                 <PackageFilterSidebar />
               </div>
               <div className="min-w-0">

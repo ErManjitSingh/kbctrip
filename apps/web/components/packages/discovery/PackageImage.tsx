@@ -46,7 +46,7 @@ export function PackageImage({
   // 16:10 rather than 4:3 — still a full-bleed hero, ~37px shorter per tile,
   // which is the single largest contributor to the compacted card height.
   return (
-    <div className={cn("relative aspect-[16/10] w-full overflow-hidden bg-slate-100", className)}>
+    <div className={cn("relative aspect-[16/10] w-full overflow-hidden bg-[#1a2420]", className)}>
       <Image
         src={src}
         alt={alt}

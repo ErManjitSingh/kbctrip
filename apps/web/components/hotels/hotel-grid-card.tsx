@@ -16,6 +16,8 @@ import {
   Dumbbell,
   Heart,
   ImageOff,
+  MapPin,
+  Star,
   Waves,
   Wifi,
   type LucideIcon,
@@ -85,7 +87,6 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
   const savings = Math.max(0, hotel.originalPrice - hotel.price);
   const showLastRoom = hotel.dealOfDay || hotel.roomOptionsCount <= 1;
 
-  // Show max 3 amenity pills + overflow count
   const shownAmenities = hotel.amenities.slice(0, 3);
   const overflowCount = Math.max(0, hotel.amenities.length - 3);
 
@@ -110,11 +111,10 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
   return (
     <Link
       href={href}
-      className="group/card flex h-full flex-col overflow-hidden rounded-xl border border-[#e0e0e0] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
+      className="group/card flex h-full flex-col overflow-hidden rounded-xl border border-[#d5e0dc] bg-white shadow-[0_1px_3px_rgba(12,18,16,0.04)] transition hover:border-[#0f766e]/25 hover:shadow-[0_6px_20px_-8px_rgba(12,18,16,0.12)]"
     >
-      {/* Image gallery — top of card */}
       <div
-        className="hotel-card-gallery swiper-no-swiping relative overflow-hidden bg-neutral-200"
+        className="hotel-card-gallery swiper-no-swiping relative overflow-hidden bg-[#1a2420]"
         onTouchStart={stopParentSwipe}
         onTouchMove={stopParentSwipe}
         onPointerDown={stopParentSwipe}
@@ -128,11 +128,11 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
         >
           {images.map((src, index) => (
             <SwiperSlide key={`${hotel.id}-img-${index}`}>
-              <div className="relative aspect-[4/3] w-full bg-neutral-100">
+              <div className="relative aspect-[4/3] w-full bg-[#1a2420]">
                 {failedImages.current.has(index) ? (
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-neutral-100">
-                    <ImageOff className="h-10 w-10 text-neutral-300" aria-hidden />
-                    <span className="text-[11px] text-neutral-400">No photo available</span>
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[#1a2420]">
+                    <ImageOff className="h-9 w-9 text-white/35" aria-hidden />
+                    <span className="text-[11px] text-white/45">No photo available</span>
                   </div>
                 ) : (
                   <Image
@@ -154,9 +154,8 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
           ))}
         </Swiper>
 
-        {/* Badges & controls overlay */}
         {showLastRoom && (
-          <span className="pointer-events-none absolute left-2.5 top-2.5 z-20 rounded bg-primary px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">
+          <span className="pointer-events-none absolute left-2.5 top-2.5 z-20 rounded-md bg-[#0f766e] px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">
             Our last room!
           </span>
         )}
@@ -168,7 +167,7 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
           aria-label={saved ? "Remove from saved" : "Save hotel"}
         >
           <Heart
-            className={cn("h-4 w-4", saved ? "fill-[#e12d2d] text-[#e12d2d]" : "text-[#757575]")}
+            className={cn("h-4 w-4", saved ? "fill-[#e12d2d] text-[#e12d2d]" : "text-[#5a6560]")}
             aria-hidden
           />
         </button>
@@ -179,7 +178,7 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
               type="button"
               onPointerDown={stopParentSwipe}
               onClick={slidePrev}
-              className="absolute left-1.5 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[#212121] shadow-md transition hover:bg-white"
+              className="absolute left-1.5 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[#0c1210] shadow-md transition hover:bg-white"
               aria-label="Previous photo"
             >
               <ChevronLeft className="h-4 w-4" strokeWidth={2.5} aria-hidden />
@@ -188,7 +187,7 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
               type="button"
               onPointerDown={stopParentSwipe}
               onClick={slideNext}
-              className="absolute right-1.5 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[#212121] shadow-md transition hover:bg-white"
+              className="absolute right-1.5 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[#0c1210] shadow-md transition hover:bg-white"
               aria-label="Next photo"
             >
               <ChevronRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />
@@ -200,67 +199,79 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
         )}
       </div>
 
-      {/* Card body */}
-      <div className="flex flex-1 flex-col">
-        {/* Hotel name — main highlight */}
-        <div className="px-4 pt-3">
-          <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-[#212121]">
+      <div className="flex flex-1 flex-col px-3.5 pb-3 pt-3">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="line-clamp-2 min-w-0 flex-1 text-[15px] font-bold leading-snug text-[#0c1210]">
             {hotel.name}
           </h3>
+          {hotel.rating > 0 ? (
+            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-[#0f766e] px-1.5 py-0.5 text-[11px] font-bold text-white">
+              <Star className="h-3 w-3 fill-white text-white" aria-hidden />
+              {hotel.rating.toFixed(1)}
+            </span>
+          ) : null}
         </div>
 
-        {/* Amenity pills — single non-wrapping row */}
+        <p className="mt-1.5 flex items-center gap-1 text-[12px] text-[#5a6560]">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2.2} aria-hidden />
+          <span className="truncate">
+            <span className="font-medium text-[#0c1210]/80">{hotel.area}</span>
+            {hotel.stars > 0 ? (
+              <span className="text-[#8a948e]"> · {hotel.stars}★</span>
+            ) : null}
+          </span>
+        </p>
+
         {shownAmenities.length > 0 && (
-          <div className="mx-4 mt-2 flex min-w-0 items-center gap-x-3 overflow-hidden border-t border-[#f0f0f0] pt-2">
+          <div className="mt-2 flex min-w-0 items-center gap-x-2.5 overflow-hidden border-t border-[#e8eeec] pt-2">
             {shownAmenities.map((item) => {
               const Icon = amenityIcon(item);
               return (
                 <span
                   key={item}
-                  className="flex shrink-0 items-center gap-1 text-[11px] text-[#555]"
+                  className="flex shrink-0 items-center gap-1 text-[11px] text-[#5a6560]"
                 >
-                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#888]" aria-hidden />
-                  <span className="max-w-[80px] truncate">{amenityLabel(item)}</span>
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#8a948e]" aria-hidden />
+                  <span className="max-w-[72px] truncate">{amenityLabel(item)}</span>
                 </span>
               );
             })}
             {overflowCount > 0 && (
-              <span className="shrink-0 rounded border border-[#e0e0e0] px-1.5 py-0.5 text-[10px] font-semibold text-[#888]">
+              <span className="shrink-0 rounded border border-[#d5e0dc] px-1.5 py-0.5 text-[10px] font-semibold text-[#8a948e]">
                 +{overflowCount}
               </span>
             )}
           </div>
         )}
 
-        {/* Pricing pod */}
-        <div className="mx-3 mt-2 rounded-xl border border-[#ebebeb] bg-[#f0fdfa] px-3.5 py-3">
+        <div className="mt-2.5 rounded-xl border border-[#d5e0dc] bg-[#f3f7f5] px-3 py-2.5">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#b8b8b8]">
+              <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#8a948e]">
                 Starting from
               </p>
-              <p className="mt-0.5 text-[21px] font-extrabold leading-none text-primary">
+              <p className="mt-0.5 text-[21px] font-extrabold leading-none text-[#0c1210]">
                 ₹{formatInrAmount(hotel.price)}
-                <span className="ml-1 text-[11px] font-medium text-[#c0c0c0]">/night</span>
+                <span className="ml-1 text-[11px] font-medium text-[#8a948e]">/night</span>
               </p>
-              <p className="mt-1 text-[10px] text-[#c8c8c8]">
+              <p className="mt-1 text-[10px] text-[#8a948e]">
                 + ₹{formatInrAmount(hotel.taxes)} taxes &amp; fees
               </p>
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1.5 pt-0.5">
               {discount !== null && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] text-[#c0c0c0] line-through">
+                  <span className="text-[11px] text-[#8a948e] line-through">
                     ₹{formatInrAmount(hotel.originalPrice)}
                   </span>
-                  <span className="rounded-[4px] bg-[#e12d2d] px-1.5 py-0.5 text-[10px] font-extrabold text-white">
+                  <span className="rounded-[4px] bg-[#0f766e] px-1.5 py-0.5 text-[10px] font-extrabold text-white">
                     -{discount}%
                   </span>
                 </div>
               )}
               {savings > 0 && (
-                <div className="flex items-center gap-1 rounded-md bg-[#f0faf1] px-2 py-1 text-[10px] font-bold text-[#1a7a2e]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#1a7a2e]" aria-hidden />
+                <div className="flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[10px] font-bold text-[#0f766e] ring-1 ring-[#0f766e]/15">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0f766e]" aria-hidden />
                   Save ₹{formatInrAmount(savings)}
                 </div>
               )}
@@ -268,9 +279,8 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
           </div>
         </div>
 
-        {/* Book button */}
-        <div className="mt-auto px-3 pb-3 pt-2.5">
-          <span className="flex w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#0d9488] to-[#115e59] py-3 text-[13px] font-extrabold tracking-wide text-white shadow-[0_3px_10px_rgba(15,118,110,0.35)] transition active:scale-[0.98] active:brightness-95 hover:shadow-[0_5px_16px_rgba(15,118,110,0.45)] hover:brightness-105">
+        <div className="mt-auto pt-2.5">
+          <span className="flex w-full items-center justify-center rounded-xl bg-[#0f766e] py-2.5 text-[13px] font-extrabold tracking-wide text-white shadow-[0_2px_8px_rgba(15,118,110,0.28)] transition group-hover/card:bg-[#115e59]">
             Book Now
           </span>
         </div>

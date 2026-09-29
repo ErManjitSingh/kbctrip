@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowRight, Bell, CheckCircle2, Clock3, MessageCircle } from "lucide-react";
 import { useAuthOptional } from "@/contexts/auth-context";
 import { listMyCabTripRequests, type CabTripRequest } from "@/lib/cab-quote-api";
+import { QuoteFunnelProgress, quoteFunnelStepFromStatus } from "@/components/cabs/QuoteFunnelProgress";
 
 const CACHE_KEY_PREFIX = "uno_cabs_my_trip_requests";
 
@@ -64,6 +65,7 @@ function statusMeta(request: CabTripRequest) {
       detail: `Confirmation ${request.booking_confirmation_number}`,
       href: `/cabs/quotes/book/confirmation?conf=${encodeURIComponent(request.booking_confirmation_number)}&request=${request.id}`,
       cta: "View booking",
+      step: "done" as const,
     };
   }
   if (request.status === "accepted" && accepted) {
@@ -74,16 +76,18 @@ function statusMeta(request: CabTripRequest) {
       detail: `${accepted.business_name || accepted.partner_name} · ${money(accepted.total_amount)}`,
       href: `/cabs/quotes/book?request=${request.id}&quote=${accepted.id}`,
       cta: paymentPending ? "Complete payment" : "Continue booking",
+      step: "book" as const,
     };
   }
   if (liveQuotes.length > 0 || request.status === "quoted") {
     const count = liveQuotes.length || quotes.length;
     return {
       label: `${count} quote${count === 1 ? "" : "s"}`,
-      tone: "bg-orange-50 text-[#ef6614]",
+      tone: "bg-[var(--kbc-teal-soft,#ecf7f5)] text-[var(--kbc-teal,#0f766e)]",
       detail: "Partners have responded — compare and pick one",
       href: `/cabs/quotes?request=${request.id}`,
       cta: "Compare quotes",
+      step: "quotes" as const,
     };
   }
   if (request.status === "expired" || request.status === "cancelled") {
@@ -93,6 +97,7 @@ function statusMeta(request: CabTripRequest) {
       detail: "This request is no longer active",
       href: `/cabs/quotes?request=${request.id}`,
       cta: "View",
+      step: quoteFunnelStepFromStatus({ status: request.status, hasQuotes: false }),
     };
   }
   return {
@@ -101,6 +106,7 @@ function statusMeta(request: CabTripRequest) {
     detail: "Sit back — 100+ partners · first quotes in 1–30 min",
     href: `/cabs/quotes?request=${request.id}`,
     cta: "Track request",
+    step: "quotes" as const,
   };
 }
 
@@ -129,11 +135,9 @@ export function TravellerQuoteRequestsStrip() {
     try {
       const items = await listMyCabTripRequests(token);
       const list = Array.isArray(items) ? items : [];
-      // The API is authoritative. An empty response must clear any old card.
       writeCache(userId, list);
       setRequests(list);
     } catch {
-      // Only use an account-scoped cache when the traveller's own request API is unavailable.
       setRequests(readCache(userId));
     } finally {
       setLoaded(true);
@@ -141,11 +145,9 @@ export function TravellerQuoteRequestsStrip() {
   }, [auth, isAuthenticated, userId]);
 
   useEffect(() => {
-    // Never let a previous account's visible request persist while auth changes.
     setRequests([]);
     setLoaded(false);
     try {
-      // Remove data written by the old, unscoped implementation.
       sessionStorage.removeItem(CACHE_KEY_PREFIX);
     } catch {
       /* ignore */
@@ -180,27 +182,34 @@ export function TravellerQuoteRequestsStrip() {
   if (!latest) return null;
 
   const meta = statusMeta(latest);
+  const quotes = Array.isArray(latest.quotes) ? latest.quotes : [];
 
   return (
-    <div className="border-b border-orange-100/80 bg-gradient-to-r from-[#fff4eb] via-white to-[#fff8f2]">
+    <div className="border-b border-[var(--kbc-line,#d7e2de)] bg-[linear-gradient(90deg,var(--kbc-teal-soft,#ecf7f5)_0%,#fff_48%,var(--kbc-paper,#f3f7f5)_100%)]">
       <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
         <div className="mb-2 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Bell className="h-3.5 w-3.5 text-[#ef6614]" />
-            <p className="text-[11px] font-extrabold uppercase tracking-wide text-[#ef6614]">Latest trip request</p>
+            <Bell className="h-3.5 w-3.5 text-[var(--kbc-teal,#0f766e)]" />
+            <p className="text-[11px] font-extrabold uppercase tracking-wide text-[var(--kbc-teal,#0f766e)]">
+              Latest trip request
+            </p>
           </div>
-          <Link href="/account?tab=quotes" className="text-[11px] font-bold text-[#ef6614] transition hover:underline">
+          <Link
+            href="/account?tab=quotes"
+            className="text-[11px] font-bold text-[var(--kbc-teal,#0f766e)] transition hover:underline"
+          >
             View all quotes
           </Link>
         </div>
+        <QuoteFunnelProgress current={meta.step} compact className="mb-2.5 !py-2.5" />
         <Link
           href={meta.href}
-          className="flex items-center gap-3 rounded-xl border border-orange-100/90 bg-white/90 px-3 py-2.5 shadow-[0_8px_24px_-20px_rgba(64,34,19,0.35)] transition hover:border-[#ef6614]/40 hover:bg-white"
+          className="flex items-center gap-3 rounded-xl border border-[var(--kbc-line,#d7e2de)] bg-white/95 px-3 py-2.5 shadow-[0_8px_24px_-20px_rgba(12,18,16,0.35)] transition hover:border-[var(--kbc-teal,#0f766e)]/40 hover:bg-white"
         >
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-orange-50 text-[#ef6614]">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--kbc-teal-soft,#ecf7f5)] text-[var(--kbc-teal,#0f766e)]">
             {latest.status === "accepted" ? (
               <CheckCircle2 className="h-4 w-4" />
-            ) : (latest.quotes || []).length > 0 ? (
+            ) : quotes.length > 0 ? (
               <MessageCircle className="h-4 w-4" />
             ) : (
               <Clock3 className="h-4 w-4" />
@@ -208,16 +217,16 @@ export function TravellerQuoteRequestsStrip() {
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex flex-wrap items-center gap-1.5">
-              <strong className="truncate text-sm font-extrabold text-[#292229]">
+              <strong className="truncate text-sm font-extrabold text-[var(--kbc-ink,#0c1210)]">
                 {latest.pickup_city} → {latest.drop_city}
               </strong>
               <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${meta.tone}`}>{meta.label}</span>
             </span>
-            <span className="mt-0.5 block truncate text-[11px] text-[#746a73]">
+            <span className="mt-0.5 block truncate text-[11px] text-[var(--kbc-muted,#5c6662)]">
               {formatWhen(latest.pickup_at)} · {meta.detail}
             </span>
           </span>
-          <span className="hidden shrink-0 items-center gap-1 text-[11px] font-extrabold text-[#ef6614] sm:inline-flex">
+          <span className="hidden shrink-0 items-center gap-1 text-[11px] font-extrabold text-[var(--kbc-teal,#0f766e)] sm:inline-flex">
             {meta.cta}
             <ArrowRight className="h-3.5 w-3.5" />
           </span>

@@ -65,16 +65,16 @@ const RIDE_TYPES: { value: RideType; label: string; detail: string }[] = [
   { value: "airport", label: "Airport transfer", detail: "Pickup or drop" },
 ];
 
-/** Matches partner cab categories travellers can prefer (max 8 on API). */
+/** Matches partner cab categories travellers can prefer (max 8 on API). Lifestyle covers, not white cutouts. */
 const VEHICLE_CATEGORY_OPTIONS = [
-  { value: "hatchback", label: "Hatchback", image: "/images/cabs/fleet-catalog/hatchback.png", seats: "4 seats" },
-  { value: "sedan", label: "Sedan", image: "/images/cabs/fleet-catalog/sedan.png", seats: "4 seats" },
-  { value: "suv", label: "SUV", image: "/images/cabs/fleet-catalog/suv.png", seats: "6 seats" },
-  { value: "innova", label: "Innova", image: "/images/cabs/fleet-catalog/innova.png", seats: "7 seats" },
-  { value: "tempo_traveller", label: "Tempo traveller", image: "/images/cabs/fleet-catalog/tempo-traveller.png", seats: "12 seats" },
-  { value: "mini_bus", label: "Mini bus", image: "/images/cabs/fleet-catalog/mini-bus.png", seats: "18 seats" },
-  { value: "bus", label: "Bus", image: "/images/cabs/fleet-catalog/bus.png", seats: "30+ seats" },
-  { value: "luxury", label: "Luxury", image: "/images/cabs/fleet-catalog/luxury.png", seats: "4 seats" },
+  { value: "hatchback", label: "Hatchback", image: "/images/cabs/uno-cabs-traveller-pickup-v2.png", seats: "4 seats" },
+  { value: "sedan", label: "Sedan", image: "/images/cabs/fleet-hero.png", seats: "4 seats" },
+  { value: "suv", label: "SUV", image: "/images/cabs/uno-cabs-partner-fleet-v2.png", seats: "6 seats" },
+  { value: "innova", label: "Innova", image: "/images/cabs/cars-banner-cropped.png", seats: "7 seats" },
+  { value: "tempo_traveller", label: "Tempo traveller", image: "/reference/destination-backgrounds/manali-bg.png", seats: "12 seats" },
+  { value: "mini_bus", label: "Mini bus", image: "/reference/destination-backgrounds/jaipur-bg.png", seats: "18 seats" },
+  { value: "bus", label: "Bus", image: "/reference/destination-backgrounds/goa-bg.png", seats: "30+ seats" },
+  { value: "luxury", label: "Luxury", image: "/reference/destination-backgrounds/kashmir-bg.png", seats: "4 seats" },
 ] as const;
 
 const INITIAL_CAB_TYPES_VISIBLE = 4;
@@ -87,17 +87,17 @@ const CAB_DAY_PICKER_CLASSNAMES = {
   month_caption: "relative flex h-8 items-center justify-center",
   caption_label: "text-sm font-extrabold text-[#302934]",
   nav: "absolute inset-x-0 top-0 flex items-center justify-between",
-  button_previous: "grid h-8 w-8 place-items-center rounded-lg text-[#665d65] transition hover:bg-orange-50",
-  button_next: "grid h-8 w-8 place-items-center rounded-lg text-[#665d65] transition hover:bg-orange-50",
+  button_previous: "grid h-8 w-8 place-items-center rounded-lg text-[#665d65] transition hover:bg-teal-50",
+  button_next: "grid h-8 w-8 place-items-center rounded-lg text-[#665d65] transition hover:bg-teal-50",
   chevron: "h-4 w-4",
   month_grid: "w-full table-fixed border-collapse",
-  weekdays: "border-b border-orange-50",
+  weekdays: "border-b border-teal-50",
   weekday: "h-8 w-[14.285%] p-0 text-center text-[10px] font-bold text-[#a0969e]",
   week: "h-10",
   day: "h-10 w-[14.285%] p-0 text-center align-middle",
-  day_button: "mx-auto grid h-9 w-9 place-items-center rounded-lg text-sm font-semibold text-[#514953] transition hover:bg-orange-50",
-  selected: "[&>button]:bg-[#ef6614] [&>button]:text-white [&>button]:shadow-sm [&>button]:hover:bg-[#d95511]",
-  today: "[&>button]:font-black [&>button]:text-[#d95717]",
+  day_button: "mx-auto grid h-9 w-9 place-items-center rounded-lg text-sm font-semibold text-[#514953] transition hover:bg-teal-50",
+  selected: "[&>button]:bg-[#0f766e] [&>button]:text-white [&>button]:shadow-sm [&>button]:hover:bg-[#0d9488]",
+  today: "[&>button]:font-black [&>button]:text-[#0f766e]",
   disabled: "[&>button]:cursor-not-allowed [&>button]:text-[#d8d1d4] [&>button]:hover:bg-transparent",
   outside: "[&>button]:text-[#c9c2c6]",
 } as const;
@@ -898,8 +898,8 @@ export function CabsBookingExperience() {
                         key={value}
                         className={`relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border bg-white transition ${
                           selected
-                            ? "border-[#ef6614] ring-2 ring-orange-100"
-                            : "border-[#e8e0db] hover:border-orange-200"
+                            ? "border-[#0f766e] ring-2 ring-teal-100"
+                            : "border-[#d7e2de] hover:border-teal-200"
                         }`}
                       >
                         <input
@@ -917,26 +917,29 @@ export function CabsBookingExperience() {
                             setSubmitted(false);
                           }}
                         />
-                        <span className="relative mx-auto mt-2 flex h-16 w-full items-center justify-center px-2 sm:h-20">
+                        <span className="relative aspect-[4/3] w-full overflow-hidden bg-[#0c1210]">
                           <Image
                             src={image}
                             alt={label}
-                            width={160}
-                            height={90}
-                            className="h-full w-auto max-w-full object-contain"
+                            fill
+                            sizes="(max-width:640px) 45vw, 180px"
+                            className="object-cover object-center"
                             unoptimized
                           />
+                          <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                           {selected && (
-                            <span className="absolute right-1 top-0 grid h-5 w-5 place-items-center rounded-full bg-[#ef6614] text-white shadow-sm">
+                            <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-[#0f766e] text-white shadow-sm">
                               <Check className="h-3 w-3" strokeWidth={3} />
                             </span>
                           )}
-                        </span>
-                        <span className={`border-t px-2 py-2 text-center ${selected ? "border-orange-100 bg-orange-50/70" : "border-[#f3eeea]"}`}>
-                          <strong className={`block text-[12px] font-extrabold sm:text-sm ${selected ? "text-[#b84710]" : "text-[#403842]"}`}>
+                          <strong className="absolute bottom-2 left-2 right-2 truncate text-[12px] font-extrabold text-white drop-shadow sm:text-sm">
                             {label}
                           </strong>
-                          <small className="mt-0.5 block text-[10px] font-medium text-[#81777f]">{seats}</small>
+                        </span>
+                        <span className={`border-t px-2 py-2 text-center ${selected ? "border-teal-100 bg-teal-50/70" : "border-[#e8f0ed]"}`}>
+                          <small className={`block text-[10px] font-semibold ${selected ? "text-[#115e59]" : "text-[#5c6662]"}`}>
+                            {seats}
+                          </small>
                         </span>
                       </label>
                     );
@@ -1299,7 +1302,7 @@ export function CabsBookingExperience() {
                     <div className="mt-4 grid gap-3 md:grid-cols-[0.52fr_1.48fr] sm:mt-5 sm:gap-4">
                       <aside className="hidden rounded-2xl border border-slate-200 bg-white p-4 md:block"><div className="flex items-center justify-between"><h3 className="text-sm font-extrabold text-[#302934]">Trip summary</h3><button type="button" className="text-[10px] font-bold text-[#ef6614]">Edit</button></div><div className="mt-4 space-y-3 border-l border-slate-200 pl-3 text-[11px]"><p><span className="block font-bold text-slate-400">PICKUP</span><strong className="text-[#302934]">Bandra West, Mumbai</strong></p><p><span className="block font-bold text-slate-400">DROP</span><strong className="text-[#302934]">Pune, Maharashtra</strong></p><p><span className="block font-bold text-slate-400">TRIP TYPE</span><strong className="text-[#302934]">Outstation · 3 adults</strong></p><p><span className="block font-bold text-slate-400">PICKUP TIME</span><strong className="text-[#302934]">Today · 09:30 AM</strong></p></div><div className="mt-5 rounded-xl bg-[#fff8f2] p-3 text-[10px] text-[#6d626c]"><strong className="block text-[#392f38]">Need help deciding?</strong><span className="mt-1 block">Trip support can help explain a quote.</span><button type="button" className="mt-2 font-bold text-[#ef6614]">Talk to support</button></div></aside>
                       <div className="space-y-2.5 sm:space-y-3">
-                        {[{ partner: "Sai Travels", vehicle: "Maruti Dzire", fare: "₹2,450", tag: "Best price", tone: "bg-emerald-50 text-emerald-700", details: "AC · 4 seats · 2 bags" }, { partner: "City Drive", vehicle: "Honda Amaze", fare: "₹2,750", tag: "Good value", tone: "bg-blue-50 text-blue-700", details: "AC · 4 seats · 2 bags" }, { partner: "FastRide Cabs", vehicle: "Toyota Etios", fare: "₹2,950", tag: "Popular choice", tone: "bg-orange-50 text-orange-700", details: "AC · 4 seats · 2 bags" }].map((quote, index) => <article key={quote.partner} className={`rounded-xl border bg-white p-2.5 sm:rounded-2xl sm:p-3 ${index === 0 ? "border-emerald-200 shadow-[0_12px_24px_-20px_rgba(16,185,129,0.5)]" : "border-slate-200"}`}><div className="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[1fr_0.55fr_0.65fr_auto] sm:items-center sm:gap-3"><div><div className="flex items-center gap-1.5"><span className="grid h-6 w-6 place-items-center rounded-full bg-[#292229] text-[8px] font-black text-orange-300">{quote.partner.slice(0, 1)}</span><strong className="text-[10px] text-[#302934] sm:text-xs">{quote.partner}</strong><span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[7px] font-bold text-emerald-700 sm:text-[8px]">Verified partner</span></div><p className="mt-1 text-[8px] text-slate-500 sm:text-[10px]">★ 4.{6 - index} · {index === 0 ? "124" : index === 1 ? "98" : "76"} reviews</p></div><div className="hidden sm:block"><Image src="/images/cabs/uno-cabs-dzire-hero.png" alt={`${quote.vehicle} cab preview`} width={1693} height={929} className="-my-4 h-20 w-full object-contain mix-blend-multiply" /></div><div><strong className="block text-[10px] text-[#302934] sm:text-xs">{quote.vehicle}</strong><span className="mt-1 block text-[8px] text-slate-500 sm:text-[10px]">{quote.details}</span></div><div className="text-right"><strong className="block text-sm text-[#292229] sm:text-base">{quote.fare}</strong><span className={`mt-1 inline-block rounded-md px-1.5 py-0.5 text-[7px] font-bold sm:text-[8px] ${quote.tone}`}>{quote.tag}</span><button type="button" className="mt-1.5 block rounded-lg border border-orange-300 px-2 py-1 text-[8px] font-bold text-[#ef6614] sm:ml-auto sm:text-[9px]">View details</button></div></div><div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 border-t border-slate-100 pt-2 text-[7px] font-semibold text-slate-500 sm:text-[9px]"><span className="flex items-center gap-1 text-emerald-700"><Check className="h-2.5 w-2.5" /> Fuel charges</span><span className="flex items-center gap-1 text-emerald-700"><Check className="h-2.5 w-2.5" /> Driver allowance</span><span className="flex items-center gap-1 text-emerald-700"><Check className="h-2.5 w-2.5" /> Toll &amp; parking</span></div></article>)}
+                        {[{ partner: "Sai Travels", vehicle: "Maruti Dzire", fare: "₹2,450", tag: "Best price", tone: "bg-emerald-50 text-emerald-700", details: "AC · 4 seats · 2 bags" }, { partner: "City Drive", vehicle: "Honda Amaze", fare: "₹2,750", tag: "Good value", tone: "bg-blue-50 text-blue-700", details: "AC · 4 seats · 2 bags" }, { partner: "FastRide Cabs", vehicle: "Toyota Etios", fare: "₹2,950", tag: "Popular choice", tone: "bg-orange-50 text-orange-700", details: "AC · 4 seats · 2 bags" }].map((quote, index) => <article key={quote.partner} className={`rounded-xl border bg-white p-2.5 sm:rounded-2xl sm:p-3 ${index === 0 ? "border-emerald-200 shadow-[0_12px_24px_-20px_rgba(16,185,129,0.5)]" : "border-slate-200"}`}><div className="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[1fr_0.55fr_0.65fr_auto] sm:items-center sm:gap-3"><div><div className="flex items-center gap-1.5"><span className="grid h-6 w-6 place-items-center rounded-full bg-[#292229] text-[8px] font-black text-orange-300">{quote.partner.slice(0, 1)}</span><strong className="text-[10px] text-[#302934] sm:text-xs">{quote.partner}</strong><span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[7px] font-bold text-emerald-700 sm:text-[8px]">Verified partner</span></div><p className="mt-1 text-[8px] text-slate-500 sm:text-[10px]">★ 4.{6 - index} · {index === 0 ? "124" : index === 1 ? "98" : "76"} reviews</p></div><div className="hidden sm:block"><Image src="/images/cabs/uno-cabs-dzire-hero.png" alt={`${quote.vehicle} cab preview`} width={1693} height={929} className="h-16 w-full rounded-lg object-cover object-center bg-[#1a2420]" /></div><div><strong className="block text-[10px] text-[#302934] sm:text-xs">{quote.vehicle}</strong><span className="mt-1 block text-[8px] text-slate-500 sm:text-[10px]">{quote.details}</span></div><div className="text-right"><strong className="block text-sm text-[#292229] sm:text-base">{quote.fare}</strong><span className={`mt-1 inline-block rounded-md px-1.5 py-0.5 text-[7px] font-bold sm:text-[8px] ${quote.tone}`}>{quote.tag}</span><button type="button" className="mt-1.5 block rounded-lg border border-orange-300 px-2 py-1 text-[8px] font-bold text-[#ef6614] sm:ml-auto sm:text-[9px]">View details</button></div></div><div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 border-t border-slate-100 pt-2 text-[7px] font-semibold text-slate-500 sm:text-[9px]"><span className="flex items-center gap-1 text-emerald-700"><Check className="h-2.5 w-2.5" /> Fuel charges</span><span className="flex items-center gap-1 text-emerald-700"><Check className="h-2.5 w-2.5" /> Driver allowance</span><span className="flex items-center gap-1 text-emerald-700"><Check className="h-2.5 w-2.5" /> Toll &amp; parking</span></div></article>)}
                         <div className="flex items-center justify-between rounded-xl bg-[#fff8f2] px-3 py-2 text-[8px] sm:text-[10px]"><span className="flex items-center gap-1.5 font-semibold text-[#5f555e]"><Clock3 className="h-3.5 w-3.5 text-[#ef6614]" /> More partner quotes may still arrive.</span><button type="button" className="font-bold text-[#ef6614]">Notify me</button></div>
                       </div>
                     </div>

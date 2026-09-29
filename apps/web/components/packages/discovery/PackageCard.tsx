@@ -74,7 +74,7 @@ export function PackageCard({ tour, showPopularTag, priority, className }: Packa
     <article
       onClick={() => router.push(href)}
       className={cn(
-        "group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_16px_-6px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_18px_40px_-14px_rgba(15,23,42,0.22)]",
+        "group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-[#d5e0dc] bg-white shadow-[0_1px_3px_rgba(12,18,16,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-[#0f766e]/25 hover:shadow-[0_10px_28px_-14px_rgba(12,18,16,0.16)]",
         className,
       )}
     >

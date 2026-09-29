@@ -4,20 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/45 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/40 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-amber-400 via-amber-500 to-orange-600 text-slate-950 shadow-md hover:brightness-[1.06] hover:shadow-lift",
+          "bg-[var(--kbc-ink)] text-white shadow-sm hover:bg-[var(--kbc-teal)] hover:shadow-md",
         accent:
-          "bg-accent text-slate-950 shadow-md hover:bg-accent/90 hover:shadow-lift",
+          "bg-[var(--kbc-teal)] text-white shadow-sm hover:bg-[var(--kbc-teal-deep)]",
         outline:
-          "border border-orange-200/90 bg-white/80 text-primary backdrop-blur hover:border-primary/35 hover:bg-white",
-        ghost: "text-ink hover:bg-surface",
+          "border border-[var(--kbc-line)] bg-white text-[var(--kbc-ink)] hover:border-[var(--kbc-teal)] hover:text-[var(--kbc-teal-deep)]",
+        ghost: "text-[var(--kbc-ink)] hover:bg-[var(--kbc-paper)]",
         secondary:
           "border border-white/30 bg-white/15 text-white backdrop-blur hover:bg-white/25",
-        link: "text-primary underline-offset-4 hover:text-orange-700 hover:underline",
+        link: "text-[var(--kbc-teal)] underline-offset-4 hover:text-[var(--kbc-teal-deep)] hover:underline",
       },
       size: {
         default: "h-11 px-6",

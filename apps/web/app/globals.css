@@ -1,3 +1,5 @@
+@import "./kbc-tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,16 +24,10 @@
     --background: 0 0% 100%;
     --foreground: 240 10% 8%;
     --uno-top-banner-height: 0px;
-    --ink: #121014;
-    --orange: #0f766e;
-    --kbc-muted: #6a6570;
-    --line: #e8e4df;
-    --paper: #f7f4ef;
-    --muted: 40 10% 96%;
     --muted-foreground: 240 5% 45%;
     --border: 30 10% 90%;
     --input: 30 10% 90%;
-    --ring: 16 82% 50%;
+    --ring: 173 80% 26%;
   }
 
   html {

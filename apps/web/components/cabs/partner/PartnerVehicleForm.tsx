@@ -22,23 +22,23 @@ import {
   type PartnerCabPayload,
 } from "@/lib/cab-partner-api";
 
-/** Primary types partners actually quote with — keep this short for low-tech users. */
+/** Primary types partners actually quote with — lifestyle covers, not white cutouts. */
 const PRIMARY_CATEGORIES = [
-  { value: "hatchback", label: "Hatchback", image: "/images/cabs/fleet/hatchback-white.png", seats: 4, luggage: 2 },
-  { value: "sedan", label: "Sedan", image: "/images/cabs/fleet/sedan-white.png", seats: 4, luggage: 3 },
-  { value: "suv", label: "SUV", image: "/images/cabs/fleet/innova-white.png", seats: 6, luggage: 4 },
-  { value: "innova", label: "Innova", image: "/images/cabs/fleet/innova-white.png", seats: 7, luggage: 4 },
-  { value: "ertiga", label: "Ertiga", image: "/images/cabs/fleet/ertiga-white.png", seats: 6, luggage: 3 },
-  { value: "tempo_traveller", label: "Tempo traveller", image: "/images/cabs/fleet/tempo-white.png", seats: 12, luggage: 8 },
+  { value: "hatchback", label: "Hatchback", image: "/images/cabs/uno-cabs-traveller-pickup-v2.png", seats: 4, luggage: 2 },
+  { value: "sedan", label: "Sedan", image: "/images/cabs/fleet-hero.png", seats: 4, luggage: 3 },
+  { value: "suv", label: "SUV", image: "/images/cabs/uno-cabs-partner-fleet-v2.png", seats: 6, luggage: 4 },
+  { value: "innova", label: "Innova", image: "/images/cabs/cars-banner-cropped.png", seats: 7, luggage: 4 },
+  { value: "ertiga", label: "Ertiga", image: "/reference/destination-backgrounds/jaipur-bg.png", seats: 6, luggage: 3 },
+  { value: "tempo_traveller", label: "Tempo traveller", image: "/reference/destination-backgrounds/manali-bg.png", seats: 12, luggage: 8 },
 ];
 
 const MORE_CATEGORIES = [
-  { value: "muv", label: "MUV", image: "/images/cabs/fleet/ertiga-white.png", seats: 6, luggage: 3 },
-  { value: "xuv", label: "XUV / 7-seater", image: "/images/cabs/fleet/innova-white.png", seats: 7, luggage: 4 },
-  { value: "mini_bus", label: "Mini bus", image: "/images/cabs/fleet/tempo-white.png", seats: 18, luggage: 12 },
-  { value: "bus", label: "Bus", image: "/images/cabs/fleet/tempo-white.png", seats: 30, luggage: 20 },
-  { value: "luxury", label: "Luxury sedan", image: "/images/cabs/fleet/sedan-white.png", seats: 4, luggage: 3 },
-  { value: "electric", label: "Electric", image: "/images/cabs/fleet/hatchback-white.png", seats: 4, luggage: 2 },
+  { value: "muv", label: "MUV", image: "/reference/destination-backgrounds/goa-bg.png", seats: 6, luggage: 3 },
+  { value: "xuv", label: "XUV / 7-seater", image: "/images/cabs/uno-cabs-partner-fleet-v2.png", seats: 7, luggage: 4 },
+  { value: "mini_bus", label: "Mini bus", image: "/reference/destination-backgrounds/dubai-bg.png", seats: 18, luggage: 12 },
+  { value: "bus", label: "Bus", image: "/reference/destination-backgrounds/kashmir-bg.png", seats: 30, luggage: 20 },
+  { value: "luxury", label: "Luxury sedan", image: "/images/cabs/fleet-hero.png", seats: 4, luggage: 3 },
+  { value: "electric", label: "Electric", image: "/images/cabs/uno-cabs-traveller-pickup-v2.png", seats: 4, luggage: 2 },
 ];
 
 const ALL_CATEGORIES = [...PRIMARY_CATEGORIES, ...MORE_CATEGORIES];
@@ -176,21 +176,22 @@ function CategoryGrid({
           key={item.value}
           type="button"
           onClick={() => onSelect(item)}
-          className={`relative overflow-hidden rounded-xl border p-1.5 text-left transition ${
+          className={`relative overflow-hidden rounded-xl border p-0 text-left transition ${
             selected === item.value
-              ? "border-[#ef6614] bg-orange-50 text-[#ef6614] ring-2 ring-orange-100"
-              : "border-slate-200 bg-white text-slate-600 hover:border-orange-200"
+              ? "border-[#0f766e] bg-teal-50 text-[#0f766e] ring-2 ring-teal-100"
+              : "border-slate-200 bg-white text-slate-600 hover:border-teal-200"
           }`}
         >
-          <span className="relative block h-16 overflow-hidden rounded-lg bg-white sm:h-20">
-            <Image src={item.image} alt={item.label} fill sizes="(max-width: 640px) 42vw, 180px" className="object-contain p-1" />
+          <span className="relative block aspect-[4/3] overflow-hidden bg-[#0c1210]">
+            <Image src={item.image} alt={item.label} fill sizes="(max-width: 640px) 42vw, 180px" className="object-cover" />
+            <span className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <strong className="absolute bottom-2 left-2 right-2 truncate text-[11px] font-extrabold text-white drop-shadow">{item.label}</strong>
           </span>
-          <span className="flex items-center justify-between gap-2 px-1 pb-0.5 pt-1.5">
-            <strong className="truncate text-[11px] font-extrabold">{item.label}</strong>
-            <small className="shrink-0 text-[9px] font-bold text-slate-400">{item.seats} seats</small>
+          <span className="flex items-center justify-between gap-2 px-2 py-1.5">
+            <small className="shrink-0 text-[9px] font-bold text-slate-500">{item.seats} seats</small>
           </span>
           {selected === item.value && (
-            <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-[#ef6614] text-white">
+            <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-[#0f766e] text-white">
               <Check className="h-3 w-3" strokeWidth={3} />
             </span>
           )}

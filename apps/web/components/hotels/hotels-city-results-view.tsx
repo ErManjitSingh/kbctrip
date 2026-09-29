@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Clock, Search } from "lucide-react";
+import { Building2, ChevronLeft, ChevronRight, Clock, Search, SlidersHorizontal } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { HotelResultCard } from "@/components/hotels/hotel-result-card";
 import {
@@ -26,7 +26,50 @@ import {
   type HotelSortOption,
 } from "@/lib/hotels-catalog";
 import { searchHotels } from "@/lib/hotels-api";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+
+function HotelResultsEmpty({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description: string;
+  action: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col items-center rounded-xl border border-[#d5e0dc] bg-white px-6 py-12 text-center shadow-[0_1px_3px_rgba(12,18,16,0.04)]">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3f7f5] text-[#0f766e]">
+        <Building2 className="h-6 w-6" strokeWidth={1.75} aria-hidden />
+      </span>
+      <p className="mt-4 text-base font-bold text-[#0c1210]">{title}</p>
+      <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-[#5a6560]">{description}</p>
+      <div className="mt-5">{action}</div>
+    </div>
+  );
+}
+
+function HotelResultCardSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-xl border border-[#d5e0dc] bg-white" aria-hidden>
+      <div className="flex flex-col lg:flex-row">
+        <Skeleton className="h-[200px] w-full rounded-none bg-[#e8eeec] lg:h-auto lg:w-[260px]" />
+        <div className="flex-1 space-y-3 p-4">
+          <Skeleton className="h-5 w-2/3 bg-[#e8eeec]" />
+          <Skeleton className="h-3.5 w-1/2 bg-[#e8eeec]" />
+          <Skeleton className="h-3.5 w-3/4 bg-[#e8eeec]" />
+          <Skeleton className="h-16 w-full bg-[#e8eeec]" />
+        </div>
+        <div className="flex w-full flex-col gap-2 border-t border-[#e8eeec] bg-[#f3f7f5]/60 p-4 lg:w-[200px] lg:border-l lg:border-t-0">
+          <Skeleton className="ml-auto h-6 w-16 bg-[#e8eeec]" />
+          <Skeleton className="ml-auto h-8 w-24 bg-[#e8eeec]" />
+          <Skeleton className="h-10 w-full bg-[#e8eeec]" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const HOTELS_PER_PAGE = 5;
 
@@ -251,7 +294,7 @@ export function HotelsCityResultsView({
 
   return (
     <>
-      <main className="min-h-screen bg-[#f3f6f5] text-[#212121] antialiased">
+      <main className="min-h-screen bg-[#f3f7f5] text-[#0c1210] antialiased">
         <Suspense fallback={null}>
           <HotelsResultsSearchStrip
             city={city}
@@ -262,35 +305,35 @@ export function HotelsCityResultsView({
         </Suspense>
 
         <div className="mx-auto w-full max-w-[1320px] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
-          {/* Breadcrumb + search + sort */}
-          <div className="flex flex-col gap-3 border-b border-[#e0e0e0] bg-white px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+          {/* Sticky filter / search bar (especially useful on mobile) */}
+          <div className="sticky top-0 z-30 -mx-3 border-b border-[#d5e0dc] bg-white/95 px-3 py-3 shadow-[0_4px_16px_-12px_rgba(12,18,16,0.18)] backdrop-blur-md sm:static sm:mx-0 sm:rounded-xl sm:border sm:px-4 sm:shadow-[0_1px_3px_rgba(12,18,16,0.04)] sm:backdrop-blur-none">
             <nav
-              className="flex flex-wrap items-center gap-1 text-[12px] text-[#2196F3] sm:text-[13px]"
+              className="mb-2.5 flex flex-wrap items-center gap-1 text-[12px] text-[#0f766e] sm:mb-3 sm:text-[13px]"
               aria-label="Breadcrumb"
             >
               <Link href="/" className="hover:underline">
                 Home
               </Link>
               <ChevronRight
-                className="h-3.5 w-3.5 text-[#9E9E9E]"
+                className="h-3.5 w-3.5 text-[#8a948e]"
                 aria-hidden
               />
               <Link href="/hotels" className="hover:underline">
                 Hotels
               </Link>
               <ChevronRight
-                className="h-3.5 w-3.5 text-[#9E9E9E]"
+                className="h-3.5 w-3.5 text-[#8a948e]"
                 aria-hidden
               />
-              <span className="font-medium text-[#212121]">
+              <span className="font-medium text-[#0c1210]">
                 Hotels in {city.name}
               </span>
             </nav>
 
-            <div className="flex flex-1 flex-col gap-2 sm:max-w-xl sm:flex-row sm:items-center sm:justify-end sm:gap-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
               <label className="relative flex min-w-0 flex-1 items-center">
                 <Search
-                  className="pointer-events-none absolute left-3 h-4 w-4 text-[#9E9E9E]"
+                  className="pointer-events-none absolute left-3 h-4 w-4 text-[#8a948e]"
                   aria-hidden
                 />
                 <input
@@ -298,25 +341,34 @@ export function HotelsCityResultsView({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Enter hotel name or location"
-                  className="h-10 w-full rounded border border-[#e0e0e0] bg-white pl-9 pr-3 text-[13px] outline-none focus:border-[#2196F3] focus:ring-1 focus:ring-[#2196F3]/30"
+                  className="h-10 w-full rounded-lg border border-[#d5e0dc] bg-white pl-9 pr-3 text-[13px] text-[#0c1210] outline-none focus:border-[#0f766e] focus:ring-1 focus:ring-[#0f766e]/25"
                 />
               </label>
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as HotelSortOption)}
-                className="h-10 shrink-0 rounded border border-[#e0e0e0] bg-white px-3 text-[13px] font-medium text-[#212121] outline-none focus:border-[#2196F3]"
-                aria-label="Sort hotels"
-              >
-                <option value="popularity">Popularity</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Guest Rating</option>
-              </select>
+              <div className="flex items-center gap-2">
+                <a
+                  href="#hotel-filters"
+                  className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg border border-[#d5e0dc] bg-[#f3f7f5] px-3 text-[13px] font-semibold text-[#0c1210] lg:hidden"
+                >
+                  <SlidersHorizontal className="h-3.5 w-3.5 text-[#0f766e]" aria-hidden />
+                  Filters
+                </a>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as HotelSortOption)}
+                  className="h-10 min-w-0 flex-1 rounded-lg border border-[#d5e0dc] bg-white px-3 text-[13px] font-medium text-[#0c1210] outline-none focus:border-[#0f766e] sm:flex-none"
+                  aria-label="Sort hotels"
+                >
+                  <option value="popularity">Popularity</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="rating">Guest Rating</option>
+                </select>
+              </div>
             </div>
           </div>
 
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-5">
-            <div className="w-full shrink-0 lg:w-[260px] xl:w-[280px]">
+            <div id="hotel-filters" className="w-full shrink-0 scroll-mt-28 lg:sticky lg:top-24 lg:w-[260px] lg:self-start xl:w-[280px]">
               <HotelsResultsFilters
                 hotels={hotels}
                 filters={filters}
@@ -325,31 +377,33 @@ export function HotelsCityResultsView({
               />
             </div>
 
-            <div id="hotel-results" className="min-w-0 flex-1 scroll-mt-24">
-              <label className="mb-3 flex cursor-pointer items-center gap-2 rounded-md border border-[#e0e0e0] bg-white px-3 py-2.5 text-[13px] font-medium text-[#212121] shadow-sm">
+            <div id="hotel-results" className="min-w-0 flex-1 scroll-mt-28">
+              <label className="mb-3 flex cursor-pointer items-center gap-2 rounded-lg border border-[#d5e0dc] bg-white px-3 py-2.5 text-[13px] font-medium text-[#0c1210] shadow-[0_1px_3px_rgba(12,18,16,0.04)]">
                 <input
                   type="checkbox"
                   checked={lastMinuteOnly}
                   onChange={(e) => setLastMinuteOnly(e.target.checked)}
-                  className="h-4 w-4 rounded border-[#BDBDBD] accent-[#2196F3]"
+                  className="h-4 w-4 rounded border-[#BDBDBD] accent-[#0f766e]"
                 />
-                <Clock className="h-4 w-4 text-[#2196F3]" aria-hidden />
+                <Clock className="h-4 w-4 text-[#0f766e]" aria-hidden />
                 Last Minute Deals
               </label>
 
-              <p className="mb-3 text-[13px] text-[#757575]">
-                {hotels.length === 0 ? (
+              <p className="mb-3 text-[13px] text-[#5a6560]">
+                {searching ? (
+                  <>Updating results…</>
+                ) : hotels.length === 0 ? (
                   <>No hotels listed in {city.name} yet</>
                 ) : total === 0 ? (
                   <>No properties match your filters in {city.name}</>
                 ) : (
                   <>
                     Showing{" "}
-                    <span className="font-semibold text-[#212121]">
+                    <span className="font-semibold text-[#0c1210]">
                       {start + 1}–{end}
                     </span>{" "}
                     of{" "}
-                    <span className="font-semibold text-[#212121]">
+                    <span className="font-semibold text-[#0c1210]">
                       {total}
                     </span>{" "}
                     properties in {city.name}
@@ -358,43 +412,42 @@ export function HotelsCityResultsView({
               </p>
 
               <div className="flex flex-col gap-3 sm:gap-4">
-                {hotels.length === 0 ? (
-                  <div className="rounded-lg border border-[#e0e0e0] bg-white p-8 text-center">
-                    <p className="font-semibold text-[#212121]">
-                      No hotels in this destination yet
-                    </p>
-                    <p className="mt-1 text-sm text-[#757575]">
-                      Check back soon or search another city from the hotels
-                      home page.
-                    </p>
-                    <Link
-                      href="/hotels"
-                      className="mt-4 inline-block text-sm font-semibold text-[#2196F3] hover:underline"
-                    >
-                      Browse all destinations
-                    </Link>
-                  </div>
+                {searching ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <HotelResultCardSkeleton key={i} />
+                  ))
+                ) : hotels.length === 0 ? (
+                  <HotelResultsEmpty
+                    title="No hotels in this destination yet"
+                    description="Check back soon or search another city from the hotels home page."
+                    action={
+                      <Link
+                        href="/hotels"
+                        className="inline-flex rounded-lg bg-[#0f766e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#115e59]"
+                      >
+                        Browse all destinations
+                      </Link>
+                    }
+                  />
                 ) : total === 0 ? (
-                  <div className="rounded-lg border border-[#e0e0e0] bg-white p-8 text-center">
-                    <p className="font-semibold text-[#212121]">
-                      No hotels match your filters
-                    </p>
-                    <p className="mt-1 text-sm text-[#757575]">
-                      Try resetting filters or changing your search.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFilters(EMPTY_HOTEL_FILTERS);
-                        setSearchQuery("");
-                        setLastMinuteOnly(false);
-                        setPage(1);
-                      }}
-                      className="mt-4 text-sm font-semibold text-[#2196F3] hover:underline"
-                    >
-                      Reset filters
-                    </button>
-                  </div>
+                  <HotelResultsEmpty
+                    title="No hotels match your filters"
+                    description="Try resetting filters or changing your search."
+                    action={
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFilters(EMPTY_HOTEL_FILTERS);
+                          setSearchQuery("");
+                          setLastMinuteOnly(false);
+                          setPage(1);
+                        }}
+                        className="inline-flex rounded-lg border border-[#d5e0dc] bg-white px-4 py-2.5 text-sm font-semibold text-[#0f766e] hover:border-[#0f766e]/40"
+                      >
+                        Reset filters
+                      </button>
+                    }
+                  />
                 ) : (
                   <>
                     {pageHotels.map((hotel) => (
@@ -403,16 +456,16 @@ export function HotelsCityResultsView({
 
                     {totalPages > 1 ? (
                       <nav
-                        className="mt-4 flex flex-col items-center gap-3 border-t border-[#e8e8e8] bg-white px-3 py-4 sm:flex-row sm:justify-between sm:px-4"
+                        className="mt-4 flex flex-col items-center gap-3 rounded-xl border border-[#d5e0dc] bg-white px-3 py-4 sm:flex-row sm:justify-between sm:px-4"
                         aria-label="Hotel list pagination"
                       >
-                        <p className="order-2 text-center text-xs text-[#757575] sm:order-1 sm:text-left">
+                        <p className="order-2 text-center text-xs text-[#5a6560] sm:order-1 sm:text-left">
                           Showing{" "}
-                          <span className="font-semibold text-[#212121]">
+                          <span className="font-semibold text-[#0c1210]">
                             {start + 1}–{end}
                           </span>{" "}
                           of{" "}
-                          <span className="font-semibold text-[#212121]">
+                          <span className="font-semibold text-[#0c1210]">
                             {total}
                           </span>{" "}
                           properties · Page {safePage} of {totalPages}
@@ -422,7 +475,7 @@ export function HotelsCityResultsView({
                             type="button"
                             disabled={safePage <= 1}
                             onClick={() => goToPage(safePage - 1)}
-                            className="inline-flex h-9 items-center gap-1 rounded-md border border-[#e0e0e0] bg-white px-3 text-xs font-semibold text-[#212121] transition hover:border-[#0f766e]/40 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex h-9 items-center gap-1 rounded-md border border-[#d5e0dc] bg-white px-3 text-xs font-semibold text-[#0c1210] transition hover:border-[#0f766e]/40 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <ChevronLeft className="h-4 w-4" aria-hidden />
                             Prev
@@ -440,7 +493,7 @@ export function HotelsCityResultsView({
                                   "flex h-9 min-w-9 items-center justify-center rounded-md border text-xs font-semibold transition",
                                   n === safePage
                                     ? "border-[#0f766e] bg-[#0f766e] text-white shadow-sm"
-                                    : "border-[#e0e0e0] bg-white text-[#424242] hover:border-[#0f766e]/40 hover:text-[#0f766e]",
+                                    : "border-[#d5e0dc] bg-white text-[#5a6560] hover:border-[#0f766e]/40 hover:text-[#0f766e]",
                                 )}
                                 aria-label={`Page ${n}`}
                                 aria-current={
@@ -455,7 +508,7 @@ export function HotelsCityResultsView({
                             type="button"
                             disabled={safePage >= totalPages}
                             onClick={() => goToPage(safePage + 1)}
-                            className="inline-flex h-9 items-center gap-1 rounded-md border border-[#e0e0e0] bg-white px-3 text-xs font-semibold text-[#212121] transition hover:border-[#0f766e]/40 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex h-9 items-center gap-1 rounded-md border border-[#d5e0dc] bg-white px-3 text-xs font-semibold text-[#0c1210] transition hover:border-[#0f766e]/40 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             Next
                             <ChevronRight className="h-4 w-4" aria-hidden />
@@ -473,7 +526,7 @@ export function HotelsCityResultsView({
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-[#2196F3] text-white shadow-lg transition hover:bg-[#1976D2] sm:right-6"
+          className="fixed bottom-6 right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-[#0f766e] text-white shadow-lg transition hover:bg-[#115e59] sm:right-6"
           aria-label="Scroll to top"
         >
           ↑

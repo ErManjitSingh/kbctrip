@@ -39,6 +39,7 @@ import {
 } from "@/lib/cab-quote-api";
 import { CabPromoCodeField } from "@/components/cabs/CabPromoCodeField";
 import { useCabPromoPricing } from "@/components/cabs/CabPromoPrice";
+import { QuoteFunnelProgress, quoteFunnelStepFromStatus } from "@/components/cabs/QuoteFunnelProgress";
 
 const VEHICLE_CATEGORY_OPTIONS = [
   { value: "hatchback", label: "Hatchback" },
@@ -730,8 +731,24 @@ export default function CabQuotesPage() {
   }
   if (loading) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#fbfaf9]">
-        <Clock3 className="h-8 w-8 animate-spin text-[#ef6614]" />
+      <main className="min-h-screen bg-[var(--kbc-paper,#f3f7f5)] pb-16 text-[var(--kbc-ink,#0c1210)]">
+        <div className="mx-auto max-w-3xl px-4 pt-8">
+          <QuoteFunnelProgress current="quotes" className="mb-5" />
+          <div className="overflow-hidden rounded-2xl border border-[var(--kbc-line,#d7e2de)] bg-white p-8 text-center shadow-sm">
+            <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[var(--kbc-teal-soft,#ecf7f5)] text-[var(--kbc-teal,#0f766e)]">
+              <Clock3 className="h-5 w-5 animate-spin" />
+            </span>
+            <p className="mt-3 text-sm font-semibold">Loading partner quotes…</p>
+            <p className="mt-1.5 text-sm text-[var(--kbc-muted,#5c6662)]">
+              Comparing verified cab partners for your trip.
+            </p>
+            <div className="mt-5 grid gap-2">
+              {[0,1,2].map((i) => (
+                <div key={i} className="h-20 animate-pulse rounded-xl bg-[var(--kbc-paper,#f3f7f5)]" />
+              ))}
+            </div>
+          </div>
+        </div>
       </main>
     );
   }
@@ -742,21 +759,26 @@ export default function CabQuotesPage() {
       ? request.pickup_city
       : `${request.pickup_city} → ${request.drop_city}`;
 
+  const funnelStep = quoteFunnelStepFromStatus({
+    status: request.status,
+    hasQuotes: quotes.length > 0,
+  });
+
   return (
-    <main className="min-h-screen bg-[#fbfaf9] pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-[#292229] md:pb-0">
+    <main className="min-h-screen bg-[var(--kbc-paper,#f3f7f5)] pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-[#0c1210] md:pb-0">
       <header className="hidden border-b border-[#eee9e5] bg-white md:block">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-2 px-4 sm:h-16 sm:px-7">
           <BrandLogo size="sm" className="shrink-0" />
           <div className="flex items-center gap-1.5 sm:gap-2">
             <Link
               href="/account?tab=quotes"
-              className="inline-flex items-center gap-2 rounded-lg border border-[#eee9e5] px-2.5 py-1.5 text-[12px] font-bold text-[#514953] hover:border-orange-200 hover:text-[#ef6614] sm:px-3 sm:py-2 sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-lg border border-[#eee9e5] px-2.5 py-1.5 text-[12px] font-bold text-[#514953] hover:border-teal-200 hover:text-[#0f766e] sm:px-3 sm:py-2 sm:text-sm"
             >
               My quotes
             </Link>
             <Link
               href="/cabs"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 px-2.5 py-1.5 text-[12px] font-bold text-[#ef6614] sm:gap-2 sm:px-3 sm:py-2 sm:text-sm"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-teal-200 px-2.5 py-1.5 text-[12px] font-bold text-[#0f766e] sm:gap-2 sm:px-3 sm:py-2 sm:text-sm"
             >
               <FilePenLine className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="sm:hidden">New trip</span>
@@ -765,6 +787,10 @@ export default function CabQuotesPage() {
           </div>
         </div>
       </header>
+
+      <div className="mx-auto max-w-[1440px] px-4 pt-4 sm:px-7">
+        <QuoteFunnelProgress current={funnelStep} className="mb-4" />
+      </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-3 sm:px-7 sm:py-7">
         <p className="mb-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#ef6614] lg:hidden">

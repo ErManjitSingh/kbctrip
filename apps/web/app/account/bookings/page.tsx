@@ -46,11 +46,11 @@ function TripTicket({
 
   return (
     <article className={`trip-ticket status-${booking.status}`}>
-      <div className="trip-ticket-status">
-        <em>{booking.status.replaceAll('_', ' ')}</em>
-        <b>{booking.reference}</b>
-      </div>
       <div className="trip-ticket-copy">
+        <div className="trip-ticket-status">
+          <em>{booking.status.replaceAll('_', ' ')}</em>
+          <b>{booking.reference}</b>
+        </div>
         <small><MapPin size={13} /> {booking.property.city ?? 'India'}</small>
         <h3>{booking.property.name}</h3>
         <p>{booking.roomType}</p>
@@ -111,7 +111,11 @@ export default function AccountBookingsPage() {
   return (
     <AccountShell guest={guest} active="trips">
       {loading ? (
-        <p className="book-state">Loading trips…</p>
+        <div className="account-empty" aria-busy="true">
+          <p>My trips</p>
+          <h3>Loading your trips…</h3>
+          <p>Pulling upcoming and past stays from your account.</p>
+        </div>
       ) : (
         <div className="account-trips">
           {notice && <p className={notice.includes('Could') ? 'book-error' : 'account-ok'}>{notice}</p>}
@@ -123,7 +127,7 @@ export default function AccountBookingsPage() {
             {upcoming.length === 0 ? (
               <div className="account-empty">
                 <h3>No upcoming trips</h3>
-                <p>When you confirm a stay on KBC Trip, the ticket appears here.</p>
+                <p>When you confirm a stay on KBC Trip, it appears here as a trip card.</p>
                 <Link href="/hotels">Find a stay</Link>
               </div>
             ) : (

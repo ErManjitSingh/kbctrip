@@ -29,10 +29,10 @@ const TRIP_TYPE_LABEL: Record<CabTripRequest["trip_type"], string> = {
 };
 
 const FLEET_AVATARS = [
-  "/images/cabs/fleet-catalog/sedan.png",
-  "/images/cabs/fleet-catalog/suv.png",
-  "/images/cabs/fleet-catalog/innova.png",
-  "/images/cabs/fleet-catalog/hatchback.png",
+  "/images/cabs/uno-cabs-traveller-pickup-v2.png",
+  "/images/cabs/fleet-hero.png",
+  "/images/cabs/uno-cabs-partner-fleet-v2.png",
+  "/images/cabs/cars-banner-cropped.png",
 ] as const;
 
 function money(amount: number, currency = "INR") {

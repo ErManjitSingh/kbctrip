@@ -65,15 +65,15 @@ export function HotelCardGallery({ hotelId, hotelName, images, dealOfDay, classN
   );
 
   const navBtnClass =
-    "absolute top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[#212121] shadow-md transition hover:bg-white";
+    "absolute top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[#0c1210] shadow-md transition hover:bg-white";
 
   const thumbSlots = [0, 1, 2] as const;
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-neutral-200">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-[#1a2420]">
         {dealOfDay ? (
-          <span className="absolute right-2 top-2 z-20 rounded-sm bg-[#0f766e] px-2.5 py-1 text-[10px] font-bold uppercase leading-tight tracking-wide text-white shadow-md">
+          <span className="absolute right-2 top-2 z-20 rounded-md bg-[#0f766e] px-2.5 py-1 text-[10px] font-bold uppercase leading-tight tracking-wide text-white shadow-md">
             Deal of the Day
           </span>
         ) : null}
@@ -90,8 +90,8 @@ export function HotelCardGallery({ hotelId, hotelName, images, dealOfDay, classN
             onError={() => markFailed(activeSrc)}
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-neutral-300 text-neutral-600">
-            <Building2 className="h-10 w-10 opacity-50" strokeWidth={1.5} aria-hidden />
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[#1a2420] text-white/50">
+            <Building2 className="h-10 w-10 opacity-60" strokeWidth={1.5} aria-hidden />
             <span className="text-xs font-medium">Photo unavailable</span>
           </div>
         )}
@@ -140,7 +140,7 @@ export function HotelCardGallery({ hotelId, hotelName, images, dealOfDay, classN
               return (
                 <div
                   key={`${hotelId}-thumb-empty-${slot}`}
-                  className="aspect-[4/3] rounded bg-neutral-100"
+                  className="aspect-[4/3] rounded bg-[#1a2420]/70"
                   aria-hidden
                 />
               );
@@ -151,8 +151,8 @@ export function HotelCardGallery({ hotelId, hotelName, images, dealOfDay, classN
                 type="button"
                 onClick={() => goTo(slot)}
                 className={cn(
-                  "relative aspect-[4/3] w-full overflow-hidden rounded ring-2 ring-transparent transition",
-                  activeIndex === slot && "ring-[#2196F3]",
+                  "relative aspect-[4/3] w-full overflow-hidden rounded bg-[#1a2420] ring-2 ring-transparent transition",
+                  activeIndex === slot && "ring-[#0f766e]",
                 )}
                 aria-label={`Show photo ${slot + 1}`}
                 aria-current={activeIndex === slot ? "true" : undefined}
@@ -175,7 +175,7 @@ export function HotelCardGallery({ hotelId, hotelName, images, dealOfDay, classN
             disabled={!canSlide}
             className={cn(
               "relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded text-[10px] font-semibold text-white transition",
-              canSlide ? "bg-black/65 hover:bg-black/75" : "cursor-default bg-neutral-300 text-neutral-500",
+              canSlide ? "bg-[#1a2420]/85 hover:bg-[#0c1210]" : "cursor-default bg-[#1a2420]/50 text-white/40",
             )}
           >
             {canSlide ? "View All" : `${slideCount} Photo`}

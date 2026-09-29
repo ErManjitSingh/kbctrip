@@ -30,7 +30,6 @@ export function AuthFrame({
         sizes="100vw"
       />
       <div className="auth-stage-scrim" />
-      <div className="auth-stage-glow" aria-hidden="true" />
 
       <header className="auth-stage-top">
         <BrandLogo tone="light" className="auth-stage-brand" />

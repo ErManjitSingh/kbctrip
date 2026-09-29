@@ -823,93 +823,77 @@ export function PartnerOnboarding() {
         ) ? (
         <PartnerApplicationStatus application={existingPartner.application} />
       ) : (
-        <section className="mx-auto mt-3 grid min-h-[calc(100dvh-64px)] max-w-[1800px] overflow-hidden rounded-[22px] border border-slate-200/80 bg-white shadow-[0_28px_70px_-42px_rgba(48,35,39,0.38)] lg:grid-cols-[330px_1fr]">
-          <aside className="relative overflow-hidden bg-[linear-gradient(160deg,#fffaf4_0%,#fff0df_54%,#f9e3cd_100%)] px-4 py-3 lg:block lg:px-5 lg:py-5">
+        <section className="mx-auto mt-3 grid min-h-[calc(100dvh-64px)] max-w-[1800px] overflow-hidden rounded-[22px] border border-[var(--kbc-line,#d7e2de)] bg-white shadow-[0_28px_70px_-42px_rgba(12,18,16,0.28)] lg:grid-cols-[330px_1fr]">
+          <aside className="relative overflow-hidden bg-[linear-gradient(160deg,#f3f7f5_0%,#ecf7f5_54%,#d9efe9_100%)] px-4 py-3 lg:block lg:px-5 lg:py-5">
             <div className="relative z-10 flex items-center gap-3 lg:hidden">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/85 text-[#ef6614] shadow-sm">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/85 text-[#0f766e] shadow-sm">
                 <CarFront className="h-4.5 w-4.5" />
               </span>
               <span className="min-w-0 flex-1">
-                <strong className="block text-sm font-extrabold text-[#2b2730]">Partner onboarding</strong>
-                <small className="block truncate text-[11px] text-[#706772]">Your progress is saved automatically.</small>
+                <strong className="block text-sm font-extrabold text-[#0c1210]">Partner onboarding</strong>
+                <small className="block truncate text-[11px] text-[#5c6662]">Your progress is saved automatically.</small>
               </span>
-              <span className="rounded-full bg-white/75 px-2 py-1 text-[10px] font-extrabold text-[#d95717]">4 steps</span>
+              <span className="rounded-full bg-white/75 px-2 py-1 text-[10px] font-extrabold text-[#0f766e]">4 steps</span>
             </div>
 
-            <div className="absolute inset-x-0 bottom-[162px] hidden h-40 bg-[linear-gradient(180deg,transparent,rgba(227,151,84,0.13))] lg:block" />
-            <div className="pointer-events-none absolute -right-12 top-32 hidden h-56 w-56 rounded-full bg-orange-200/35 blur-3xl lg:block" />
+            <div className="absolute inset-x-0 bottom-[162px] hidden h-40 bg-[linear-gradient(180deg,transparent,rgba(15,118,110,0.12))] lg:block" />
             <div className="relative z-10 hidden lg:block">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#d95717]">
-                <CarFront className="h-3.5 w-3.5" /> Partner with UnoCabs
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#0f766e]">
+                <CarFront className="h-3.5 w-3.5" /> Partner with KBC Cabs
               </span>
-              <h1 className="mt-3 text-2xl font-black leading-tight tracking-tight text-[#1e2432] sm:text-[27px]">
+              <h1 className="mt-3 text-2xl font-black leading-tight tracking-tight text-[#0c1210] sm:text-[27px]">
                 {submitted ? (
                   <>
                     Thank you for
                     <br />
                     partnering with
                     <br />
-                    UnoCabs!
+                    KBC Cabs!
                   </>
                 ) : (
                   <>
                     Grow your business
                     <br />
-                    with UnoCabs.
+                    with KBC Cabs.
                   </>
                 )}
               </h1>
-              <p className="mt-2 max-w-[250px] text-sm leading-5 text-[#4f5868]">
+              <p className="mt-2 max-w-[250px] text-sm leading-5 text-[#5c6662]">
                 {submitted
                   ? "We’re excited to have you on board. Get ready to grow your business with more bookings and happy customers."
                   : "Join thousands of verified partners who are earning more and building strong customer trust."}
               </p>
             </div>
-            <div className="relative z-10 hidden h-[155px] overflow-hidden lg:mt-4 lg:block">
-              <div
-                aria-hidden="true"
-                className="absolute inset-x-3 bottom-8 h-20 opacity-60"
-              >
-                <span className="absolute bottom-0 left-[4%] h-9 w-5 rounded-t bg-orange-200/60" />
-                <span className="absolute bottom-0 left-[15%] h-16 w-7 rounded-t-sm bg-orange-200/60" />
-                <span className="absolute bottom-0 left-[32%] h-12 w-6 rounded-t bg-orange-200/60" />
-                <span className="absolute bottom-0 left-[48%] h-20 w-8 rounded-t-sm bg-orange-200/60" />
-                <span className="absolute bottom-0 left-[68%] h-14 w-6 rounded-t bg-orange-200/60" />
-                <span className="absolute bottom-0 left-[84%] h-[72px] w-7 rounded-t-sm bg-orange-200/60" />
-              </div>
-              <MapPin className="absolute left-1/2 top-2 z-20 h-8 w-8 -translate-x-1/2 fill-orange-300 text-orange-400 drop-shadow-sm sm:h-9 sm:w-9" />
-              <div
-                aria-hidden="true"
-                className="absolute bottom-1 left-1/2 z-0 h-5 w-[82%] -translate-x-1/2 rounded-[50%] bg-orange-300/70 blur-[1px]"
-              />
+            <div className="relative z-10 mt-4 hidden h-[155px] overflow-hidden rounded-2xl lg:block">
               <Image
-                src="/images/cabs/uno-cabs-dzire-sidebar.png"
-                alt="White KBC Cabs sedan"
-                width={1693}
-                height={929}
+                src="/images/cabs/uno-cabs-partner-fleet-v2.png"
+                alt="KBC Cabs partner fleet on the road"
+                fill
                 priority
-                className="absolute bottom-0 left-1/2 z-10 h-[98px] w-[108%] -translate-x-1/2 object-contain object-bottom sm:h-[120px]"
+                className="object-cover object-center"
+                sizes="330px"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgba(12,18,16,0.55)] to-transparent" />
             </div>
-            <div className="relative z-10 hidden border-t border-orange-200/50 pt-4 lg:mt-4 lg:block lg:space-y-3">
+            <div className="relative z-10 hidden border-t border-teal-200/50 pt-4 lg:mt-4 lg:block lg:space-y-3">
               {BENEFITS.map(({ icon: Icon, title, detail }) => (
                 <div key={title} className="flex gap-2.5">
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/75 text-[#ef6614] shadow-sm">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/75 text-[#0f766e] shadow-sm">
                     <Icon className="h-4 w-4" />
                   </span>
                   <span>
-                    <strong className="block text-xs font-extrabold text-[#35313a]">
+                    <strong className="block text-xs font-extrabold text-[#0c1210]">
                       {title}
                     </strong>
-                    <small className="mt-0.5 block text-[11px] leading-4 text-[#59616e]">
+                    <small className="mt-0.5 block text-[11px] leading-4 text-[#5c6662]">
                       {detail}
                     </small>
                   </span>
                 </div>
               ))}
             </div>
-            <div className="relative z-10 hidden rounded-xl border border-white/70 bg-white/55 p-2.5 text-center text-xs leading-5 text-[#645762] lg:mt-4 lg:block">
-              <strong className="block text-[11px] not-italic text-[#4f4650]">
+            <div className="relative z-10 hidden rounded-xl border border-white/70 bg-white/55 p-2.5 text-center text-xs leading-5 text-[#5c6662] lg:mt-4 lg:block">
+              <strong className="block text-[11px] not-italic text-[#0c1210]">
                 Trusted by 1000+ Partners
               </strong>
               <span className="mt-0.5 block text-amber-500">★★★★★</span>

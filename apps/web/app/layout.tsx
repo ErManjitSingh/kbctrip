@@ -7,6 +7,7 @@ import { KbcSiteHeader } from "@/components/layout/KbcSiteHeader";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MarketingTracking } from "@/components/marketing/MarketingTracking";
 import { HERO_SLIDES, SITE } from "@/lib/constants";
+import "./kbc-tokens.css";
 import "./globals.css";
 
 const dancingScript = Dancing_Script({

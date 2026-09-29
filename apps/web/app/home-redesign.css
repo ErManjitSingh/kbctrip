@@ -1,0 +1,856 @@
+/**
+ * Homepage polish — Inter/system via tokens. Teal + Ink.
+ * Scoped under .kbc-home-v2 so other product pages stay intact.
+ */
+
+.kbc-home-v2 {
+  --ink: var(--kbc-ink, #0c1210);
+  --teal: var(--kbc-teal, #0f766e);
+  --teal-deep: var(--kbc-teal-deep, #115e59);
+  --muted: var(--kbc-muted, #5c6562);
+  --line: var(--kbc-line, #d9e3df);
+  --paper: var(--kbc-paper, #f3f7f5);
+  --paper-warm: var(--kbc-paper-warm, #f7faf8);
+  --ui: var(--font-roboto), var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--ui);
+  position: relative;
+  overflow-x: clip;
+}
+
+.kbc-home-v2,
+.kbc-home-v2 h1,
+.kbc-home-v2 h2,
+.kbc-home-v2 h3,
+.kbc-home-v2 strong,
+.kbc-home-v2 .section-heading h2,
+.kbc-home-v2 .destination-card-title,
+.kbc-home-v2 .offer-card-copy strong,
+.kbc-home-v2 .home-product-body strong {
+  font-family: var(--font-roboto), system-ui, sans-serif !important;
+  font-style: normal;
+}
+
+.kbc-home-v2 .kbc-atmosphere {
+  pointer-events: none;
+  position: absolute;
+  inset: 0 0 auto;
+  height: 720px;
+  background:
+    radial-gradient(ellipse 70% 55% at 85% 0%, rgba(15, 118, 110, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 10% 10%, rgba(12, 18, 16, 0.04), transparent 50%);
+  z-index: 0;
+}
+
+.kbc-home-v2 > main,
+.kbc-home-v2 > footer {
+  position: relative;
+  z-index: 1;
+}
+
+.kbc-home-v2 .section-kicker {
+  margin: 0 0 8px;
+  color: var(--teal);
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.kbc-home-v2 .section-heading-copy .section-kicker {
+  margin-bottom: 6px;
+}
+
+.kbc-home-v2 .home-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.kbc-home-v2 .home-section-head-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.kbc-home-v2 .home-section-head h2 {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+.kbc-home-v2 .home-section-lead {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.kbc-home-v2 .home-section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  color: var(--teal-deep);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.kbc-home-v2 .home-band {
+  padding: 72px 0;
+}
+
+.kbc-home-v2 .home-band-packages {
+  background: #fff;
+}
+
+.kbc-home-v2 .home-band-stays {
+  background: var(--paper);
+}
+
+.kbc-home-v2 .home-band-cabs {
+  background: #fff;
+  padding: 56px 0 40px;
+}
+
+.kbc-home-v2 .home-band-steps {
+  background: var(--paper-warm);
+}
+
+.kbc-home-v2 .home-band-cta {
+  padding: 28px 0 72px;
+  background: #fff;
+}
+
+/* Hero v3 — cover lifestyle, not cutout plate */
+.kbc-home-v2 .hero-v3 {
+  gap: 28px;
+  align-items: center;
+}
+
+.kbc-home-v2 .hero-v3 .hero-copy {
+  padding-bottom: 12px;
+}
+
+.kbc-home-v2 .hero-v3 h1 em {
+  color: var(--teal);
+  font-style: italic;
+}
+
+.kbc-home-v2 .hero-lead {
+  margin: 0;
+  max-width: 38ch;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.kbc-home-v2 .hero-proof {
+  margin-top: 22px;
+}
+
+.kbc-home-v2 .hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.kbc-home-v2 .hero-cta-primary,
+.kbc-home-v2 .hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.kbc-home-v2 .hero-cta-primary {
+  background: var(--ink);
+  color: #fff;
+}
+
+.kbc-home-v2 .hero-cta-primary:hover {
+  background: var(--teal);
+}
+
+.kbc-home-v2 .hero-cta-secondary {
+  border: 1px solid rgba(12, 18, 16, 0.16);
+  color: var(--ink);
+  background: #fff;
+}
+
+.kbc-home-v2 .hero-cta-secondary:hover {
+  border-color: var(--teal);
+  color: var(--teal-deep);
+}
+
+.kbc-home-v2 .hero-visual {
+  position: relative;
+  align-self: stretch;
+  min-height: 480px;
+  border-radius: var(--kbc-radius-xl, 28px);
+  overflow: hidden;
+  box-shadow: var(--kbc-shadow-lg, 0 28px 60px -32px rgba(12, 18, 16, 0.55));
+  background: var(--kbc-ink-soft, #1a2420);
+}
+
+.kbc-home-v2 .hero-visual-img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.kbc-home-v2 .hero-visual-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(12, 18, 16, 0.08) 0%, transparent 45%),
+    linear-gradient(180deg, transparent 55%, rgba(12, 18, 16, 0.28) 100%);
+  pointer-events: none;
+}
+
+.kbc-home-v2 .home-search-wrap {
+  position: relative;
+  z-index: 4;
+  margin-top: -12px;
+  margin-bottom: 8px;
+}
+
+.kbc-home-v2 .home-search-wrap .search-panel {
+  border-color: rgba(15, 118, 110, 0.12);
+  box-shadow: var(--kbc-shadow, 0 18px 40px -28px rgba(12, 18, 16, 0.45));
+}
+
+.kbc-home-v2 .search-tabs button.active {
+  color: var(--ink);
+  border-bottom-color: var(--teal);
+}
+
+.kbc-home-v2 .search-submit {
+  background: var(--ink);
+}
+
+.kbc-home-v2 .search-submit:hover {
+  background: var(--teal);
+}
+
+@keyframes home-reveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kbc-home-v2 .home-reveal {
+  animation: home-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.kbc-home-v2 .home-reveal-delay {
+  animation: home-reveal 0.65s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.kbc-home-v2 .home-reveal-late {
+  animation: home-reveal 0.55s 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Destinations — 6-up even grid */
+.kbc-home-v2 .destination-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(220px, 280px));
+  height: auto;
+  gap: 14px;
+}
+
+.kbc-home-v2 .destination-card {
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  flex: unset;
+  height: auto;
+  min-height: 220px;
+  width: auto;
+  min-width: 0;
+  grid-row: auto !important;
+  grid-column: auto !important;
+}
+
+.kbc-home-v2 .destination-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.kbc-home-v2 .destination-view-all:hover {
+  color: var(--ink);
+}
+
+/* Offers — keep min width so cards never collapse */
+.kbc-home-v2 .offer-card {
+  flex: 0 0 auto;
+  min-width: min(320px, 82vw);
+  width: min(360px, 82vw);
+}
+
+.kbc-home-v2 .offer-card-goa,
+.kbc-home-v2 .offer-card-packages,
+.kbc-home-v2 .offer-card-cabs,
+.kbc-home-v2 .offer-card-weekend,
+.kbc-home-v2 .offer-card-flights,
+.kbc-home-v2 .offer-card-buses {
+  flex-basis: min(360px, 82vw);
+  min-width: min(300px, 82vw);
+}
+
+.kbc-home-v2 .offer-card-shade {
+  background: linear-gradient(90deg, rgba(8, 14, 12, 0.62) 0%, rgba(8, 14, 12, 0.18) 66%, rgba(8, 14, 12, 0.04) 100%);
+}
+
+/* Catalog cards */
+.kbc-home-v2 .home-card-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.kbc-home-v2 .home-card-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kbc-home-v2 .home-product-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(12, 18, 16, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 14px 34px -28px rgba(12, 18, 16, 0.45);
+}
+
+.kbc-home-v2 .home-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 40px -26px rgba(12, 18, 16, 0.4);
+}
+
+.kbc-home-v2 .home-product-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 11;
+  background: #e8eeeb;
+}
+
+.kbc-home-v2 .home-product-media img {
+  object-fit: cover;
+}
+
+.kbc-home-v2 .home-product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(12, 18, 16, 0.78);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.kbc-home-v2 .home-product-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px 16px;
+}
+
+.kbc-home-v2 .home-product-meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.kbc-home-v2 .home-product-body strong {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.kbc-home-v2 .home-product-body b {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 750;
+  color: var(--teal-deep);
+}
+
+.kbc-home-v2 .home-product-body b small {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--muted);
+}
+
+/* Trust */
+.kbc-home-v2 .home-band-trust {
+  background: var(--paper);
+  padding: 64px 0;
+}
+
+.kbc-home-v2 .home-trust-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.kbc-home-v2 .home-trust-copy h2 {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.kbc-home-v2 .home-trust-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.kbc-home-v2 .home-trust-grid li {
+  display: grid;
+  gap: 10px;
+  padding: 22px 18px;
+  border-radius: var(--kbc-radius, 16px);
+  background: #fff;
+  border: 1px solid rgba(12, 18, 16, 0.06);
+}
+
+.kbc-home-v2 .home-trust-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--teal-deep);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+}
+
+.kbc-home-v2 .home-trust-grid strong {
+  font-size: 15px;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.kbc-home-v2 .home-trust-grid p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Cinematic cabs — full-bleed lifestyle cover */
+.kbc-home-v2 .home-cabs-panel {
+  position: relative;
+  display: grid;
+  align-items: end;
+  min-height: 520px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #0c1210;
+  box-shadow: 0 28px 60px -36px rgba(8, 28, 24, 0.5);
+}
+
+.kbc-home-v2 .home-cabs-panel-img {
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+.kbc-home-v2 .home-cabs-panel-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(8, 14, 12, 0.78) 0%, rgba(8, 14, 12, 0.35) 48%, rgba(8, 14, 12, 0.12) 100%),
+    linear-gradient(180deg, transparent 35%, rgba(8, 14, 12, 0.72) 100%);
+}
+
+.kbc-home-v2 .home-cabs-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 460px;
+  padding: 40px 36px 44px;
+  color: #fff;
+}
+
+.kbc-home-v2 .home-cabs-copy .section-kicker {
+  color: #5eead4;
+}
+
+.kbc-home-v2 .home-cabs-copy h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: 750;
+  letter-spacing: -0.038em;
+  line-height: 1.05;
+  color: #fff;
+}
+
+.kbc-home-v2 .home-cabs-copy .home-section-lead {
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 40ch;
+}
+
+.kbc-home-v2 .home-cabs-stats {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.kbc-home-v2 .home-cabs-stats li {
+  display: grid;
+  gap: 2px;
+}
+
+.kbc-home-v2 .home-cabs-stats strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.kbc-home-v2 .home-cabs-stats span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.kbc-home-v2 .home-cabs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.kbc-home-v2 .home-cabs-btn-primary,
+.kbc-home-v2 .home-cabs-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.kbc-home-v2 .home-cabs-btn-primary {
+  background: #fff;
+  color: var(--ink);
+}
+
+.kbc-home-v2 .home-cabs-btn-primary:hover {
+  background: #5eead4;
+  color: #0c1210;
+}
+
+.kbc-home-v2 .home-cabs-btn-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  background: transparent;
+}
+
+.kbc-home-v2 .home-cabs-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* How it works */
+.kbc-home-v2 .home-steps-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.kbc-home-v2 .home-step {
+  position: relative;
+  padding: 24px 22px 22px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(12, 18, 16, 0.08);
+}
+
+.kbc-home-v2 .home-step-num {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(15, 118, 110, 0.35);
+}
+
+.kbc-home-v2 .home-step-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--teal);
+  border: 1px solid rgba(15, 118, 110, 0.14);
+}
+
+.kbc-home-v2 .home-step strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.kbc-home-v2 .home-step p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Final CTA */
+.kbc-home-v2 .home-cta-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 36px 40px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(15, 118, 110, 0.14), transparent 40%),
+    linear-gradient(135deg, #0c1210, #16352c);
+  color: #fff;
+}
+
+.kbc-home-v2 .home-cta-panel .section-kicker {
+  color: #5eead4;
+}
+
+.kbc-home-v2 .home-cta-panel h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.kbc-home-v2 .home-cta-panel .home-section-lead {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.kbc-home-v2 .home-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.kbc-home-v2 .home-primary-btn,
+.kbc-home-v2 .home-ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.kbc-home-v2 .home-primary-btn {
+  background: #fff;
+  color: var(--ink);
+}
+
+.kbc-home-v2 .home-ghost-btn {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  background: transparent;
+}
+
+.kbc-home-v2 .home-ghost-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 980px) {
+  .kbc-home-v2 .hero-v3 {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+    padding-top: 36px;
+    gap: 20px;
+  }
+
+  .kbc-home-v2 .hero-visual {
+    min-height: 300px;
+    aspect-ratio: 16 / 11;
+  }
+
+  .kbc-home-v2 .home-card-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kbc-home-v2 .destination-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    height: auto;
+    gap: 10px;
+  }
+
+  .kbc-home-v2 .destination-card {
+    min-height: 190px;
+    aspect-ratio: 3 / 4;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  .kbc-home-v2 .home-trust-layout,
+  .kbc-home-v2 .home-trust-grid,
+  .kbc-home-v2 .home-steps-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .kbc-home-v2 .home-cabs-panel {
+    min-height: 480px;
+    border-radius: 22px;
+  }
+
+  .kbc-home-v2 .home-cabs-panel-shade {
+    background:
+      linear-gradient(180deg, rgba(8, 14, 12, 0.08) 0%, rgba(8, 14, 12, 0.5) 42%, rgba(8, 14, 12, 0.92) 78%, rgba(8, 14, 12, 0.96) 100%);
+  }
+
+  .kbc-home-v2 .home-cabs-copy {
+    max-width: none;
+    padding: 28px 24px 32px;
+  }
+
+  .kbc-home-v2 .home-cta-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 24px;
+  }
+
+  .kbc-home-v2 .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .kbc-home-v2 {
+    overflow-x: clip;
+  }
+
+  .kbc-home-v2 .page-width {
+    width: min(100% - 28px, 720px);
+  }
+
+  .kbc-home-v2 .home-band {
+    padding: 40px 0;
+  }
+
+  .kbc-home-v2 .home-band-cabs {
+    padding: 28px 0 20px;
+  }
+
+  .kbc-home-v2 .home-band-steps {
+    padding: 40px 0 48px;
+  }
+
+  .kbc-home-v2 .home-band-cta {
+    padding: 16px 0 56px;
+  }
+
+  .kbc-home-v2 .hero-v3 {
+    padding-top: 28px;
+  }
+
+  .kbc-home-v2 .hero-v3 h1 {
+    font-size: clamp(36px, 10vw, 48px);
+  }
+
+  .kbc-home-v2 .hero-lead {
+    font-size: 15px;
+  }
+
+  .kbc-home-v2 .hero-visual {
+    min-height: 240px;
+  }
+
+  .kbc-home-v2 .home-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .kbc-home-v2 .home-card-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .kbc-home-v2 .home-cabs-actions,
+  .kbc-home-v2 .home-cta-actions,
+  .kbc-home-v2 .hero-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .kbc-home-v2 .home-cabs-btn-primary,
+  .kbc-home-v2 .home-cabs-btn-ghost,
+  .kbc-home-v2 .home-primary-btn,
+  .kbc-home-v2 .home-ghost-btn,
+  .kbc-home-v2 .hero-cta-primary,
+  .kbc-home-v2 .hero-cta-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kbc-home-v2 .offer-card {
+    width: 82vw;
+    min-width: 82vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kbc-home-v2 .home-reveal,
+  .kbc-home-v2 .home-reveal-delay,
+  .kbc-home-v2 .home-reveal-late,
+  .kbc-home-v2 .home-product-card:hover {
+    animation: none !important;
+    transform: none !important;
+  }
+}

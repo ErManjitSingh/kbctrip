@@ -40,7 +40,7 @@ export function CabResultCard({ cab, onBook, className }: CabResultCardProps) {
       )}
     >
       {/* Image */}
-      <div className="relative h-44 w-full bg-[#F5F5F5]">
+      <div className="relative h-44 w-full overflow-hidden bg-[#1a2420]">
         {cab.featured_image ? (
           <Image
             src={cab.featured_image}

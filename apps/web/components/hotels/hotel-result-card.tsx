@@ -46,7 +46,7 @@ export function HotelResultCard({ hotel, bookingContext, className }: HotelResul
   return (
     <article
       className={cn(
-        "group relative cursor-pointer overflow-hidden rounded-lg border border-[#e0e0e0] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)]",
+        "group relative cursor-pointer overflow-hidden rounded-xl border border-[#d5e0dc] bg-white shadow-[0_1px_3px_rgba(12,18,16,0.04)] transition hover:border-[#0f766e]/25 hover:shadow-[0_6px_20px_-8px_rgba(12,18,16,0.1)]",
         className,
       )}
       role="link"
@@ -60,7 +60,7 @@ export function HotelResultCard({ hotel, bookingContext, className }: HotelResul
       }}
     >
       <div className="flex flex-col lg:flex-row">
-        <div className="relative z-10 w-full shrink-0 border-b border-[#eee] p-3 lg:w-[240px] lg:border-b-0 lg:border-r xl:w-[260px]">
+        <div className="relative z-10 w-full shrink-0 border-b border-[#e8eeec] p-2.5 lg:w-[240px] lg:border-b-0 lg:border-r lg:border-[#e8eeec] xl:w-[260px]">
           <HotelCardGallery
             hotelId={hotel.id}
             hotelName={hotel.name}
@@ -71,7 +71,7 @@ export function HotelResultCard({ hotel, bookingContext, className }: HotelResul
 
         <div className="relative z-10 min-w-0 flex-1 p-3 sm:p-4">
           <div className="flex flex-wrap items-start gap-2">
-            <h3 className="text-lg font-bold text-[#212121] sm:text-xl">{hotel.name}</h3>
+            <h3 className="text-lg font-bold text-[#0c1210] sm:text-xl">{hotel.name}</h3>
             <span className="flex items-center gap-0.5" aria-label={`${hotel.stars} star hotel`}>
               {Array.from({ length: hotel.stars }).map((_, i) => (
                 <Star key={i} className="h-3.5 w-3.5 fill-[#FFC107] text-[#FFC107]" aria-hidden />
@@ -79,14 +79,14 @@ export function HotelResultCard({ hotel, bookingContext, className }: HotelResul
             </span>
           </div>
 
-          <p className="mt-1 flex items-start gap-1 text-[12px] text-[#757575] sm:text-[13px]">
-            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
+          <p className="mt-1 flex items-start gap-1 text-[12px] text-[#5a6560] sm:text-[13px]">
+            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2} aria-hidden />
             <span>
-              <span className="font-semibold text-[#2196F3]">{hotel.area}</span>
-              <span> | In {cityLabel}</span>
+              <span className="font-semibold text-[#0f766e]">{hotel.area}</span>
+              <span> · {cityLabel}</span>
               {hotel.searchLocationLabel ? (
                 <>
-                  <span> | </span>
+                  <span> · </span>
                   {formatDistanceKm(hotel.distanceFromSearchKm) ? (
                     <span>{formatDistanceKm(hotel.distanceFromSearchKm)} from {hotel.searchLocationLabel}</span>
                   ) : (
@@ -99,57 +99,59 @@ export function HotelResultCard({ hotel, bookingContext, className }: HotelResul
 
           <HotelTagBadgeList tags={hotel.tags} className="mt-2" />
 
-          <p className="mt-2 text-[12px] capitalize text-[#757575]">{amenityLine}</p>
+          <p className="mt-2 text-[12px] capitalize text-[#5a6560]">{amenityLine}</p>
 
           {hotel.highlights.map((h) => (
-            <p key={h} className="mt-1.5 flex items-center gap-1 text-[12px] font-medium text-[#2E7D32]">
+            <p key={h} className="mt-1.5 flex items-center gap-1 text-[12px] font-medium text-[#0f766e]">
               <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} aria-hidden />
               {h}
             </p>
           ))}
 
-          <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#616161] sm:text-[13px]">
+          <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#5a6560] sm:text-[13px]">
             {hotel.description}{" "}
-            <button type="button" className="font-semibold text-[#2196F3] hover:underline">
+            <button type="button" className="font-semibold text-[#0f766e] hover:underline">
               Read more
             </button>
           </p>
         </div>
 
-        <div className="relative z-10 flex shrink-0 flex-row items-end justify-between gap-4 border-t border-[#eee] p-3 sm:p-4 lg:w-[200px] lg:flex-col lg:items-stretch lg:justify-start lg:border-l lg:border-t-0 xl:w-[220px]">
+        <div className="relative z-10 flex shrink-0 flex-row items-end justify-between gap-4 border-t border-[#e8eeec] bg-[#f3f7f5]/60 p-3 sm:p-4 lg:w-[200px] lg:flex-col lg:items-stretch lg:justify-start lg:border-l lg:border-t-0 xl:w-[220px]">
           <div className="flex items-start gap-2 lg:justify-end">
             <div className="text-right">
               <div className="flex items-center justify-end gap-2">
-                <span className="rounded bg-[#008009] px-1.5 py-0.5 text-sm font-bold text-white">
+                <span className="rounded-md bg-[#0f766e] px-1.5 py-0.5 text-sm font-bold text-white">
                   {hotel.rating.toFixed(1)}
                 </span>
-                <span className="text-left text-[12px] leading-tight text-[#212121]">
+                <span className="text-left text-[12px] leading-tight text-[#0c1210]">
                   <span className="block font-semibold">{hotel.ratingLabel}</span>
-                  <span className="text-[#757575]">{formatInrAmount(hotel.reviewCount)} Reviews</span>
+                  <span className="text-[#5a6560]">{formatInrAmount(hotel.reviewCount)} Reviews</span>
                 </span>
               </div>
             </div>
           </div>
 
           <div className="text-right lg:mt-auto">
-            <p className="text-[12px] text-[#9E9E9E] line-through">₹ {formatInrAmount(hotel.originalPrice)}</p>
-            <p className="text-xl font-bold text-[#212121] sm:text-2xl">
+            {hotel.originalPrice > hotel.price ? (
+              <p className="text-[12px] text-[#8a948e] line-through">₹ {formatInrAmount(hotel.originalPrice)}</p>
+            ) : null}
+            <p className="text-xl font-extrabold tracking-tight text-[#0c1210] sm:text-2xl">
               ₹ {formatInrAmount(hotel.price)}
             </p>
-            <p className="mt-0.5 text-[11px] text-[#757575]">
-              + ₹{formatInrAmount(hotel.taxes)} Taxes &amp; fees Per Night
+            <p className="mt-0.5 text-[11px] text-[#5a6560]">
+              + ₹{formatInrAmount(hotel.taxes)} taxes &amp; fees / night
             </p>
             <Link
               href={detailHref}
               onClick={(e) => e.stopPropagation()}
-              className="mt-3 flex w-full min-w-[120px] items-center justify-center rounded-md bg-[#0f766e] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#0d9488] sm:min-w-[140px] relative z-10"
+              className="relative z-10 mt-3 flex w-full min-w-[120px] items-center justify-center rounded-lg bg-[#0f766e] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#115e59] sm:min-w-[140px]"
             >
               View Room
             </Link>
             <Link
               href="/login"
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 mt-2 inline-flex w-full items-center justify-end gap-1 text-[12px] font-semibold text-[#2196F3] hover:underline"
+              className="relative z-10 mt-2 inline-flex w-full items-center justify-end gap-1 text-[12px] font-semibold text-[#0f766e] hover:underline"
             >
               Login &amp; Save More
               <Heart className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
