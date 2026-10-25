@@ -7,12 +7,10 @@
 import type { MarketplaceHolidayPackage } from "./booking-api";
 import type { TourItineraryDay, TourPackage } from "./constants";
 import type { CabOption, DestinationHotels, HotelOption } from "./package-customizer-data";
-
-const fallbackImage =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
+import { packageCoverUrls } from "./package-cover";
 
 export function toTourPackage(pack: MarketplaceHolidayPackage): TourPackage {
-  const photos = pack.photos?.length ? pack.photos : [fallbackImage];
+  const photos = packageCoverUrls(pack.destination, pack.photos);
   const itinerary: TourItineraryDay[] = (pack.itinerary ?? []).map((day) => ({
     day: day.day,
     title: day.title,

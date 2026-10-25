@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BrandLogo } from './BrandLogo';
+import { SITE } from '@/lib/constants';
 import './site-footer.css';
 
 export function SiteFooter() {
@@ -9,7 +10,9 @@ export function SiteFooter() {
         <div className="footer-brand-block">
           <BrandLogo tone="light" size="lg" />
           <p>Verified stays across India. Hotels, packages, and cabs in one account.</p>
-          <a className="footer-mail" href="mailto:hello@kbctrip.com">hello@kbctrip.com</a>
+          <a className="footer-mail" href={`tel:+${SITE.whatsappPhoneDigits}`}>{SITE.phone}</a>
+          <a className="footer-mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          <p className="footer-address">{SITE.address}</p>
         </div>
 
         <div className="footer-nav-grid">

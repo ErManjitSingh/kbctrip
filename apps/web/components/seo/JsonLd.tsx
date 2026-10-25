@@ -17,9 +17,8 @@ export function JsonLd() {
     address: {
       "@type": "PostalAddress",
       streetAddress: SITE.address,
-      addressLocality: "Shimla",
-      addressRegion: "Himachal Pradesh",
-      postalCode: "171006",
+      addressLocality: "New Delhi",
+      addressRegion: "Delhi",
       addressCountry: "IN",
     },
     sameAs: [SITE.url],

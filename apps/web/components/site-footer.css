@@ -45,6 +45,14 @@
   color: #fff;
 }
 
+.site-footer .footer-address {
+  margin: 0;
+  color: #c9c4cd;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
 .footer-nav-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

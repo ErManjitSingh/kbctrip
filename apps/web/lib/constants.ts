@@ -32,13 +32,12 @@ export const SITE = {
   name: "KBC Trip",
   tagline: "Book everything. Travel everywhere.",
   url: resolveSiteUrl(),
-  phone: "+91 8353057000",
+  phone: "+91 98100 23449",
   /** For `https://wa.me/{digits}` — India country code + 10-digit mobile, no plus. */
-  whatsappPhoneDigits: "918353057000",
+  whatsappPhoneDigits: "919810023449",
   email: "hello@kbctrip.com",
   /** Office address shown in footer, schema.org, and contact blocks. */
-  address:
-    "Verma Building, Kamla Nagar, sanjauli, Shimla, Himachal Pradesh 171006",
+  address: "New Delhi, Delhi",
   /** SVG wordmark mark — used where a file URL is required; prefer BrandLogo in UI. */
   logoUrl: "/images/kbc-trip-mark.svg",
 } as const;

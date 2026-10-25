@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Bath,
   BedDouble,
-  CalendarDays,
   Car,
   Check,
   Coffee,
@@ -31,6 +30,7 @@ import {
 } from '@/lib/booking-api';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
+import { packageCoverUrls } from '@/lib/package-cover';
 
 function photoOf(urls: string[] | undefined, fallback: string) {
   const first = urls?.find(Boolean);
@@ -133,6 +133,19 @@ function packageFacts(pack: MarketplaceHolidayPackage) {
     .slice(0, 3);
 }
 
+function TripPhoto({ urls }: { urls: string[] }) {
+  const [index, setIndex] = useState(0);
+  const src = urls[index] ?? '/images/home/lite/card-lodge.jpg';
+  return (
+    <img
+      className="home-trip-photo"
+      src={src}
+      alt=""
+      onError={() => setIndex((current) => (current + 1 < urls.length ? current + 1 : current))}
+    />
+  );
+}
+
 function CatalogSkeleton({ label }: { label: string }) {
   return (
     <section className="home-band" aria-busy="true" aria-label={`Loading ${label}`}>
@@ -207,62 +220,33 @@ export function HomePackagesSection() {
             View all <ArrowRight size={15} aria-hidden />
           </Link>
         </div>
-        <div className="home-card-grid home-card-grid-4">
+        <div className="home-trip-grid">
           {packs.slice(0, 4).map((pack) => {
             const facts = packageFacts(pack);
-            const extra = Math.max(0, pack.inclusions.length - facts.length);
-            const blurb = clip(pack.description);
             return (
-              <Link key={pack.id} href={`/packages/${pack.slug}`} className="home-product-card">
-                <span className="home-product-media kbc-media-cover">
-                  <Image
-                    src={photoOf(pack.photos, '/images/home/lite/dest-goa.jpg')}
-                    alt=""
-                    fill
-                    sizes="(max-width: 700px) 90vw, 33vw"
-                    unoptimized
-                  />
-                  {pack.badge ? <span className="home-product-badge">{pack.badge}</span> : null}
-                  <span className="home-product-duration">
-                    {pack.days}D / {pack.nights}N
-                  </span>
+              <Link key={pack.id} href={`/packages/${pack.slug}`} className="home-trip-card">
+                <TripPhoto urls={packageCoverUrls(pack.destination, pack.photos)} />
+                <span className="home-trip-shade" aria-hidden />
+                <span className="home-trip-days">
+                  {pack.days}D / {pack.nights}N
                 </span>
-                <span className="home-product-body">
-                  <span className="home-product-meta">
+                <span className="home-trip-copy">
+                  <span className="home-trip-place">
                     <MapPin size={13} aria-hidden />
                     {pack.destination}
                   </span>
                   <strong>{pack.title}</strong>
-                  <span className="home-product-facts">
-                    <span>
-                      <CalendarDays size={13} aria-hidden />
-                      {pack.days} days · {pack.nights} nights
-                    </span>
-                    {pack.departureCity ? (
-                      <span>
-                        <Plane size={13} aria-hidden />
-                        From {pack.departureCity}
-                      </span>
-                    ) : null}
-                  </span>
                   {facts.length ? (
-                    <span className="home-chip-row" aria-label="Included">
-                      {facts.map(({ Icon, label }) => (
-                        <span key={label} className="home-chip">
-                          <Icon size={12} aria-hidden />
-                          {label}
-                        </span>
+                    <span className="home-trip-facts">
+                      {facts.map(({ label }) => (
+                        <span key={label}>{label}</span>
                       ))}
-                      {extra > 0 ? <span className="home-chip home-chip-more">+{extra}</span> : null}
                     </span>
-                  ) : blurb ? (
-                    <span className="home-product-blurb">{blurb}</span>
                   ) : null}
-                  <b>
-                    <small>From</small>
-                    {formatPrice(pack.pricePerPersonMinor, pack.currency)}
+                  <em>
+                    From {formatPrice(pack.pricePerPersonMinor, pack.currency)}
                     <small>/ person</small>
-                  </b>
+                  </em>
                 </span>
               </Link>
             );

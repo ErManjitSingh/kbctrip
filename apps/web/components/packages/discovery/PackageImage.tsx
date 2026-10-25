@@ -14,6 +14,8 @@ import { Heart } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+const COVER_FALLBACK = "/images/home/lite/card-lodge.jpg";
+
 export type PackageImageProps = {
   src: string;
   alt: string;
@@ -41,17 +43,21 @@ export function PackageImage({
   className,
 }: PackageImageProps) {
   const [wishlisted, setWishlisted] = useState(false);
+  const [broken, setBroken] = useState(false);
   const hasDiscount = typeof discountPct === "number" && discountPct > 0;
+  const shown = broken || !src ? COVER_FALLBACK : src;
 
   // 16:10 rather than 4:3 — still a full-bleed hero, ~37px shorter per tile,
   // which is the single largest contributor to the compacted card height.
   return (
     <div className={cn("relative aspect-[16/10] w-full overflow-hidden bg-[#1a2420]", className)}>
       <Image
-        src={src}
+        src={shown}
         alt={alt}
         fill
         priority={priority}
+        unoptimized
+        onError={() => setBroken(true)}
         className="object-cover transition duration-500 group-hover:scale-[1.04]"
         sizes="(max-width:640px) 100vw, (max-width:1280px) 50vw, 33vw"
       />
