@@ -6,7 +6,7 @@ import {
   resolveHotelCity,
   searchHotels,
 } from "@/lib/hotels-api";
-import { parseHotelCitySlug } from "@/lib/hotels-catalog";
+import { parseHotelCitySlug, type HotelCity } from "@/lib/hotels-catalog";
 import { TRAVEL_HOME_BRAND } from "@/lib/travel-home-brand";
 
 // This page stays force-dynamic — it renders user search params (check_in,
@@ -39,12 +39,34 @@ function readIntParam(
   return Number.isFinite(n) && n > 0 ? n : fallback;
 }
 
+function labelFromSlug(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+/** Keep a typed city on the results page even when that city has no hotels yet. */
+function cityFromSearch(slug: string, resolved: HotelCity | null): HotelCity | null {
+  if (!slug) return null;
+  if (resolved) return resolved;
+  const name = labelFromSlug(slug);
+  if (!name) return null;
+  return {
+    slug,
+    name,
+    fullLocation: `${name}, India`,
+    country: "India",
+  };
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const citySlug = parseHotelCitySlug(slug);
-  const city = await resolveHotelCity(citySlug);
+  const city = cityFromSearch(citySlug, await resolveHotelCity(citySlug));
   if (!city) {
     return { title: `Hotels | ${TRAVEL_HOME_BRAND.name}` };
   }
@@ -58,10 +80,11 @@ export default async function HotelInCityPage({ params, searchParams }: PageProp
   const { slug } = await params;
   const sp = await searchParams;
   const citySlug = parseHotelCitySlug(slug);
-  const [city, destinations] = await Promise.all([
+  const [resolved, destinations] = await Promise.all([
     resolveHotelCity(citySlug),
     fetchHotelDestinations(),
   ]);
+  const city = cityFromSearch(citySlug, resolved);
   if (!city) notFound();
 
   const checkIn = readParam(sp.check_in);

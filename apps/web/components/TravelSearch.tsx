@@ -55,13 +55,11 @@ type Destination = {
 };
 
 const destinationSets: Record<Service, Destination[]> = {
-  Hotels: [
-    { name: 'Goa', detail: 'India · beaches & stays', search: 'Goa' },
-    { name: 'Manali', detail: 'Himachal Pradesh', search: 'Manali' },
-    { name: 'Shimla', detail: 'Himachal Pradesh', search: 'Shimla' },
-    { name: 'Jaipur', detail: 'Rajasthan', search: 'Jaipur' },
-    { name: 'Udaipur', detail: 'Rajasthan', search: 'Udaipur' },
-  ],
+  Hotels: HOTEL_MAJOR_CITY_OPTIONS.map((city) => ({
+    name: city.city,
+    detail: city.state ? `${city.state}, ${city.country}` : city.country,
+    search: city.city,
+  })),
   Cabs: [
     { name: 'Bengaluru Airport → City Centre', detail: 'Airport transfer · 38 km', search: 'Bengaluru Airport' },
     { name: 'Delhi Airport → Gurugram', detail: 'Airport transfer · 18 km', search: 'Delhi Airport' },
@@ -69,10 +67,13 @@ const destinationSets: Record<Service, Destination[]> = {
     { name: 'Jaipur → Udaipur', detail: 'Outstation · 395 km', search: 'Jaipur to Udaipur' },
   ],
   Packages: [
-    { name: 'Goa Getaway', detail: '4 nights · Stay + transfers', search: 'Goa' },
-    { name: 'Kashmir Escape', detail: '5 nights · Stay + transfers', search: 'Kashmir' },
-    { name: 'Manali Circuit', detail: '5 nights · Hills', search: 'Manali' },
-    { name: 'Himachal Explorer', detail: '6 nights · Manali + Shimla', search: 'Himachal' },
+    { name: 'Goa', detail: 'Beach packages', search: 'Goa' },
+    { name: 'Manali', detail: 'Hill packages', search: 'Manali' },
+    { name: 'Kashmir', detail: 'Valley packages', search: 'Kashmir' },
+    { name: 'Jaipur', detail: 'Rajasthan packages', search: 'Jaipur' },
+    { name: 'Shimla', detail: 'Himachal packages', search: 'Shimla' },
+    { name: 'Dubai', detail: 'International packages', search: 'Dubai' },
+    { name: 'Kerala', detail: 'South India packages', search: 'Kerala' },
   ],
   Flights: [
     { name: 'Delhi', detail: 'DEL · Indira Gandhi', search: 'Delhi' },
@@ -175,9 +176,18 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
 
   const copy = serviceCopy[activeService];
   const destinationOptions = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return destinationSets[activeService];
-    return destinationSets[activeService].filter((item) => `${item.name} ${item.detail}`.toLowerCase().includes(normalized));
+    const typed = query.trim();
+    const normalized = typed.toLowerCase();
+    const base = destinationSets[activeService];
+    const filtered = !normalized
+      ? base
+      : base.filter((item) => `${item.name} ${item.detail} ${item.search}`.toLowerCase().includes(normalized));
+    if (!typed) return filtered;
+    const exact = filtered.some(
+      (item) => item.name.toLowerCase() === normalized || item.search.toLowerCase() === normalized,
+    );
+    if (exact) return filtered;
+    return [{ name: typed, detail: 'Search for this place', search: typed }, ...filtered];
   }, [activeService, query]);
 
   useEffect(() => {
@@ -268,7 +278,13 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
     }
 
     if (activeService === 'Cabs') {
-      const params = new URLSearchParams({ q: city, pickup: formatQueryDate(checkIn) });
+      const route = destination?.name ?? city;
+      const [from, to] = route.split('→').map((part) => part.trim());
+      const params = new URLSearchParams({
+        pickup: from || city,
+        date: formatQueryDate(checkIn),
+      });
+      if (to) params.set('drop', to);
       router.push(`/cabs?${params.toString()}`);
       return;
     }
