@@ -11,6 +11,7 @@ import {
   LifeBuoy,
   Menu,
   Plane,
+  Smartphone,
   Tag,
   Ticket,
   TrainFront,
@@ -146,6 +147,14 @@ export function KbcSiteHeader() {
           </nav>
 
           <div className="kbc-site-header-actions">
+            <Link
+              className={pathname === '/app' ? 'kbc-app-link is-active' : 'kbc-app-link'}
+              href="/app"
+              aria-current={pathname === '/app' ? 'page' : undefined}
+            >
+              <Smartphone size={16} strokeWidth={2.1} aria-hidden />
+              <span>App</span>
+            </Link>
             <Link className="kbc-tool" href="/help">Help</Link>
             <Link className="kbc-tool" href="/account/bookings">My trips</Link>
             <span className="currency">₹ INR</span>
@@ -180,6 +189,13 @@ export function KbcSiteHeader() {
               })}
             </div>
             <div className="kbc-menu-extra">
+              <Link href="/app" onClick={() => setMenuOpen(false)}>
+                <Smartphone size={16} aria-hidden />
+                <span>
+                  <b>App</b>
+                  <small>Download</small>
+                </span>
+              </Link>
               <Link href="/help" onClick={() => setMenuOpen(false)}>
                 <LifeBuoy size={16} aria-hidden />
                 <span>

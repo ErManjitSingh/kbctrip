@@ -138,6 +138,23 @@
   gap: 14px;
 }
 
+.kbc-site-header .kbc-app-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2a3340;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.kbc-site-header .kbc-app-link:hover,
+.kbc-site-header .kbc-app-link.is-active {
+  color: #0f766e;
+}
+
 .kbc-site-header .kbc-tool {
   color: #3f3b44;
   font-size: 13px;
@@ -274,6 +291,25 @@
   .kbc-site-header .currency,
   .kbc-site-header .kbc-tool {
     display: none;
+  }
+
+  .kbc-site-header .kbc-app-link {
+    position: relative;
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: 1px solid rgba(18, 16, 20, 0.1);
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  .kbc-site-header .kbc-app-link span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
   }
 
   .kbc-site-header.is-menu-open {
