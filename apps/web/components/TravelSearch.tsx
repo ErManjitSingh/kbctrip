@@ -17,6 +17,7 @@ import {
   Search,
   Users,
   X,
+  ArrowRight,
 } from 'lucide-react';
 import {
   findHotelLocality,
@@ -259,8 +260,15 @@ export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'h
       <form className="search-fields" onSubmit={submitSearch}>
         <div className="search-control search-control-location">
           <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'location'} aria-haspopup="listbox" onClick={() => togglePopover('location')}>
-            <span><MapPin size={13} aria-hidden />{copy.location}</span>
-            <strong>{destination?.name ?? 'Search city, hotel or area'}<ChevronDown size={14} /></strong>
+            <span>
+              <MapPin className="loc-pin" size={13} aria-hidden />
+              <Search className="loc-glass" size={16} aria-hidden />
+              {copy.location}
+            </span>
+            <strong className={destination ? undefined : 'is-placeholder'}>
+              {destination?.name ?? 'Search city, hotel or area'}
+              <ChevronDown size={14} />
+            </strong>
           </button>
           {openPopover === 'location' && (
             <div className="search-popover location-popover">
@@ -304,7 +312,11 @@ export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'h
           )}
         </div>
 
-        <button className="search-submit" type="submit"><Search size={16} aria-hidden />Search</button>
+        <button className="search-submit" type="submit">
+          <Search className="search-submit-icon" size={16} aria-hidden />
+          <ArrowRight className="search-submit-arrow" size={16} aria-hidden />
+          <span>Search</span>
+        </button>
       </form>
       {searchMessage && <p className="search-notice" role="status">{searchMessage}</p>}
     </section>
