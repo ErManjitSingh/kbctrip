@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
 import { TopBanner } from "@/components/layout/top-banner";
 import { KbcSiteHeader } from "@/components/layout/KbcSiteHeader";
+import { RightFloatingRail } from "@/components/layout/right-floating-rail";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MarketingTracking } from "@/components/marketing/MarketingTracking";
 import { HERO_SLIDES, SITE } from "@/lib/constants";
@@ -139,6 +140,7 @@ export default function RootLayout({
           <TopBanner />
           <KbcSiteHeader />
           {children}
+          <RightFloatingRail />
         </AppProviders>
         {/* Temporarily disabled: the consent dialog was obstructing mobile CTA controls. */}
         {/* <CookieConsentBanner /> */}
