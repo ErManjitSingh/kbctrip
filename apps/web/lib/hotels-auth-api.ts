@@ -154,6 +154,25 @@ export async function loginOtpVerify(
   throw new ApiError("Phone OTP is not available yet. Sign in with email on /login.", 501);
 }
 
+export async function forgotPasswordOtpSend(_payload: {
+  phone?: string;
+  email?: string;
+}): Promise<{ message: string }> {
+  throw new ApiError("Password reset is not available yet. Sign in with email on /login.", 501);
+}
+
+export async function forgotPasswordOtpVerify(_payload: {
+  otp: string;
+  phone?: string;
+  email?: string;
+}): Promise<{ reset_token: string; message?: string }> {
+  throw new ApiError("Password reset is not available yet. Sign in with email on /login.", 501);
+}
+
+export async function resetPassword(_token: string, _password: string): Promise<{ message: string }> {
+  throw new ApiError("Password reset is not available yet. Sign in with email on /login.", 501);
+}
+
 /** @deprecated kept for callers that normalize Unotrips-shaped payloads */
 export async function normalizeAuthPayload(data: unknown, _phone?: string): Promise<AuthResponse> {
   if (!data || typeof data !== "object") {
