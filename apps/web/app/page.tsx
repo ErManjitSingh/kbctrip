@@ -10,6 +10,7 @@ import {
   HomeFinalCtaSection,
 } from '@/components/home/home-story-sections';
 import { HomePackagesSection, HomeStaysSection } from '@/components/home/home-catalog-sections';
+import { MobileHome } from '@/components/home/MobileHome';
 import './kbc-home.css';
 import './home-redesign.css';
 
@@ -21,6 +22,8 @@ export default function HomePage() {
     <div className="kbc-shell kbc-home-v2">
       <div className="kbc-atmosphere" aria-hidden="true" />
       <main>
+        <MobileHome />
+        <div className="home-desktop">
         <section className="page-width hero">
           <div className="hero-copy home-reveal">
             <h1>
@@ -73,6 +76,7 @@ export default function HomePage() {
         <OfferShowcase />
         <HomeCabsSection />
         <HomeFinalCtaSection />
+        </div>
       </main>
       <SiteFooter />
     </div>
