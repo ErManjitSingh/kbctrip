@@ -24,7 +24,7 @@ export default function HomePage() {
       <main>
         <MobileHome />
         <div className="home-desktop">
-        <section className="page-width hero">
+        <section className="page-width hero home-hero-only">
           <div className="hero-copy home-reveal">
             <h1>
               Book <em>everything.</em>

@@ -37,8 +37,20 @@
   }
 
   .kbc-home-v2 .kbc-atmosphere,
-  .kbc-home-v2 .home-desktop {
+  .kbc-home-v2 .home-hero-only,
+  .kbc-home-v2 .home-search-wrap {
     display: none;
+  }
+
+  .m-search-slot {
+    position: relative;
+    z-index: 5;
+    margin: -72px 16px 0;
+  }
+
+  .m-search-slot .search-panel {
+    width: 100%;
+    margin: 0;
   }
 
   .m-home {
