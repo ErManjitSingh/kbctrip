@@ -53,6 +53,13 @@ const copy: Record<string, { kicker: string; title: string; body: string; photo:
     photo: 'kashmir-bg.png',
     waitlist: 'Open My trips to manage a booking',
   },
+  activities: {
+    kicker: 'Things to do',
+    title: 'Activities for the day you land.',
+    body: 'Tours and experiences will share the same guest account as your hotel. Search is saved. Booking opens with the rest of the trip stack.',
+    photo: 'goa-bg.png',
+    waitlist: 'Notify me when activities open',
+  },
   cancellation: {
     kicker: 'Policies',
     title: 'Cancel before check-in. Policy decides the refund.',
@@ -62,7 +69,7 @@ const copy: Record<string, { kicker: string; title: string; body: string; photo:
   },
 };
 
-export function ComingSoon({ product }: { product: string }) {
+export function ComingSoon({ product, query }: { product: string; query?: { q?: string; date?: string; guests?: string } }) {
   const key = product.toLowerCase();
   const page = copy[key] ?? {
     kicker: 'Coming next',
@@ -86,6 +93,13 @@ export function ComingSoon({ product }: { product: string }) {
           <div className="page-width soon-hero-inner">
             <p><BadgeCheck size={15} /> {page.kicker}</p>
             <h1>{page.title}</h1>
+            {query?.q ? (
+              <strong className="soon-query">
+                {query.q}
+                {query.date ? ` · ${query.date}` : ''}
+                {query.guests ? ` · ${query.guests} guests` : ''}
+              </strong>
+            ) : null}
             <span>{page.body}</span>
             <div className="soon-actions">
               <Link href="/hotels">

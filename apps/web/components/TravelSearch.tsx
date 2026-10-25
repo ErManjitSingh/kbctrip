@@ -6,6 +6,7 @@ import {
   BedDouble,
   CalendarDays,
   Car,
+  Compass,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -13,8 +14,10 @@ import {
   Gift,
   MapPin,
   Minus,
+  Plane,
   Plus,
   Search,
+  TrainFront,
   Users,
   X,
   ArrowRight,
@@ -27,13 +30,22 @@ import {
   slugifyCityName,
 } from '@/lib/hotels-catalog';
 
-const services = [
+const coreServices = [
   { label: 'Hotels', icon: BedDouble },
   { label: 'Packages', icon: Gift },
   { label: 'Cabs', icon: Car },
 ] as const;
 
-type Service = (typeof services)[number]['label'];
+const bannerServices = [
+  { label: 'Hotels', icon: BedDouble },
+  { label: 'Flights', icon: Plane },
+  { label: 'Trains', icon: TrainFront },
+  { label: 'Cabs', icon: Car },
+  { label: 'Activity', icon: Compass },
+  { label: 'Packages', icon: Gift },
+] as const;
+
+type Service = (typeof bannerServices)[number]['label'];
 type PopoverName = 'location' | 'start' | 'end' | 'travellers' | null;
 
 type Destination = {
@@ -62,12 +74,34 @@ const destinationSets: Record<Service, Destination[]> = {
     { name: 'Manali Circuit', detail: '5 nights · Hills', search: 'Manali' },
     { name: 'Himachal Explorer', detail: '6 nights · Manali + Shimla', search: 'Himachal' },
   ],
+  Flights: [
+    { name: 'Delhi', detail: 'DEL · Indira Gandhi', search: 'Delhi' },
+    { name: 'Mumbai', detail: 'BOM · Chhatrapati Shivaji', search: 'Mumbai' },
+    { name: 'Goa', detail: 'GOI · Dabolim', search: 'Goa' },
+    { name: 'Bengaluru', detail: 'BLR · Kempegowda', search: 'Bengaluru' },
+    { name: 'Dubai', detail: 'DXB · International', search: 'Dubai' },
+  ],
+  Trains: [
+    { name: 'Delhi → Jaipur', detail: 'Rail · about 5 hours', search: 'Delhi to Jaipur' },
+    { name: 'Chandigarh → Shimla', detail: 'Rail · toy train', search: 'Chandigarh to Shimla' },
+    { name: 'Mumbai → Goa', detail: 'Rail · Konkan', search: 'Mumbai to Goa' },
+    { name: 'Delhi → Manali route', detail: 'Rail to Chandigarh, then hill', search: 'Delhi to Manali' },
+  ],
+  Activity: [
+    { name: 'Goa', detail: 'Beaches, cruises, water sports', search: 'Goa' },
+    { name: 'Manali', detail: 'Solang, rafting, snow', search: 'Manali' },
+    { name: 'Jaipur', detail: 'Forts, markets, old city', search: 'Jaipur' },
+    { name: 'Shimla', detail: 'Ridge, mall road, walks', search: 'Shimla' },
+  ],
 };
 
 const serviceCopy: Record<Service, { location: string; start: string; end: string; travellers: string }> = {
   Hotels: { location: 'Where are you going?', start: 'Check-in', end: 'Check-out', travellers: 'Guests & Rooms' },
   Cabs: { location: 'Pickup & drop', start: 'Pickup date', end: 'Pickup time', travellers: 'Passengers & Cars' },
   Packages: { location: 'Where do you want to go?', start: 'Start date', end: 'Duration', travellers: 'Travellers & Rooms' },
+  Flights: { location: 'Where are you flying?', start: 'Depart', end: 'Return', travellers: 'Passengers' },
+  Trains: { location: 'Where are you going?', start: 'Depart', end: 'Return', travellers: 'Passengers' },
+  Activity: { location: 'Where is the activity?', start: 'Start date', end: 'End date', travellers: 'Guests' },
 };
 
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -82,6 +116,10 @@ function formatDate(date: Date) {
   const month = monthNames[date.getMonth()].slice(0, 3);
   const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
   return `${day} ${month}, ${weekday}`;
+}
+
+function formatTripDate(date: Date) {
+  return new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).format(date);
 }
 
 function formatQueryDate(date: Date) {
@@ -107,7 +145,8 @@ function getCalendarCells(month: Date) {
   return cells;
 }
 
-export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'hero' }) {
+export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?: 'default' | 'hero'; scope?: 'core' | 'banner' }) {
+  const services = scope === 'banner' ? bannerServices : coreServices;
   const router = useRouter();
   const panelRef = useRef<HTMLElement>(null);
   const [activeService, setActiveService] = useState<Service>('Hotels');
@@ -233,13 +272,36 @@ export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'h
       router.push(`/cabs?${params.toString()}`);
       return;
     }
+
+    const discoveryPath = activeService === 'Flights' ? '/flights' : activeService === 'Trains' ? '/trains' : '/activities';
+    const params = new URLSearchParams({
+      q: city,
+      date: formatQueryDate(checkIn),
+      guests: String(adults + children),
+    });
+    router.push(`${discoveryPath}?${params.toString()}`);
   }
 
-  const travellerSummary = `${adults + children} Guest${adults + children === 1 ? '' : 's'}, ${rooms} Room${rooms === 1 ? '' : 's'}`;
+  const partyCount = adults + children;
+  const travellerSummary = activeService === 'Flights' || activeService === 'Trains'
+    ? `${partyCount} Passenger${partyCount === 1 ? '' : 's'}`
+    : activeService === 'Cabs'
+      ? `${partyCount} Passenger${partyCount === 1 ? '' : 's'}, ${rooms} Car${rooms === 1 ? '' : 's'}`
+      : activeService === 'Activity'
+        ? `${partyCount} Guest${partyCount === 1 ? '' : 's'}`
+        : `${partyCount} Guest${partyCount === 1 ? '' : 's'}, ${rooms} Room${rooms === 1 ? '' : 's'}`;
+  const guestTrip = activeService === 'Hotels' || activeService === 'Packages'
+    ? `${rooms} room${rooms === 1 ? '' : 's'}, ${adults} adult${adults === 1 ? '' : 's'}, ${children} ${children === 1 ? 'child' : 'children'}`
+    : travellerSummary;
+  const locationEmpty = activeService === 'Hotels'
+    ? (scope === 'banner' ? 'Where to?' : 'Where do you want to go?')
+    : copy.location;
+  const nightCount = Math.max(1, Math.round((startOfDay(checkOut).getTime() - startOfDay(checkIn).getTime()) / 86400000));
 
   return (
     <section
       ref={panelRef}
+      data-service={activeService}
       className={`search-panel${variant === 'hero' ? ' search-panel-hero' : ' page-width'}`}
       aria-label="Search travel"
     >      <div className="search-tabs" role="tablist" aria-label="Travel category">
@@ -266,7 +328,7 @@ export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'h
               {copy.location}
             </span>
             <strong className={destination ? undefined : 'is-placeholder'}>
-              {destination?.name ?? 'Search city, hotel or area'}
+              {destination?.name ?? locationEmpty}
               <ChevronDown size={14} />
             </strong>
           </button>
@@ -292,14 +354,18 @@ export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'h
           <CalendarPopover month={visibleMonth} selected={checkIn} rangeStart={checkIn} rangeEnd={checkOut} onMonthChange={setVisibleMonth} onSelect={selectDate} title={copy.start} />
         </DateControl>
 
-        <DateControl label={copy.end} value={checkOut} open={openPopover === 'end'} name="end" onToggle={togglePopover}>
+        <DateControl label={copy.end} value={checkOut} open={openPopover === 'end'} name="end" badge={`${nightCount} night${nightCount === 1 ? '' : 's'}`} onToggle={togglePopover}>
           <CalendarPopover month={visibleMonth} selected={checkOut} rangeStart={checkIn} rangeEnd={checkOut} onMonthChange={setVisibleMonth} onSelect={selectDate} title={copy.end} />
         </DateControl>
 
         <div className="search-control search-control-travellers">
           <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'travellers'} aria-haspopup="dialog" onClick={() => togglePopover('travellers')}>
             <span><Users size={13} aria-hidden />{copy.travellers}</span>
-            <strong>{travellerSummary}<ChevronDown size={14} /></strong>
+            <strong>
+              <span className="search-guest-home">{travellerSummary}</span>
+              <span className="search-guest-trip">{guestTrip}</span>
+              <ChevronDown size={14} />
+            </strong>
           </button>
           {openPopover === 'travellers' && (
             <div className="search-popover traveller-popover" role="dialog" aria-label="Choose travellers and rooms">
@@ -323,12 +389,18 @@ export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'h
   );
 }
 
-function DateControl({ label, value, open, name, onToggle, children }: { label: string; value: Date; open: boolean; name: 'start' | 'end'; onToggle: (name: 'start' | 'end') => void; children: React.ReactNode }) {
+function DateControl({ label, value, open, name, badge, onToggle, children }: { label: string; value: Date; open: boolean; name: 'start' | 'end'; badge?: string; onToggle: (name: 'start' | 'end') => void; children: React.ReactNode }) {
   return (
     <div className={`search-control search-control-date search-control-${name}`}>
       <button type="button" className="search-control-trigger" aria-expanded={open} aria-haspopup="dialog" onClick={() => onToggle(name)}>
         <span><CalendarDays size={13} aria-hidden />{label}</span>
-        <strong>{formatDate(value)}<ChevronDown size={14} /></strong>
+        <strong>
+          <span className="search-date-kind">{label}</span>
+          <span className="search-date-home">{formatDate(value)}</span>
+          <span className="search-date-trip">{formatTripDate(value)}</span>
+          {badge ? <em className="search-nights">{badge}</em> : null}
+          <ChevronDown size={14} />
+        </strong>
       </button>
       {open && children}
     </div>

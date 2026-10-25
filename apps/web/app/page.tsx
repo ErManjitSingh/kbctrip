@@ -1,6 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { BadgeCheck, Headphones, ShieldCheck } from 'lucide-react';
 import { TravelSearch } from '@/components/TravelSearch';
 import { DestinationShowcase } from '@/components/DestinationShowcase';
 import { OfferShowcase } from '@/components/OfferShowcase';
@@ -10,6 +9,7 @@ import {
   HomeFinalCtaSection,
 } from '@/components/home/home-story-sections';
 import { HomePackagesSection, HomeStaysSection } from '@/components/home/home-catalog-sections';
+import { HomeBoardSlider } from '@/components/home/HomeBoardSlider';
 import { MobileHome } from '@/components/home/MobileHome';
 import './kbc-home.css';
 import './home-redesign.css';
@@ -24,51 +24,28 @@ export default function HomePage() {
       <main>
         <MobileHome />
         <div className="home-desktop">
-        <section className="page-width hero home-hero-only">
-          <div className="hero-copy home-reveal">
-            <h1>
-              Book <em>everything.</em>
-              <br />
-              Travel <em>everywhere.</em>
-            </h1>
-            <p className="hero-lead">
-              Private stays, considered itineraries, one account. India first, then the rest of the map.
-            </p>
-            <div className="hero-proof">
-              <Image
-                className="trusted-hero"
-                src="/reference/trusted-hero.png"
-                alt="Trusted by 1.2 million happy travellers"
-                width={220}
-                height={48}
-              />
-            </div>
-            <div className="hero-cta-row">
-              <Link href="/hotels" className="hero-cta-primary">
-                Browse stays
-                <ArrowRight size={16} aria-hidden />
-              </Link>
-              <Link href="/packages" className="hero-cta-secondary">
-                View packages
-              </Link>
-            </div>
-          </div>
-          <div className="hero-art home-reveal-delay" aria-hidden="true">
-            <div className="hero-art-glow" />
-            <Image
-              src="/reference/hero-visual-hd.png"
-              alt=""
-              fill
-              priority
-              unoptimized
-              sizes="(max-width: 900px) 100vw, 58vw"
-            />
-          </div>
+        <section className="page-width trip-banner home-hero-only">
+          <Image
+            className="trip-banner-photo"
+            src="/images/holiday-packages-hero.png"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 1368px) 100vw, 1320px"
+          />
+          <h1>Book everything. Travel everywhere.</h1>
+          <ul className="trip-promises">
+            <li><BadgeCheck size={15} aria-hidden /> Verified stays</li>
+            <li><ShieldCheck size={15} aria-hidden /> Secure payments</li>
+            <li><Headphones size={15} aria-hidden /> 24/7 support</li>
+          </ul>
         </section>
 
         <div className="home-search-wrap home-reveal-late">
-          <TravelSearch />
+          <TravelSearch scope="banner" />
         </div>
+
+        <HomeBoardSlider className="home-board-desktop" />
 
         <DestinationShowcase />
         <HomePackagesSection />

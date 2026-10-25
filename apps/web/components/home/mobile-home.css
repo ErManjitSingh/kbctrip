@@ -8,11 +8,14 @@
 }
 
 @media (max-width: 760px) {
-  body:has(.kbc-home-v2) .kbc-site-header {
+  body:has(.kbc-home-v2) .kbc-chrome {
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
+  }
+
+  body:has(.kbc-home-v2) .kbc-site-header {
     height: 58px;
     border-bottom: 0;
     background: transparent;
@@ -174,14 +177,7 @@
 
   .m-search-slot .search-control-location .is-placeholder {
     color: #9a938c;
-    font-size: 0;
-  }
-
-  .m-search-slot .search-control-location .is-placeholder::after {
-    color: #9a938c;
-    font-size: 13.5px;
     font-weight: 500;
-    content: 'Where do you want to go?';
   }
 
   .m-search-slot .search-control-date .search-control-trigger,
@@ -251,6 +247,10 @@
     min-height: 560px;
     padding: 82px 18px 112px;
     overflow: hidden;
+  }
+
+  body:has(.kbc-note) .m-hero {
+    padding-top: 116px;
   }
 
   .m-hero-photo {

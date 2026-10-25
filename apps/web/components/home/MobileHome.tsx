@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, CreditCard, Headphones, Heart, Tag, Users } from 'lucide-react';
 import { TravelSearch } from '@/components/TravelSearch';
+import { HomeBoardSlider } from '@/components/home/HomeBoardSlider';
 import './mobile-home.css';
 
 const destinations = [
@@ -64,6 +65,8 @@ export function MobileHome() {
       <div className="m-search-slot">
         <TravelSearch />
       </div>
+
+      <HomeBoardSlider className="home-board-mobile" />
 
       <ul className="m-trust">
         {trust.map((item) => {
