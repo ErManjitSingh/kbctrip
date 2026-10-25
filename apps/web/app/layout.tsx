@@ -10,6 +10,8 @@ import { HERO_SLIDES, SITE } from "@/lib/constants";
 import "./kbc-tokens.css";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 /** Clean UI font site-wide — no decorative display serif. */
 const inter = Inter({
   subsets: ["latin"],
