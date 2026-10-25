@@ -34,7 +34,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function photoOf(urls: string[] | undefined, fallback: string) {
   const first = urls?.find(Boolean);
-  return first || fallback;
+  if (!first) return fallback;
+  if (first.includes('images.unsplash.com')) {
+    return first.replace(/([?&])w=\d+/, '$1w=800').replace(/([?&])q=\d+/, '$1q=70');
+  }
+  return first;
 }
 
 function clip(text: string | null | undefined, max = 88) {
@@ -212,7 +216,7 @@ export function HomePackagesSection() {
               <Link key={pack.id} href={`/packages/${pack.slug}`} className="home-product-card">
                 <span className="home-product-media kbc-media-cover">
                   <Image
-                    src={photoOf(pack.photos, '/reference/destination-backgrounds/goa-bg.png')}
+                    src={photoOf(pack.photos, '/images/home/lite/dest-goa.jpg')}
                     alt=""
                     fill
                     sizes="(max-width: 700px) 90vw, 33vw"

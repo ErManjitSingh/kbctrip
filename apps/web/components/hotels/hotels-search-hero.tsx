@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 import type { HotelListing } from "@/lib/hotels-api";
 import { HotelsHeroSkeleton } from "@/components/hotels/hotels-page-skeleton";
 
-const HOTELS_BANNER_IMAGE = "/images/brochure-himalayan-dawn.png";
+const HOTELS_BANNER_IMAGE = "/images/home/lite/hero-mobile.jpg";
 
 type HotelsSearchHeroProps = {
   className?: string;

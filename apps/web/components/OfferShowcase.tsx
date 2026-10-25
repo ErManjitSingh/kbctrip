@@ -13,7 +13,7 @@ const offers = [
     title: '35% off',
     detail: 'On hotels',
     href: '/hotels?city=Goa',
-    image: '/reference/offer-backgrounds/goa-bg.png',
+    image: '/images/home/lite/offer-goa.jpg',
     className: 'offer-card-goa',
   },
   {
@@ -22,7 +22,7 @@ const offers = [
     title: '25% off',
     detail: 'On packages',
     href: '/packages',
-    image: '/reference/offer-backgrounds/flights-bg.png',
+    image: '/images/home/lite/offer-flights.jpg',
     className: 'offer-card-flights',
   },
   {
@@ -31,7 +31,7 @@ const offers = [
     title: 'From ₹499',
     detail: 'On bus tickets',
     href: '/cabs',
-    image: '/reference/offer-backgrounds/bus-bg.png',
+    image: '/images/home/lite/offer-bus.jpg',
     className: 'offer-card-buses',
   },
   {
@@ -40,7 +40,7 @@ const offers = [
     title: 'Up to 20% off',
     detail: 'On selected stays',
     href: '/hotels?offers=true',
-    image: '/reference/offer-backgrounds/weekend-bg.png',
+    image: '/images/home/lite/offer-weekend.jpg',
     className: 'offer-card-weekend',
   },
 ] as const;

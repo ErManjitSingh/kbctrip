@@ -12,7 +12,7 @@ const destinations = [
     price: '₹3,999',
     trending: true,
     href: '/hotels?city=Goa',
-    image: '/reference/destination-backgrounds/goa-bg.png',
+    image: '/images/home/lite/dest-goa.jpg',
     className: 'destination-card-goa',
   },
   {
@@ -22,7 +22,7 @@ const destinations = [
     price: '₹2,999',
     trending: false,
     href: '/hotels?city=Manali',
-    image: '/reference/destination-backgrounds/manali-bg.png',
+    image: '/images/home/lite/dest-manali.jpg',
     className: 'destination-card-manali',
   },
   {
@@ -32,7 +32,7 @@ const destinations = [
     price: '₹4,999',
     trending: false,
     href: '/hotels?city=Kashmir',
-    image: '/reference/destination-backgrounds/kashmir-bg.png',
+    image: '/images/home/lite/dest-kashmir.jpg',
     className: 'destination-card-kashmir',
   },
   {
@@ -42,7 +42,7 @@ const destinations = [
     price: '₹7,999',
     trending: false,
     href: '/hotels?city=Dubai',
-    image: '/reference/destination-backgrounds/dubai-bg.png',
+    image: '/images/home/lite/dest-dubai.jpg',
     className: 'destination-card-dubai',
   },
   {
@@ -52,7 +52,7 @@ const destinations = [
     price: '₹2,499',
     trending: false,
     href: '/hotels?city=Jaipur',
-    image: '/reference/destination-backgrounds/jaipur-bg.png',
+    image: '/images/home/lite/dest-jaipur.jpg',
     className: 'destination-card-jaipur',
   },
   {
@@ -62,7 +62,7 @@ const destinations = [
     price: '₹2,799',
     trending: false,
     href: '/hotels?city=Shimla',
-    image: '/images/brochure-shimla-church.png',
+    image: '/images/home/lite/dest-shimla.jpg',
     className: 'destination-card-shimla',
   },
 ] as const;

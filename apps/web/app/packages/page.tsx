@@ -34,7 +34,7 @@ type Props = {
   }>;
 };
 
-const FALLBACK_HERO = "/images/brochure-manali-lodge.png";
+const FALLBACK_HERO = "/images/home/lite/card-lodge.jpg";
 
 export default async function PackagesPage({ searchParams }: Props) {
   const params = await searchParams;

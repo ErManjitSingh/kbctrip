@@ -8,17 +8,17 @@ import { HomeBoardSlider } from '@/components/home/HomeBoardSlider';
 import './mobile-home.css';
 
 const destinations = [
-  { name: 'Manali', href: '/hotels?city=Manali', image: '/reference/destination-backgrounds/manali-bg.png' },
-  { name: 'Shimla', href: '/hotels?city=Shimla', image: '/images/brochure-shimla-church.png' },
+  { name: 'Manali', href: '/hotels?city=Manali', image: '/images/home/lite/dest-manali.jpg' },
+  { name: 'Shimla', href: '/hotels?city=Shimla', image: '/images/home/lite/dest-shimla.jpg' },
   { name: 'Kasol', href: '/hotels?city=Kasol', image: '/meta/himachal_special/kullu.webp' },
-  { name: 'Auli', href: '/hotels?city=Auli', image: '/images/brochure-kufri-ridge.png' },
+  { name: 'Auli', href: '/hotels?city=Auli', image: '/images/home/lite/card-ridge.jpg' },
 ];
 
 const stays = [
-  { name: 'Riverside lodge', href: '/hotels?city=Manali', image: '/images/brochure-manali-lodge.png' },
-  { name: 'Ridge cottage', href: '/hotels?city=Shimla', image: '/images/brochure-shimla-church.png' },
-  { name: 'Pine cabin', href: '/hotels?city=Manali', image: '/images/brochure-himalayan-dawn.png' },
-  { name: 'Valley stay', href: '/hotels?city=Kasol', image: '/reference/destination-backgrounds/manali-bg.png' },
+  { name: 'Riverside lodge', href: '/hotels?city=Manali', image: '/images/home/lite/card-lodge.jpg' },
+  { name: 'Ridge cottage', href: '/hotels?city=Shimla', image: '/images/home/lite/dest-shimla.jpg' },
+  { name: 'Pine cabin', href: '/hotels?city=Manali', image: '/images/home/lite/hero-mobile.jpg' },
+  { name: 'Valley stay', href: '/hotels?city=Kasol', image: '/images/home/lite/dest-manali.jpg' },
 ];
 
 const trust = [
@@ -32,13 +32,13 @@ const trust = [
 export function MobileHome() {
   return (
     <div className="m-home">
+      <link rel="preload" as="image" href="/images/home/lite/hero-mobile.jpg" media="(max-width: 760px)" />
       <section className="m-hero">
         <Image
           className="m-hero-photo"
-          src="/images/brochure-himalayan-dawn.png"
+          src="/images/home/lite/hero-mobile.jpg"
           alt=""
           fill
-          priority
           sizes="100vw"
         />
         <div className="m-hero-copy">
@@ -123,7 +123,7 @@ export function MobileHome() {
             </span>
           </div>
           <div className="m-pack-photo">
-            <Image src="/images/brochure-kufri-ridge.png" alt="" fill sizes="180px" />
+            <Image src="/images/home/lite/card-ridge.jpg" alt="" fill sizes="180px" />
           </div>
         </Link>
       </section>

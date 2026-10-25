@@ -24,13 +24,13 @@ export default function HomePage() {
       <main>
         <MobileHome />
         <div className="home-desktop">
+        <link rel="preload" as="image" href="/images/home/lite/hero-desktop.jpg" media="(min-width: 761px)" />
         <section className="page-width trip-banner home-hero-only">
           <Image
             className="trip-banner-photo"
-            src="/images/holiday-packages-hero.png"
+            src="/images/home/lite/hero-desktop.jpg"
             alt=""
             fill
-            priority
             sizes="(max-width: 1368px) 100vw, 1320px"
           />
           <h1>Book everything. Travel everywhere.</h1>

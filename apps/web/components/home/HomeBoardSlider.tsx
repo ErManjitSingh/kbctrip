@@ -84,19 +84,36 @@ function PromoSlider({
             target.addEventListener('pointerup', finish);
           }}
         >
-          {slides.map((slide, slideIndex) => (
-            <div className="home-promo-slide" key={slide.src} aria-hidden={slideIndex !== index}>
-              <Link
-                href={slide.href}
-                tabIndex={slideIndex === index ? 0 : -1}
-                onClick={(event) => {
-                  if (Math.abs(drag.current) > 48) event.preventDefault();
-                }}
-              >
-                <img src={slide.src} alt={slide.alt} width={slide.width} height={slide.height} />
-              </Link>
-            </div>
-          ))}
+          {slides.map((slide, slideIndex) => {
+            const distance = Math.min(
+              (slideIndex - index + slides.length) % slides.length,
+              (index - slideIndex + slides.length) % slides.length,
+            );
+            const current = slideIndex === index;
+            return (
+              <div className="home-promo-slide" key={slide.src} aria-hidden={!current}>
+                <Link
+                  href={slide.href}
+                  tabIndex={current ? 0 : -1}
+                  onClick={(event) => {
+                    if (Math.abs(drag.current) > 48) event.preventDefault();
+                  }}
+                >
+                  {distance <= 1 ? (
+                    <img
+                      src={slide.src}
+                      alt={slide.alt}
+                      width={slide.width}
+                      height={slide.height}
+                      loading={current ? 'eager' : 'lazy'}
+                      decoding="async"
+                      fetchPriority={current ? 'high' : 'low'}
+                    />
+                  ) : null}
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -125,11 +142,28 @@ function PromoSlider({
 }
 
 export function HomeBoardSlider({ className = '' }: { className?: string }) {
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 760px)');
+    const sync = () => {
+      const mobile = media.matches;
+      setActive(className.includes('mobile') ? mobile : !mobile);
+    };
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, [className]);
+
   return (
     <section className={`home-board page-width ${className}`.trim()} aria-label="Trip deals">
       <div className="home-board-row">
-        <PromoSlider slides={INTERNATIONAL} label="International trips" interval={5200} className="is-international" />
-        <PromoSlider slides={DOMESTIC} label="Domestic trips" interval={3800} className="is-domestic" />
+        {active ? (
+          <>
+            <PromoSlider slides={INTERNATIONAL} label="International trips" interval={5200} className="is-international" />
+            <PromoSlider slides={DOMESTIC} label="Domestic trips" interval={3800} className="is-domestic" />
+          </>
+        ) : null}
       </div>
     </section>
   );

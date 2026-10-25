@@ -8,7 +8,7 @@ export function HomeCabsSection() {
       <div className="home-cabs-stage">
         <div className="home-cabs-media" aria-hidden="true">
           <Image
-            src="/images/cabs/uno-cabs-traveller-pickup-v2.png"
+            src="/images/home/lite/cabs.jpg"
             alt=""
             fill
             sizes="100vw"

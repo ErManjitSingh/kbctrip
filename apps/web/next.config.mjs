@@ -42,6 +42,22 @@ const nextConfig = {
       { protocol: 'http', hostname: 'localhost', port: '4000', pathname: '/media/**' },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/images/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' }],
+      },
+      {
+        source: '/reference/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' }],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+    ];
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
