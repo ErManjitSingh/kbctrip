@@ -84,7 +84,7 @@ export function CabPromoProvider({ children }: { children: ReactNode }) {
         return { ok: false, error: "Enter a promo code." };
       }
       if (!isValidCabWelcomeCode(raw)) {
-        return { ok: false, error: "Invalid code. Try UNOCABS10." };
+        return { ok: false, error: "Invalid code. Try KBCCABS10." };
       }
 
       const token = auth?.getAccessToken?.();
@@ -97,7 +97,7 @@ export function CabPromoProvider({ children }: { children: ReactNode }) {
             writeStoredCabPromoCode(null);
             return {
               ok: false,
-              error: result.message || "UNOCABS10 is already used on this account.",
+              error: result.message || "KBCCABS10 is already used on this account.",
             };
           }
         } catch {

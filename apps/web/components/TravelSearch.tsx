@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   BedDouble,
-  Bus,
+  CalendarDays,
   Car,
   Check,
   ChevronDown,
@@ -13,10 +13,9 @@ import {
   Gift,
   MapPin,
   Minus,
-  Plane,
   Plus,
   Search,
-  TrainFront,
+  Users,
   X,
 } from 'lucide-react';
 import {
@@ -29,11 +28,8 @@ import {
 
 const services = [
   { label: 'Hotels', icon: BedDouble },
-  { label: 'Flights', icon: Plane },
-  { label: 'Trains', icon: TrainFront },
-  { label: 'Buses', icon: Bus },
-  { label: 'Cabs', icon: Car },
   { label: 'Packages', icon: Gift },
+  { label: 'Cabs', icon: Car },
 ] as const;
 
 type Service = (typeof services)[number]['label'];
@@ -53,24 +49,6 @@ const destinationSets: Record<Service, Destination[]> = {
     { name: 'Jaipur', detail: 'Rajasthan', search: 'Jaipur' },
     { name: 'Udaipur', detail: 'Rajasthan', search: 'Udaipur' },
   ],
-  Flights: [
-    { name: 'Delhi → Dubai', detail: 'DEL → DXB · Direct flights', search: 'Delhi to Dubai' },
-    { name: 'Mumbai → Goa', detail: 'BOM → GOI · Direct flights', search: 'Mumbai to Goa' },
-    { name: 'Delhi → Bali', detail: 'DEL → DPS · One stop', search: 'Delhi to Bali' },
-    { name: 'Bengaluru → Bangkok', detail: 'BLR → BKK · Direct flights', search: 'Bengaluru to Bangkok' },
-  ],
-  Trains: [
-    { name: 'New Delhi → Mumbai Central', detail: 'NDLS → BCT', search: 'New Delhi to Mumbai' },
-    { name: 'New Delhi → Chandigarh', detail: 'NDLS → CDG', search: 'New Delhi to Chandigarh' },
-    { name: 'Mumbai → Goa', detail: 'CSMT → MAO', search: 'Mumbai to Goa' },
-    { name: 'Jaipur → Udaipur', detail: 'JP → UDZ', search: 'Jaipur to Udaipur' },
-  ],
-  Buses: [
-    { name: 'Delhi → Manali', detail: 'AC sleeper · Overnight', search: 'Delhi to Manali' },
-    { name: 'Delhi → Jaipur', detail: 'Volvo · 5h 30m', search: 'Delhi to Jaipur' },
-    { name: 'Bengaluru → Goa', detail: 'AC sleeper · Overnight', search: 'Bengaluru to Goa' },
-    { name: 'Mumbai → Pune', detail: 'Volvo · 3h 20m', search: 'Mumbai to Pune' },
-  ],
   Cabs: [
     { name: 'Bengaluru Airport → City Centre', detail: 'Airport transfer · 38 km', search: 'Bengaluru Airport' },
     { name: 'Delhi Airport → Gurugram', detail: 'Airport transfer · 18 km', search: 'Delhi Airport' },
@@ -78,18 +56,15 @@ const destinationSets: Record<Service, Destination[]> = {
     { name: 'Jaipur → Udaipur', detail: 'Outstation · 395 km', search: 'Jaipur to Udaipur' },
   ],
   Packages: [
-    { name: 'Goa Getaway', detail: '4 nights · Stay + flights', search: 'Goa' },
+    { name: 'Goa Getaway', detail: '4 nights · Stay + transfers', search: 'Goa' },
     { name: 'Kashmir Escape', detail: '5 nights · Stay + transfers', search: 'Kashmir' },
-    { name: 'Dubai City Break', detail: '4 nights · Stay + flights', search: 'Dubai' },
+    { name: 'Manali Circuit', detail: '5 nights · Hills', search: 'Manali' },
     { name: 'Himachal Explorer', detail: '6 nights · Manali + Shimla', search: 'Himachal' },
   ],
 };
 
 const serviceCopy: Record<Service, { location: string; start: string; end: string; travellers: string }> = {
   Hotels: { location: 'Where are you going?', start: 'Check-in', end: 'Check-out', travellers: 'Guests & Rooms' },
-  Flights: { location: 'From & to', start: 'Departure', end: 'Return', travellers: 'Travellers & Class' },
-  Trains: { location: 'Choose your route', start: 'Journey date', end: 'Return date', travellers: 'Passengers & Class' },
-  Buses: { location: 'Choose your route', start: 'Journey date', end: 'Return date', travellers: 'Passengers' },
   Cabs: { location: 'Pickup & drop', start: 'Pickup date', end: 'Pickup time', travellers: 'Passengers & Cars' },
   Packages: { location: 'Where do you want to go?', start: 'Start date', end: 'Duration', travellers: 'Travellers & Rooms' },
 };
@@ -131,7 +106,7 @@ function getCalendarCells(month: Date) {
   return cells;
 }
 
-export function TravelSearch() {
+export function TravelSearch({ variant = 'default' }: { variant?: 'default' | 'hero' }) {
   const router = useRouter();
   const panelRef = useRef<HTMLElement>(null);
   const [activeService, setActiveService] = useState<Service>('Hotels');
@@ -246,25 +221,27 @@ export function TravelSearch() {
       return;
     }
 
-    const params = new URLSearchParams({
-      city,
-      q: city,
-      checkIn: formatQueryDate(checkIn),
-      checkOut: formatQueryDate(checkOut),
-      start: formatQueryDate(checkIn),
-      end: formatQueryDate(checkOut),
-      adults: String(adults),
-      children: String(children),
-      rooms: String(rooms),
-    });
-    router.push(`/${activeService.toLowerCase()}?${params.toString()}`);
+    if (activeService === 'Packages') {
+      const params = new URLSearchParams({ q: city });
+      router.push(`/packages?${params.toString()}`);
+      return;
+    }
+
+    if (activeService === 'Cabs') {
+      const params = new URLSearchParams({ q: city, pickup: formatQueryDate(checkIn) });
+      router.push(`/cabs?${params.toString()}`);
+      return;
+    }
   }
 
   const travellerSummary = `${adults + children} Guest${adults + children === 1 ? '' : 's'}, ${rooms} Room${rooms === 1 ? '' : 's'}`;
 
   return (
-    <section ref={panelRef} className="page-width search-panel" aria-label="Search travel">
-      <div className="search-tabs" role="tablist" aria-label="Travel category">
+    <section
+      ref={panelRef}
+      className={`search-panel${variant === 'hero' ? ' search-panel-hero' : ' page-width'}`}
+      aria-label="Search travel"
+    >      <div className="search-tabs" role="tablist" aria-label="Travel category">
         {services.map(({ label, icon: Icon }) => (
           <button
             type="button"
@@ -282,8 +259,8 @@ export function TravelSearch() {
       <form className="search-fields" onSubmit={submitSearch}>
         <div className="search-control search-control-location">
           <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'location'} aria-haspopup="listbox" onClick={() => togglePopover('location')}>
-            <span>{copy.location}</span>
-            <strong>{destination?.name ?? 'Search city, hotel or area'}<ChevronDown size={13} /></strong>
+            <span><MapPin size={13} aria-hidden />{copy.location}</span>
+            <strong>{destination?.name ?? 'Search city, hotel or area'}<ChevronDown size={14} /></strong>
           </button>
           {openPopover === 'location' && (
             <div className="search-popover location-popover">
@@ -313,8 +290,8 @@ export function TravelSearch() {
 
         <div className="search-control search-control-travellers">
           <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'travellers'} aria-haspopup="dialog" onClick={() => togglePopover('travellers')}>
-            <span>{copy.travellers}</span>
-            <strong>{travellerSummary}<ChevronDown size={13} /></strong>
+            <span><Users size={13} aria-hidden />{copy.travellers}</span>
+            <strong>{travellerSummary}<ChevronDown size={14} /></strong>
           </button>
           {openPopover === 'travellers' && (
             <div className="search-popover traveller-popover" role="dialog" aria-label="Choose travellers and rooms">
@@ -327,7 +304,7 @@ export function TravelSearch() {
           )}
         </div>
 
-        <button className="search-submit" type="submit">Search</button>
+        <button className="search-submit" type="submit"><Search size={16} aria-hidden />Search</button>
       </form>
       {searchMessage && <p className="search-notice" role="status">{searchMessage}</p>}
     </section>
@@ -338,8 +315,8 @@ function DateControl({ label, value, open, name, onToggle, children }: { label: 
   return (
     <div className={`search-control search-control-date search-control-${name}`}>
       <button type="button" className="search-control-trigger" aria-expanded={open} aria-haspopup="dialog" onClick={() => onToggle(name)}>
-        <span>{label}</span>
-        <strong>{formatDate(value)}<ChevronDown size={13} /></strong>
+        <span><CalendarDays size={13} aria-hidden />{label}</span>
+        <strong>{formatDate(value)}<ChevronDown size={14} /></strong>
       </button>
       {open && children}
     </div>

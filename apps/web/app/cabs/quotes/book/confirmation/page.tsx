@@ -124,7 +124,7 @@ function ConfirmationInner() {
   if (loading) {
     return (
       <div className="grid min-h-[50vh] place-items-center">
-        <span className="h-8 w-8 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -134,7 +134,7 @@ function ConfirmationInner() {
   return (
     <main className="min-h-screen bg-[#fbfaf9] px-4 py-10 text-[#292229]">
       <div className="mx-auto max-w-lg rounded-2xl border border-[#eee9e5] bg-white p-6 text-center shadow-sm sm:p-8">
-        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#ef6614]">Step 4 of 4 · Done</p>
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#0f766e]">Step 4 of 4 · Done</p>
         <CheckCircle2 className={`mx-auto mt-3 h-12 w-12 ${isCancelled ? "text-slate-400" : "text-emerald-600"}`} />
         <h1 className="mt-4 text-2xl font-black tracking-tight">
           {isCancelled ? "Booking cancelled" : "Booking confirmed"}
@@ -158,7 +158,7 @@ function ConfirmationInner() {
             <p className="text-[10px] font-bold uppercase tracking-wide text-[#8b828a]">Confirmation</p>
             <p className="mt-1 text-lg font-black">{booking.confirmation_number}</p>
             <p className="mt-3 flex items-start gap-2 text-[#5f565e]">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#ef6614]" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0f766e]" />
               <span>
                 <strong className="block text-[#292229]">
                   {booking.pickup_city} → {booking.drop_city}
@@ -168,7 +168,7 @@ function ConfirmationInner() {
             </p>
             {booking.driver_name && !isCancelled && (
               <p className="mt-3 flex items-start gap-2 text-[#5f565e]">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#ef6614]" />
+                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#0f766e]" />
                 <span>
                   <strong className="block text-[#292229]">Captain contact protected</strong>
                   Our captain will call you before pickup.
@@ -177,7 +177,7 @@ function ConfirmationInner() {
             )}
             <div className="mt-3 rounded-lg bg-white p-3 text-sm">
               <div className="flex justify-between gap-3 font-extrabold text-[#292229]"><span>Total fare</span><span>{money(booking.total_amount, booking.currency)}</span></div>
-              {booking.payment_option === "commission_and_driver" ? <><div className="mt-2 flex justify-between gap-3 text-emerald-700"><span>Paid to UNO</span><span>{money(booking.online_amount || 0, booking.currency)}</span></div><div className="mt-1 flex justify-between gap-3 font-bold text-[#292229]"><span>Pay driver directly</span><span>{money(booking.driver_due_amount || 0, booking.currency)}</span></div></> : booking.payment_option === "direct_to_cab_owner" ? <div className="mt-2 flex justify-between gap-3 font-bold text-[#ef6614]"><span>Pay cab owner directly</span><span>{money(booking.driver_due_amount || booking.total_amount, booking.currency)}</span></div> : <div className="mt-2 flex justify-between gap-3 text-emerald-700"><span>{isCancelled ? "Fare was" : "Paid online"}</span><span>{money(booking.online_amount ?? booking.total_amount, booking.currency)}</span></div>}
+              {booking.payment_option === "commission_and_driver" ? <><div className="mt-2 flex justify-between gap-3 text-emerald-700"><span>Paid to UNO</span><span>{money(booking.online_amount || 0, booking.currency)}</span></div><div className="mt-1 flex justify-between gap-3 font-bold text-[#292229]"><span>Pay driver directly</span><span>{money(booking.driver_due_amount || 0, booking.currency)}</span></div></> : booking.payment_option === "direct_to_cab_owner" ? <div className="mt-2 flex justify-between gap-3 font-bold text-[#0f766e]"><span>Pay cab owner directly</span><span>{money(booking.driver_due_amount || booking.total_amount, booking.currency)}</span></div> : <div className="mt-2 flex justify-between gap-3 text-emerald-700"><span>{isCancelled ? "Fare was" : "Paid online"}</span><span>{money(booking.online_amount ?? booking.total_amount, booking.currency)}</span></div>}
             </div>
             <p className="mt-1 text-xs capitalize text-[#746a73]">
               Status: {booking.status} · Payment: {booking.payment_status}
@@ -195,19 +195,19 @@ function ConfirmationInner() {
         )}
 
         {booking && !isCancelled && (
-          <section className="mt-5 rounded-xl border border-orange-100 bg-[#fffaf7] p-4 text-left">
+          <section className="mt-5 rounded-xl border border-teal-100 bg-[#f3f7f5] p-4 text-left">
             <h2 className="text-sm font-extrabold text-[#292229]">What happens next</h2>
             <ol className="mt-3 space-y-2.5 text-xs leading-5 text-[#5f565e]">
               <li className="flex gap-2">
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#ef6614] text-[10px] font-black text-white">1</span>
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#0f766e] text-[10px] font-black text-white">1</span>
                 <span>Save this confirmation number — you may need it for support.</span>
               </li>
               <li className="flex gap-2">
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#ef6614] text-[10px] font-black text-white">2</span>
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#0f766e] text-[10px] font-black text-white">2</span>
                 <span>Your partner will share final vehicle and driver details before pickup. The captain usually calls you.</span>
               </li>
               <li className="flex gap-2">
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#ef6614] text-[10px] font-black text-white">3</span>
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#0f766e] text-[10px] font-black text-white">3</span>
                 <span>
                   {booking.payment_option === "direct_to_cab_owner" || booking.payment_option === "commission_and_driver"
                     ? "Keep cash/UPI ready for any amount due to the driver at pickup."
@@ -215,7 +215,7 @@ function ConfirmationInner() {
                 </span>
               </li>
               <li className="flex gap-2">
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#ef6614] text-[10px] font-black text-white">4</span>
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#0f766e] text-[10px] font-black text-white">4</span>
                 <span>Need help? Call support from My quotes or the KBC Cabs help line.</span>
               </li>
             </ol>
@@ -235,7 +235,7 @@ function ConfirmationInner() {
         {booking?.status === "completed" && (
           <div className="mt-5 rounded-xl border border-[#f0eeec] bg-white p-4 text-left">
             <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-[#ef6614]" />
+              <Star className="h-4 w-4 text-[#0f766e]" />
               <h2 className="text-sm font-extrabold">Rate this trip</h2>
             </div>
             {reviewSaved ? (
@@ -268,7 +268,7 @@ function ConfirmationInner() {
                   type="button"
                   disabled={reviewWorking}
                   onClick={() => void submitReview()}
-                  className="mt-3 rounded-xl bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
+                  className="mt-3 rounded-xl bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
                 >
                   {reviewWorking ? "Submitting…" : "Submit review"}
                 </button>
@@ -288,9 +288,9 @@ function ConfirmationInner() {
           )}
           <Link
             href="/cabs"
-            className="rounded-xl bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white"
+            className="rounded-xl bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white"
           >
-            Back to UnoCabs
+            Back to KBC Cabs
           </Link>
         </div>
       </div>
@@ -300,7 +300,7 @@ function ConfirmationInner() {
           <div className="w-full max-w-md rounded-2xl bg-white p-5 text-left shadow-xl">
             <h3 className="text-lg font-black">Cancel booking?</h3>
             <p className="mt-1 text-sm text-slate-500">
-              Refunds follow UnoCabs season policy (free / partial / none based on hours before pickup).
+              Refunds follow the KBC Cabs policy for this booking (free, partial, or none based on hours before pickup).
             </p>
             <textarea
               rows={3}
@@ -338,7 +338,7 @@ export default function CabQuoteBookingConfirmationPage() {
     <Suspense
       fallback={
         <div className="grid min-h-[50vh] place-items-center">
-          <span className="h-8 w-8 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       }
     >

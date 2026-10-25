@@ -54,7 +54,7 @@ export default function PartnerEarningsPage() {
   if (loading) {
     return (
       <div className="grid min-h-40 place-items-center">
-        <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -118,7 +118,7 @@ export default function PartnerEarningsPage() {
           {(summary?.daily ?? []).map((day) => (
             <div key={day.date} className="flex flex-1 flex-col items-center gap-2">
               <div
-                className="w-full rounded-t bg-[#ef6614]/80"
+                className="w-full rounded-t bg-[#0f766e]/80"
                 style={{ height: Math.max(8, Math.round((day.amount / maxDay) * 120)) }}
                 title={money(day.amount, summary?.currency)}
               />
@@ -131,7 +131,7 @@ export default function PartnerEarningsPage() {
       <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
           <h3 className="text-sm font-extrabold">Recent completed trips</h3>
-          <Link href="/cabs/partner/payouts" className="inline-flex items-center gap-1 text-xs font-bold text-[#ef6614]">
+          <Link href="/cabs/partner/payouts" className="inline-flex items-center gap-1 text-xs font-bold text-[#0f766e]">
             <Wallet className="h-3.5 w-3.5" /> Payouts
           </Link>
         </div>
@@ -153,7 +153,7 @@ export default function PartnerEarningsPage() {
                       {trip.confirmation_number} · {formatDate(trip.travel_date)}
                     </p>
                   </div>
-                  <span className="shrink-0 text-sm font-black text-[#ef6614]">
+                  <span className="shrink-0 text-sm font-black text-[#0f766e]">
                     {money(trip.amount, trip.currency)}
                   </span>
                 </Link>

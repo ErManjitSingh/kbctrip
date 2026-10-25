@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
@@ -73,12 +74,10 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
       <div className="grid h-full w-full lg:grid-cols-[248px_1fr]">
         <aside className="hidden min-h-0 flex-col border-r border-slate-200 bg-white lg:flex">
           <div className="px-5 pb-2 pt-5">
-            <Link href="/cabs/partner/dashboard" className="block leading-none" aria-label="UnoCabs Partner">
-              <span className="text-2xl font-black tracking-tight text-[#ef6614]">
-                Uno<span className="text-[#192131]">Cabs</span>
-              </span>
+            <Link href="/cabs/partner/dashboard" className="block leading-none" aria-label="KBC Trip partner">
+              <BrandLogo size="sm" />
               <small className="mt-1 block text-[10px] font-semibold tracking-wide text-slate-500">
-                Partner app
+                Partner desk
               </small>
             </Link>
           </div>
@@ -92,14 +91,14 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
                   href={href}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
                     active
-                      ? "border-l-[3px] border-[#ef6614] bg-orange-50 text-[#ef6614]"
+                      ? "border-l-[3px] border-[#0f766e] bg-teal-50 text-[#0f766e]"
                       : "border-l-[3px] border-transparent text-slate-600 hover:bg-slate-50"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="flex-1">{label}</span>
                   {typeof badge === "number" && badge > 0 && (
-                    <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-extrabold text-[#ef6614]">
+                    <span className="rounded-full bg-teal-100 px-1.5 py-0.5 text-[10px] font-extrabold text-[#0f766e]">
                       {badge}
                     </span>
                   )}
@@ -116,14 +115,14 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
               </p>
               <Link
                 href="/cabs/partner/settings"
-                className="mt-3 inline-flex rounded-md border border-[#ef6614] px-3 py-2 text-xs font-bold text-[#ef6614] transition hover:bg-orange-50"
+                className="mt-3 inline-flex rounded-md border border-[#0f766e] px-3 py-2 text-xs font-bold text-[#0f766e] transition hover:bg-teal-50"
               >
                 Open settings
               </Link>
             </div>
 
             <div className="flex items-center gap-2.5 border-t border-slate-100 pt-4">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-orange-100 text-sm font-black text-[#ef6614]">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-teal-100 text-sm font-black text-[#0f766e]">
                 {name.slice(0, 1).toUpperCase()}
               </span>
               <span className="min-w-0">
@@ -139,7 +138,7 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
             <button
               type="button"
               onClick={onLogout}
-              className="flex items-center gap-2 text-xs font-bold text-slate-500 transition hover:text-[#ef6614]"
+              className="flex items-center gap-2 text-xs font-bold text-slate-500 transition hover:text-[#0f766e]"
             >
               <LogOut className="h-4 w-4" />
               Logout
@@ -157,17 +156,17 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
             />
             <aside className="relative flex h-[100dvh] w-[min(86vw,340px)] min-h-0 flex-col bg-white shadow-2xl">
               <div className="flex items-start justify-between px-5 pb-3 pt-6">
-                <Link href="/cabs/partner/dashboard" className="block leading-none" aria-label="UnoCabs Partner" onClick={() => setMobileNavOpen(false)}>
-                  <span className="text-2xl font-black tracking-tight text-[#ef6614]">Uno<span className="text-[#192131]">Cabs</span></span>
-                  <small className="mt-1 block text-[10px] font-semibold tracking-wide text-slate-500">Partner app</small>
+                <Link href="/cabs/partner/dashboard" className="block leading-none" aria-label="KBC Trip partner" onClick={() => setMobileNavOpen(false)}>
+                  <BrandLogo size="sm" />
+                  <small className="mt-1 block text-[10px] font-semibold tracking-wide text-slate-500">Partner desk</small>
                 </Link>
                 <button type="button" onClick={() => setMobileNavOpen(false)} className="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-600" aria-label="Close menu">
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="mx-4 flex items-center gap-3 rounded-2xl bg-orange-50 p-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-orange-100 text-sm font-black text-[#ef6614]">{name.slice(0, 1).toUpperCase()}</span>
+              <div className="mx-4 flex items-center gap-3 rounded-2xl bg-teal-50 p-3">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-teal-100 text-sm font-black text-[#0f766e]">{name.slice(0, 1).toUpperCase()}</span>
                 <span className="min-w-0"><strong className="block truncate text-sm font-extrabold">{name}</strong><small className="block text-[11px] text-slate-500">{typeLabel} · <span className="font-bold text-emerald-600">Verified</span></small></span>
               </div>
 
@@ -175,16 +174,16 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
                 {nav.map(({ href, label, icon: Icon, badge }) => {
                   const active = pathname === href || pathname.startsWith(`${href}/`);
                   return (
-                    <Link key={href} href={href} onClick={() => setMobileNavOpen(false)} className={`flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-bold transition ${active ? "bg-orange-50 text-[#ef6614]" : "text-slate-600 hover:bg-slate-50"}`}>
+                    <Link key={href} href={href} onClick={() => setMobileNavOpen(false)} className={`flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-bold transition ${active ? "bg-teal-50 text-[#0f766e]" : "text-slate-600 hover:bg-slate-50"}`}>
                       <Icon className="h-5 w-5 shrink-0" /><span className="flex-1">{label}</span>
-                      {typeof badge === "number" && badge > 0 && <span className="rounded-full bg-[#ef6614] px-2 py-0.5 text-[10px] font-extrabold text-white">{badge}</span>}
+                      {typeof badge === "number" && badge > 0 && <span className="rounded-full bg-[#0f766e] px-2 py-0.5 text-[10px] font-extrabold text-white">{badge}</span>}
                     </Link>
                   );
                 })}
               </nav>
 
               <div className="shrink-0 border-t border-slate-100 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-                <Link href="/cabs/partner/settings" onClick={() => setMobileNavOpen(false)} className="flex min-h-11 items-center justify-center rounded-xl border border-orange-200 text-sm font-extrabold text-[#ef6614]">Open settings</Link>
+                <Link href="/cabs/partner/settings" onClick={() => setMobileNavOpen(false)} className="flex min-h-11 items-center justify-center rounded-xl border border-teal-200 text-sm font-extrabold text-[#0f766e]">Open settings</Link>
                 <button type="button" onClick={onLogout} className="mt-3 flex min-h-10 w-full items-center justify-center gap-2 text-sm font-bold text-slate-500"><LogOut className="h-4 w-4" /> Sign out</button>
               </div>
             </aside>
@@ -205,7 +204,7 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <Link
                 href="/cabs/partner/quotes"
-                className="relative grid h-10 w-10 place-items-center rounded-full border border-slate-200 text-slate-500 transition hover:border-orange-200 hover:text-[#ef6614]"
+                className="relative grid h-10 w-10 place-items-center rounded-full border border-slate-200 text-slate-500 transition hover:border-teal-200 hover:text-[#0f766e]"
                 aria-label={`${pendingQuotes} trip requests needing reply`}
               >
                 <Bell className="h-5 w-5" />
@@ -217,7 +216,7 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
               </Link>
               <Link
                 href="/cabs/partner/support"
-                className="hidden items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 transition hover:border-orange-200 hover:text-[#ef6614] sm:inline-flex"
+                className="hidden items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 transition hover:border-teal-200 hover:text-[#0f766e] sm:inline-flex"
               >
                 <CircleHelp className="h-3.5 w-3.5" />
                 Help
@@ -229,8 +228,8 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
 
           <footer className="hidden border-t border-slate-200 bg-white px-5 py-3 text-center text-[11px] text-slate-500 sm:px-8 lg:block">
             Need help? Email{" "}
-            <a href="mailto:partners@unocabs.com" className="font-semibold text-[#ef6614]">
-              partners@unocabs.com
+            <a href="mailto:hello@kbctrip.com" className="font-semibold text-[#0f766e]">
+              hello@kbctrip.com
             </a>{" "}
             or open{" "}
             <Link href="/cabs/partner/support" className="font-semibold text-slate-700">
@@ -244,8 +243,8 @@ export function PartnerShell({ application, pendingQuotes, children, onLogout }:
               const shortLabel =
                 label === "Trip requests" ? "Requests" : label === "My trips" ? "Trips" : label === "My cars" ? "Cars" : label;
               return (
-                <Link key={href} href={href} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold ${active ? "text-[#ef6614]" : "text-slate-500"}`}>
-                  <span className={`grid h-7 w-9 place-items-center rounded-lg ${active ? "bg-orange-50" : ""}`}><Icon className="h-4.5 w-4.5" /></span>
+                <Link key={href} href={href} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold ${active ? "text-[#0f766e]" : "text-slate-500"}`}>
+                  <span className={`grid h-7 w-9 place-items-center rounded-lg ${active ? "bg-teal-50" : ""}`}><Icon className="h-4.5 w-4.5" /></span>
                   <span>{shortLabel}</span>
                   {typeof badge === "number" && badge > 0 && <span className="absolute right-[22%] top-1 grid h-4 min-w-4 place-items-center rounded-full bg-red-500 px-1 text-[9px] text-white">{badge}</span>}
                 </Link>
@@ -270,12 +269,12 @@ export function PartnerComingSoon({
 }) {
   return (
     <section className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#ef6614]">Coming soon</p>
+      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#0f766e]">Coming soon</p>
       <h2 className="mt-2 text-2xl font-black tracking-tight">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-slate-500">{detail}</p>
       <Link
         href="/cabs/partner/dashboard"
-        className="mt-6 inline-flex rounded-lg bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white"
+        className="mt-6 inline-flex rounded-lg bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white"
       >
         Back to Dashboard
       </Link>

@@ -31,13 +31,13 @@ const config: Config = {
         },
       },
       fontFamily: {
-        /** Matches EaseMyTrip holidays UI (Roboto-first). @see https://www.easemytrip.com/holidays/ */
+        /** Site UI — Inter via next/font (--font-sans on <html>). */
         sans: [
-          "var(--font-roboto)",
-          "Roboto",
-          "Helvetica Neue",
-          "Helvetica",
-          "Arial",
+          "var(--font-sans)",
+          "Inter",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
           "sans-serif",
         ],
         display: [

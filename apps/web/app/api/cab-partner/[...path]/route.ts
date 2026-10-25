@@ -3,7 +3,7 @@ import { fetchBackendWithRetry, getBackendOrigin, stripHopByHopHeaders } from "@
 
 async function handle(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params;
-  const target = new URL(`${getBackendOrigin()}/v1/cab-partner/${path.join("/")}`);
+  const target = new URL(`${getBackendOrigin()}/api/v1/cab-partner/${path.join("/")}`);
   // Preserve query parameters for GET endpoints such as quote payout preview.
   target.search = req.nextUrl.search;
   const headers = new Headers(req.headers);

@@ -169,7 +169,7 @@ export function PartnerPortalProvider({ children }: { children: ReactNode }) {
         }}
       >
         <div className="grid min-h-40 place-items-center">
-          <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       </PartnerShell>
     );
@@ -177,15 +177,15 @@ export function PartnerPortalProvider({ children }: { children: ReactNode }) {
 
   if (contextError) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#fffaf7] p-5">
-        <section className="max-w-md rounded-3xl border border-orange-100 bg-white p-7 text-center shadow-xl shadow-orange-100/30">
-          <FileCheck2 className="mx-auto h-10 w-10 text-[#ef6614]" />
+      <main className="grid min-h-screen place-items-center bg-[#f3f7f5] p-5">
+        <section className="max-w-md rounded-3xl border border-teal-100 bg-white p-7 text-center shadow-xl shadow-teal-100/30">
+          <FileCheck2 className="mx-auto h-10 w-10 text-[#0f766e]" />
           <h1 className="mt-4 text-2xl font-black">Couldn’t load your partner account</h1>
           <p className="mt-2 text-sm leading-6 text-slate-600">{contextError}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-6 inline-flex rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-bold text-white"
+            className="mt-6 inline-flex rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-bold text-white"
           >
             Try again
           </button>
@@ -196,16 +196,16 @@ export function PartnerPortalProvider({ children }: { children: ReactNode }) {
 
   if (!context?.is_cab_partner || !context.application) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#fffaf7] p-5">
-        <section className="max-w-md rounded-3xl border border-orange-100 bg-white p-7 text-center shadow-xl shadow-orange-100/30">
-          <FileCheck2 className="mx-auto h-10 w-10 text-[#ef6614]" />
+      <main className="grid min-h-screen place-items-center bg-[#f3f7f5] p-5">
+        <section className="max-w-md rounded-3xl border border-teal-100 bg-white p-7 text-center shadow-xl shadow-teal-100/30">
+          <FileCheck2 className="mx-auto h-10 w-10 text-[#0f766e]" />
           <h1 className="mt-4 text-2xl font-black">No cab partner application found</h1>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             This login isn’t linked to a cab partner application. Start onboarding or sign in with the account you used to apply.
           </p>
           <Link
             href="/cabs/list-your-cab"
-            className="mt-6 inline-flex rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-bold text-white"
+            className="mt-6 inline-flex rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-bold text-white"
           >
             Start / continue application
           </Link>
@@ -217,9 +217,9 @@ export function PartnerPortalProvider({ children }: { children: ReactNode }) {
   if (context.application.onboarding_status !== "approved") {
     const status = context.application.onboarding_status.replaceAll("_", " ");
     return (
-      <main className="grid min-h-screen place-items-center bg-[#fffaf7] p-5">
-        <section className="max-w-md rounded-3xl border border-orange-100 bg-white p-7 text-center shadow-xl shadow-orange-100/30">
-          <FileCheck2 className="mx-auto h-10 w-10 text-[#ef6614]" />
+      <main className="grid min-h-screen place-items-center bg-[#f3f7f5] p-5">
+        <section className="max-w-md rounded-3xl border border-teal-100 bg-white p-7 text-center shadow-xl shadow-teal-100/30">
+          <FileCheck2 className="mx-auto h-10 w-10 text-[#0f766e]" />
           <h1 className="mt-4 text-2xl font-black">Your account is still being verified</h1>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             Your partner portal opens after admin approval. Current status:{" "}
@@ -227,7 +227,7 @@ export function PartnerPortalProvider({ children }: { children: ReactNode }) {
           </p>
           <Link
             href="/cabs/list-your-cab"
-            className="mt-6 inline-flex rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-bold text-white"
+            className="mt-6 inline-flex rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-bold text-white"
           >
             View application status
           </Link>
@@ -247,7 +247,7 @@ export function PartnerPortalProvider({ children }: { children: ReactNode }) {
         }}
       >
         <div className="grid min-h-40 place-items-center">
-          <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       </PartnerShell>
     );

@@ -101,13 +101,15 @@ export async function updateCabPartnerApplication(accessToken: string, payload: 
 }
 
 export async function uploadCabPartnerDocument(accessToken: string, documentType: string, file: File) {
-  const form = new FormData();
-  form.set("document_type", documentType);
-  form.set("file", file);
+  // Booking API records the document name. The file bytes are not stored.
   const response = await fetch("/api/cab-partner/applications/me/documents/upload", {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}` },
-    body: form,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ document_type: documentType, file_name: file.name }),
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.message ?? "Could not upload document.");

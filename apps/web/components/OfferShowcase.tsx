@@ -5,41 +5,41 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-/** Live products only — hotels, packages, cabs. No fake flights/buses. */
+/** Matches production homepage offer rail. */
 const offers = [
   {
-    label: 'Goa Getaway — hotel deals',
-    eyebrow: 'Stays',
-    title: 'Goa weekends',
-    detail: 'Beach stays from ₹3,999',
+    label: 'Goa Getaway — 35% off hotels',
+    eyebrow: 'Goa Getaway',
+    title: '35% off',
+    detail: 'On hotels',
     href: '/hotels?city=Goa',
     image: '/reference/offer-backgrounds/goa-bg.png',
     className: 'offer-card-goa',
   },
   {
-    label: 'Himachal holiday packages',
-    eyebrow: 'Packages',
-    title: 'Hill circuits',
-    detail: 'Manali & Shimla tours',
-    href: '/packages?q=Manali',
-    image: '/reference/destination-backgrounds/manali-bg.png',
-    className: 'offer-card-packages',
+    label: 'Summer Special — 25% off flights',
+    eyebrow: 'Summer Special',
+    title: '25% off',
+    detail: 'On packages',
+    href: '/packages',
+    image: '/reference/offer-backgrounds/flights-bg.png',
+    className: 'offer-card-flights',
   },
   {
-    label: 'Airport & outstation cabs',
-    eyebrow: 'Cabs',
-    title: 'Free quotes',
-    detail: 'Compare partner fares',
+    label: 'Weekend Bus Deals from ₹499',
+    eyebrow: 'Weekend bus deals',
+    title: 'From ₹499',
+    detail: 'On bus tickets',
     href: '/cabs',
-    image: '/images/cabs/uno-cabs-traveller-pickup-v2.png',
-    className: 'offer-card-cabs',
+    image: '/reference/offer-backgrounds/bus-bg.png',
+    className: 'offer-card-buses',
   },
   {
-    label: 'Weekend stay offers',
-    eyebrow: 'Stays',
+    label: 'Weekend Bookings offers',
+    eyebrow: 'Weekend stays',
     title: 'Up to 20% off',
-    detail: 'On selected hotels',
-    href: '/hotels',
+    detail: 'On selected stays',
+    href: '/hotels?offers=true',
     image: '/reference/offer-backgrounds/weekend-bg.png',
     className: 'offer-card-weekend',
   },
@@ -61,9 +61,13 @@ export function OfferShowcase() {
         <div className="section-heading-copy">
           <p className="section-kicker">Offers</p>
           <h2 id="offers-title">Worth booking now</h2>
+          <p className="home-section-lead">Stays, packages, and weekend prices.</p>
         </div>
         <div className="offer-actions" aria-label="Offer actions">
-          <Link href="/hotels">View all offers</Link>
+          <Link href="/offers" className="home-section-link">
+            View all
+            <ChevronRight size={15} aria-hidden />
+          </Link>
           <button type="button" onClick={() => scrollOffers('left')} aria-label="Show previous offers">
             <ChevronLeft size={14} />
           </button>

@@ -62,7 +62,7 @@ export default function PartnerVehicleDetailPage() {
   if (loading) {
     return (
       <div className="grid min-h-40 place-items-center">
-        <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -71,7 +71,7 @@ export default function PartnerVehicleDetailPage() {
     return (
       <section className="rounded-xl border border-slate-200 bg-white p-8 text-center">
         <p className="text-sm text-slate-500">{error || "Vehicle not found."}</p>
-        <button type="button" onClick={() => router.push("/cabs/partner/vehicles")} className="mt-4 text-xs font-extrabold text-[#ef6614]">
+        <button type="button" onClick={() => router.push("/cabs/partner/vehicles")} className="mt-4 text-xs font-extrabold text-[#0f766e]">
           Back to fleet
         </button>
       </section>
@@ -81,7 +81,7 @@ export default function PartnerVehicleDetailPage() {
   if (editing) {
     return (
       <div className="w-full space-y-4">
-        <button type="button" onClick={() => setEditing(false)} className="text-xs font-bold text-slate-500 hover:text-[#ef6614]">
+        <button type="button" onClick={() => setEditing(false)} className="text-xs font-bold text-slate-500 hover:text-[#0f766e]">
           ← Cancel editing
         </button>
         <PartnerVehicleForm initial={cab} />
@@ -110,7 +110,7 @@ export default function PartnerVehicleDetailPage() {
             )}
           </div>
           <div className="min-w-0">
-            <Link href="/cabs/partner/vehicles" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#ef6614]">
+            <Link href="/cabs/partner/vehicles" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#0f766e]">
               <ArrowLeft className="h-3.5 w-3.5" /> My Vehicles
             </Link>
             <h2 className="mt-1 truncate text-xl font-black tracking-tight sm:text-2xl">{cab.name}</h2>

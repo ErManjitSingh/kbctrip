@@ -18,7 +18,7 @@ import {
 } from "@/lib/partner-drivers";
 
 const inputClass =
-  "mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-[#192131] outline-none focus:border-[#ef6614]";
+  "mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-[#192131] outline-none focus:border-[#0f766e]";
 
 export default function PartnerDriverDetailPage() {
   const params = useParams<{ id: string }>();
@@ -114,7 +114,7 @@ export default function PartnerDriverDetailPage() {
   if (loading) {
     return (
       <div className="grid min-h-40 place-items-center">
-        <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -126,7 +126,7 @@ export default function PartnerDriverDetailPage() {
         <button
           type="button"
           onClick={() => router.push("/cabs/partner/drivers")}
-          className="mt-4 text-xs font-extrabold text-[#ef6614]"
+          className="mt-4 text-xs font-extrabold text-[#0f766e]"
         >
           Back to drivers
         </button>
@@ -138,13 +138,13 @@ export default function PartnerDriverDetailPage() {
     <div className="w-full space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-orange-50 text-base font-black text-[#ef6614]">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-teal-50 text-base font-black text-[#0f766e]">
             {(name || driver.name).slice(0, 1).toUpperCase()}
           </span>
           <div className="min-w-0">
             <Link
               href="/cabs/partner/drivers"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#ef6614]"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#0f766e]"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Drivers
             </Link>
@@ -199,7 +199,7 @@ export default function PartnerDriverDetailPage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#ef6614] px-3 py-2 text-xs font-extrabold text-white disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0f766e] px-3 py-2 text-xs font-extrabold text-white disabled:opacity-50"
           >
             <Save className="h-3.5 w-3.5" />
             {saving ? "Saving…" : "Save driver"}
@@ -216,7 +216,7 @@ export default function PartnerDriverDetailPage() {
             <li key={cab.id}>
               <Link
                 href={`/cabs/partner/vehicles/${cab.id}`}
-                className="flex items-center gap-3 px-4 py-2 transition hover:bg-orange-50/40"
+                className="flex items-center gap-3 px-4 py-2 transition hover:bg-teal-50/40"
               >
                 <div className="grid h-8 w-12 shrink-0 place-items-center overflow-hidden rounded bg-slate-50">
                   {cab.featured_image ? (
@@ -232,7 +232,7 @@ export default function PartnerDriverDetailPage() {
                     {cab.registration_number || "No registration"} · {cab.is_active ? "Active" : "Offline"}
                   </p>
                 </div>
-                <span className="text-[10px] font-extrabold text-[#ef6614]">Open →</span>
+                <span className="text-[10px] font-extrabold text-[#0f766e]">Open →</span>
               </Link>
             </li>
           ))}

@@ -46,7 +46,7 @@ export default function PartnerDriversPage() {
         </div>
         <Link
           href="/cabs/partner/vehicles/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white"
         >
           <Plus className="h-4 w-4" /> Add via vehicle
         </Link>
@@ -54,20 +54,20 @@ export default function PartnerDriversPage() {
 
       {loading ? (
         <div className="grid min-h-40 place-items-center">
-          <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       ) : error ? (
         <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       ) : drivers.length === 0 && unassigned.length === 0 ? (
         <section className="rounded-xl border border-dashed border-slate-200 bg-white px-6 py-12 text-center">
-          <UserRound className="mx-auto h-9 w-9 text-[#ef6614]" />
+          <UserRound className="mx-auto h-9 w-9 text-[#0f766e]" />
           <h3 className="mt-3 text-base font-black">No drivers yet</h3>
           <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
             Add a vehicle and fill in driver name and phone to see them here.
           </p>
           <Link
             href="/cabs/partner/vehicles/new"
-            className="mt-5 inline-flex rounded-lg bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white"
+            className="mt-5 inline-flex rounded-lg bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white"
           >
             Add vehicle
           </Link>
@@ -86,9 +86,9 @@ export default function PartnerDriversPage() {
                   <li key={driver.key}>
                     <Link
                       href={`/cabs/partner/drivers/${encodeDriverId(driver.key)}`}
-                      className="flex items-center gap-3 px-3 py-2 transition hover:bg-orange-50/50 sm:px-4 sm:py-2.5"
+                      className="flex items-center gap-3 px-3 py-2 transition hover:bg-teal-50/50 sm:px-4 sm:py-2.5"
                     >
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-orange-50 text-xs font-black text-[#ef6614]">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-teal-50 text-xs font-black text-[#0f766e]">
                         {driver.name.slice(0, 1).toUpperCase()}
                       </span>
                       <div className="min-w-0 flex-1">
@@ -156,7 +156,7 @@ export default function PartnerDriversPage() {
                           {cab.registration_number || "No registration"} · add driver to activate
                         </p>
                       </div>
-                      <span className="shrink-0 text-[10px] font-extrabold text-[#ef6614]">Assign →</span>
+                      <span className="shrink-0 text-[10px] font-extrabold text-[#0f766e]">Assign →</span>
                     </Link>
                   </li>
                 ))}

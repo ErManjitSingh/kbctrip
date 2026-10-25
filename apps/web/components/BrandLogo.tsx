@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 
 type BrandLogoProps = {
@@ -9,10 +11,28 @@ type BrandLogoProps = {
 };
 
 const sizes = {
-  sm: { box: 28, type: 16, gap: 9 },
-  md: { box: 32, type: 18, gap: 10 },
-  lg: { box: 40, type: 22, gap: 12 },
+  sm: { box: 28, type: 15.5, gap: 10 },
+  md: { box: 34, type: 18, gap: 11 },
+  lg: { box: 42, type: 22, gap: 12 },
 } as const;
+
+/** Ink plate + white K + teal rule. Footer inverts plate. */
+function LogoMark({ tone }: { tone: 'ink' | 'light' }) {
+  const plate = tone === 'light' ? '#ffffff' : '#0c1210';
+  const letter = tone === 'light' ? '#0c1210' : '#ffffff';
+  const rule = tone === 'light' ? '#2dd4bf' : '#0f766e';
+
+  return (
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <rect width="40" height="40" rx="9" fill={plate} />
+      <path
+        fill={letter}
+        d="M10.5 8h5.4v8.6L24.2 8h5.8L22 18.2 30.6 28.5H24.6L15.9 19.2V28.5h-5.4V8Z"
+      />
+      <rect x="10.5" y="31.2" width="19" height="2.2" rx="1.1" fill={rule} />
+    </svg>
+  );
+}
 
 export function BrandLogo({
   href = '/',
@@ -26,26 +46,14 @@ export function BrandLogo({
 
   const mark = (
     <span className="kbc-logo-mark" aria-hidden="true" style={{ width: dim.box, height: dim.box }}>
-      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="8" className="kbc-logo-plate" />
-        <path
-          className="kbc-logo-k"
-          d="M9 6.8h3.7v6.85L19.7 6.8H24l-7.45 8L24.15 24.2H19.85l-7.15-8.25V24.2H9V6.8Z"
-        />
-        <path
-          className="kbc-logo-accent"
-          d="M9 26.35h14"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-        />
-      </svg>
+      <LogoMark tone={tone} />
     </span>
   );
 
   const label = wordmark ? (
     <span className="kbc-logo-word" style={{ fontSize: dim.type }}>
       <b>KBC</b>
-      <em>Trip</em>
+      <span>Trip</span>
     </span>
   ) : (
     <span className="sr-only">KBC Trip</span>

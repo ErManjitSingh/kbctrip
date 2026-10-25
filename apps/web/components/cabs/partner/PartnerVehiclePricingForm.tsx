@@ -34,7 +34,7 @@ const EMPTY: PartnerCabNetPricing = {
 };
 
 const inputClass =
-  "mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#ef6614]";
+  "mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#0f766e]";
 
 function fromPricing(pricing: PartnerCabPricing | null | undefined): PartnerCabNetPricing {
   if (!pricing) return { ...EMPTY };
@@ -107,7 +107,7 @@ export function PartnerVehiclePricingForm({
       const next = await upsertPartnerVehiclePricing(token, cabId, form);
       setSelling(next);
       setForm(fromPricing(next));
-      setSuccess("Net rates saved. Guest prices update with UnoCabs margins.");
+      setSuccess("Net rates saved. Guest prices include the KBC Trip margin.");
       onSaved?.(next);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Could not save pricing.");
@@ -119,7 +119,7 @@ export function PartnerVehiclePricingForm({
   if (loading) {
     return (
       <div className="grid min-h-32 place-items-center rounded-xl border border-slate-200 bg-white">
-        <span className="h-6 w-6 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-6 w-6 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -145,7 +145,7 @@ export function PartnerVehiclePricingForm({
       <div>
         <h3 className="text-base font-black">Your net rates</h3>
         <p className="mt-1 text-xs leading-5 text-slate-500">
-          Enter what UnoCabs pays you. Guest-facing prices include platform margins and are shown as estimates.
+          Enter what you receive. Guest-facing prices include the KBC Trip margin and are shown as estimates.
         </p>
       </div>
 
@@ -212,7 +212,7 @@ export function PartnerVehiclePricingForm({
       <button
         type="submit"
         disabled={saving}
-        className="rounded-lg bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
+        className="rounded-lg bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
       >
         {saving ? "Saving rates…" : "Save net rates"}
       </button>

@@ -223,13 +223,13 @@ function QuoteBookInner() {
     return (
       <main className="min-h-screen bg-[#fbfaf9]">
         <div className="grid min-h-[50vh] place-items-center px-4">
-          <section className="max-w-md rounded-3xl border border-orange-100 bg-white p-7 text-center shadow-xl">
+          <section className="max-w-md rounded-3xl border border-teal-100 bg-white p-7 text-center shadow-xl">
             <h1 className="text-2xl font-black">Sign in to book</h1>
             <p className="mt-2 text-sm text-slate-600">Your selected quote is saved. Sign in to confirm traveller details and pay.</p>
             <button
               type="button"
               onClick={() => setAuthModalOpen(true)}
-              className="mt-5 inline-flex rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-bold text-white"
+              className="mt-5 inline-flex rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-bold text-white"
             >
               Sign in to continue
             </button>
@@ -258,7 +258,7 @@ function QuoteBookInner() {
   if (loading) {
     return (
       <div className="grid min-h-[50vh] place-items-center">
-        <span className="h-8 w-8 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -267,7 +267,7 @@ function QuoteBookInner() {
     return (
       <main className="mx-auto max-w-lg px-4 py-16 text-center">
         <p className="text-sm text-slate-600">{error || "Quote not found."}</p>
-        <Link href="/cabs/quotes" className="mt-4 inline-flex text-sm font-extrabold text-[#ef6614]">
+        <Link href="/cabs/quotes" className="mt-4 inline-flex text-sm font-extrabold text-[#0f766e]">
           Back to quotes
         </Link>
       </main>
@@ -286,7 +286,7 @@ function QuoteBookInner() {
 
       <div className="mx-auto grid max-w-5xl gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[1fr_0.9fr]">
         <section className="rounded-2xl border border-[#eee9e5] bg-white p-5 shadow-sm">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-[#ef6614]">Step 3 of 4 · Book</p>
+          <p className="text-[10px] font-extrabold uppercase tracking-wide text-[#0f766e]">Step 3 of 4 · Book</p>
           <h1 className="mt-1 text-2xl font-black tracking-tight">Traveller details</h1>
           <p className="mt-1 text-sm text-[#746a73]">
             Confirm who is travelling, then pay the partner quote securely.
@@ -296,35 +296,35 @@ function QuoteBookInner() {
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="text-xs font-bold text-[#746a73]">
                 First name
-                <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]" />
+                <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]" />
               </label>
               <label className="text-xs font-bold text-[#746a73]">
                 Last name
-                <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]" />
+                <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]" />
               </label>
               <label className="text-xs font-bold text-[#746a73]">
                 Email
-                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]" />
+                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]" />
               </label>
               <label className="text-xs font-bold text-[#746a73]">
                 Phone
-                <input required value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]" placeholder="10-digit mobile" />
+                <input required value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]" placeholder="10-digit mobile" />
               </label>
               <label className="text-xs font-bold text-[#746a73]">
                 Passengers
-                <input required type="number" min={1} max={50} value={passengers} onChange={(e) => setPassengers(Number(e.target.value) || 1)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]" />
+                <input required type="number" min={1} max={50} value={passengers} onChange={(e) => setPassengers(Number(e.target.value) || 1)} className="mt-1 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]" />
               </label>
             </div>
             <label className="block text-xs font-bold text-[#746a73]">
               Special instructions (optional)
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-1 min-h-20 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm outline-none focus:border-[#ef6614]" placeholder="Flight number, landmark, etc." />
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-1 min-h-20 w-full rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm outline-none focus:border-[#0f766e]" placeholder="Flight number, landmark, etc." />
             </label>
 
             <fieldset className="rounded-2xl border border-[#eee9e5] bg-[#fffaf6] p-3">
               <legend className="px-1 text-xs font-extrabold text-[#514954]">Payment</legend>
               <CabPromoCodeField className="mb-3" compact />
-              <label className="mt-1 flex cursor-pointer gap-3 rounded-xl border border-[#ef6614] bg-white p-3">
-                <input type="radio" name="payment-option" checked={paymentOption === "full_online"} onChange={() => setPaymentOption("full_online")} className="mt-1 accent-[#ef6614]" />
+              <label className="mt-1 flex cursor-pointer gap-3 rounded-xl border border-[#0f766e] bg-white p-3">
+                <input type="radio" name="payment-option" checked={paymentOption === "full_online"} onChange={() => setPaymentOption("full_online")} className="mt-1 accent-[#0f766e]" />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-2 text-sm font-extrabold text-[#292229]">
                     <span>Pay full fare online</span>
@@ -349,7 +349,7 @@ function QuoteBookInner() {
                 <>
                   {commissionAmount !== null && driverBalance !== null && commissionAmount > 0 && (
                     <label className="mt-1 flex cursor-pointer gap-3 rounded-xl border border-[#e9dccf] bg-white p-3">
-                      <input type="radio" name="payment-option" checked={paymentOption === "commission_and_driver"} onChange={() => setPaymentOption("commission_and_driver")} className="mt-1 accent-[#ef6614]" />
+                      <input type="radio" name="payment-option" checked={paymentOption === "commission_and_driver"} onChange={() => setPaymentOption("commission_and_driver")} className="mt-1 accent-[#0f766e]" />
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center justify-between gap-2 text-sm font-extrabold text-[#292229]">
                           <span>Pay advance{commissionPercent ? ` (${commissionPercent}%)` : ""}</span>
@@ -374,14 +374,14 @@ function QuoteBookInner() {
                     </label>
                   )}
                   <label className="mt-2 flex cursor-pointer gap-3 rounded-xl border border-[#e9dccf] bg-white p-3">
-                    <input type="radio" name="payment-option" checked={paymentOption === "direct_to_cab_owner"} onChange={() => setPaymentOption("direct_to_cab_owner")} className="mt-1 accent-[#ef6614]" />
+                    <input type="radio" name="payment-option" checked={paymentOption === "direct_to_cab_owner"} onChange={() => setPaymentOption("direct_to_cab_owner")} className="mt-1 accent-[#0f766e]" />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center justify-between gap-2 text-sm font-extrabold text-[#292229]">
                         <span>Pay cab owner directly</span>
                         <PricePair original={quote.total_amount} revised={promoPricing.finalAmount} />
                       </span>
                       <span className="mt-1 block text-xs font-medium leading-5 text-[#746a73]">
-                        No payment to UNO now. Pay the full quoted fare to the owner or driver.
+                        No payment on KBC Trip now. Pay the full quoted fare to the owner or driver.
                       </span>
                     </span>
                   </label>
@@ -390,8 +390,8 @@ function QuoteBookInner() {
             </fieldset>
 
             <label className="flex items-start gap-2 text-xs text-[#5f565e]">
-              <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 h-5 w-5 accent-[#ef6614]" />
-              I agree to UnoCabs booking terms and understand the fare is as quoted by the partner.
+              <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 h-5 w-5 accent-[#0f766e]" />
+              I agree to the KBC Cabs booking terms and understand the fare is as quoted by the partner.
             </label>
 
             {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">{error}</p>}
@@ -399,7 +399,7 @@ function QuoteBookInner() {
             <button
               type="submit"
               disabled={paying}
-              className="hidden w-full items-center justify-center gap-2 rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-60 md:inline-flex"
+              className="hidden w-full items-center justify-center gap-2 rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-60 md:inline-flex"
             >
               <CreditCard className="h-4 w-4" />
               {payLabel}
@@ -458,7 +458,7 @@ function QuoteBookInner() {
               <p className="mt-2 text-[11px] font-semibold text-emerald-700">Full fare will be settled to the cab owner after the trip.</p>
             )}
             {paymentOption === "direct_to_cab_owner" && (
-              <p className="mt-2 text-[11px] font-semibold text-[#ef6614]">Pay {money(promoPricing.finalAmount, quote.currency)} directly to the cab owner or driver. No UNO payment is collected.</p>
+              <p className="mt-2 text-[11px] font-semibold text-[#0f766e]">Pay {money(promoPricing.finalAmount, quote.currency)} directly to the cab owner or driver. No UNO payment is collected.</p>
             )}
             {paymentOption === "commission_and_driver" && discountedCommission !== null && discountedDriverBalance !== null && (
               <div className="mt-3 rounded-xl border border-emerald-100 bg-white/80 p-3 text-xs">
@@ -489,7 +489,7 @@ function QuoteBookInner() {
         </aside>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-orange-100 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-teal-100 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
         <div className="mb-2 flex items-center justify-between gap-3 text-xs">
           <span className="truncate font-semibold text-[#514953]">{quote.business_name || quote.partner_name}</span>
           <strong className="shrink-0 text-base font-black">{money(promoPricing.finalAmount, quote.currency)}</strong>
@@ -501,7 +501,7 @@ function QuoteBookInner() {
             const form = document.getElementById("cab-quote-pay-form") as HTMLFormElement | null;
             form?.requestSubmit();
           }}
-          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ef6614] text-sm font-extrabold text-white disabled:opacity-60"
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#0f766e] text-sm font-extrabold text-white disabled:opacity-60"
         >
           <CreditCard className="h-4 w-4" />
           {payLabel}
@@ -525,7 +525,7 @@ export default function CabQuoteBookPage() {
     <Suspense
       fallback={
         <div className="grid min-h-[50vh] place-items-center">
-          <span className="h-8 w-8 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       }
     >

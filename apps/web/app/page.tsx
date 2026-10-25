@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -7,26 +5,23 @@ import { TravelSearch } from '@/components/TravelSearch';
 import { DestinationShowcase } from '@/components/DestinationShowcase';
 import { OfferShowcase } from '@/components/OfferShowcase';
 import { SiteFooter } from '@/components/SiteFooter';
-import { HomePackagesSection, HomeStaysSection } from '@/components/home/home-catalog-sections';
 import {
   HomeCabsSection,
   HomeFinalCtaSection,
-  HomeHowItWorksSection,
 } from '@/components/home/home-story-sections';
-import { HomeTrustSection } from '@/components/home/home-trust-section';
+import { HomePackagesSection, HomeStaysSection } from '@/components/home/home-catalog-sections';
 import './kbc-home.css';
 import './home-redesign.css';
 
 /**
- * Homepage — booking-first, Inter only, Teal + Ink.
- * Hero lifestyle photo (no white cutout plate) · search · destinations · live catalog · offers · cabs · trust · steps · CTA
+ * Homepage — hero · search · destinations · packages · stays · offers · cabs · CTA
  */
 export default function HomePage() {
   return (
     <div className="kbc-shell kbc-home-v2">
       <div className="kbc-atmosphere" aria-hidden="true" />
       <main>
-        <section className="page-width hero hero-v3">
+        <section className="page-width hero">
           <div className="hero-copy home-reveal">
             <h1>
               Book <em>everything.</em>
@@ -34,7 +29,7 @@ export default function HomePage() {
               Travel <em>everywhere.</em>
             </h1>
             <p className="hero-lead">
-              Private stays, considered itineraries, one account. India first — then the rest of the map.
+              Private stays, considered itineraries, one account. India first, then the rest of the map.
             </p>
             <div className="hero-proof">
               <Image
@@ -55,17 +50,16 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="hero-visual kbc-media-cover home-reveal-delay" aria-hidden="true">
+          <div className="hero-art home-reveal-delay" aria-hidden="true">
+            <div className="hero-art-glow" />
             <Image
-              src="/images/holiday-packages-hero.png"
+              src="/reference/hero-visual-hd.png"
               alt=""
               fill
               priority
               unoptimized
-              sizes="(max-width: 900px) 100vw, 52vw"
-              className="hero-visual-img"
+              sizes="(max-width: 900px) 100vw, 58vw"
             />
-            <span className="hero-visual-shade" />
           </div>
         </section>
 
@@ -78,8 +72,6 @@ export default function HomePage() {
         <HomeStaysSection />
         <OfferShowcase />
         <HomeCabsSection />
-        <HomeTrustSection />
-        <HomeHowItWorksSection />
         <HomeFinalCtaSection />
       </main>
       <SiteFooter />

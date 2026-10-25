@@ -39,59 +39,60 @@
   }
 }
 
-/* KBC Trip logo — used on Unotrips shells (nav/footer) and marketing home */
+/* KBC Trip logo — ink mark + teal rule + wordmark */
 .kbc-logo {
   display: inline-flex;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
   color: inherit;
   text-decoration: none;
+  font-family: var(--font-sans), Inter, system-ui, sans-serif;
 }
 .kbc-logo-mark {
   display: grid;
   place-items: center;
   flex: 0 0 auto;
+  border-radius: 9px;
+  overflow: hidden;
 }
 .kbc-logo-mark svg {
   width: 100%;
   height: 100%;
   display: block;
 }
-.kbc-logo-plate {
-  fill: var(--orange);
-}
-.kbc-logo-k {
-  fill: #fff;
-}
-.kbc-logo-accent {
-  stroke: rgba(255, 255, 255, 0.55);
-  fill: none;
-}
 .kbc-logo-word {
   display: inline-flex;
   align-items: baseline;
   gap: 0.22em;
+  font-family: inherit;
   font-weight: 700;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.05em;
   line-height: 1;
 }
 .kbc-logo-word b {
+  font-family: inherit;
   font-weight: 800;
-  color: var(--ink);
+  color: var(--ink, #0c1210);
 }
-.kbc-logo-word em {
+.kbc-logo-word span {
+  font-family: inherit;
   font-style: normal;
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  color: #0f766e;
+}
+.kbc-logo-ink {
+  color: var(--ink, #0c1210);
 }
 .kbc-logo-light .kbc-logo-word b {
   color: #fff;
 }
-.kbc-logo-light .kbc-logo-word em {
-  color: #ffb199;
+.kbc-logo-light .kbc-logo-word span {
+  color: #5eead4;
 }
-.kbc-logo-light .kbc-logo-plate {
-  fill: var(--orange);
+.kbc-logo-light .kbc-logo-mark {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 /* Equal-height Swiper slides */

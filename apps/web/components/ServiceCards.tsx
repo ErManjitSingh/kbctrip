@@ -1,27 +1,64 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
 
-/** MVP surface: Hotels + Packages only (cabs/flights deferred). */
-const services = [
-  { name: 'Hotels', description: 'Stay in comfort', price: 'From ₹999', href: '/hotels', image: '/reference/service-cards/hotels.png' },
-  { name: 'Packages', description: 'Curated for you', price: 'Explore now', href: '/packages', image: '/reference/service-cards/packages.png' },
+const products = [
+  {
+    name: 'Hotels',
+    detail: 'Verified stays',
+    href: '/hotels',
+    image: '/reference/service-cards/hotels.png',
+    className: 'service-book-hotels',
+  },
+  {
+    name: 'Packages',
+    detail: 'Planned itineraries',
+    href: '/packages',
+    image: '/images/brochure-shimla-church.png',
+    className: 'service-book-packages',
+  },
+  {
+    name: 'Cabs',
+    detail: 'Airport & outstation',
+    href: '/cabs',
+    image: '/images/cabs/uno-cabs-traveller-pickup-v2.png',
+    className: 'service-book-cabs',
+  },
 ] as const;
 
 export function ServiceCards() {
   return (
-    <section className="page-width services-section" aria-labelledby="services-title">
-      <h2 id="services-title">Plan your trip</h2>
-      <div className="service-card-grid">
-        {services.map((service) => (
-          <Link href={service.href} key={service.name} className="service-card" aria-label={`Browse ${service.name}`}>
-            <span className="service-card-copy">
-              <strong>{service.name}</strong>
-              <span>{service.description}</span>
-              <b>{service.price}</b>
+    <section
+      className="page-width reference-section services-section"
+      aria-labelledby="services-title"
+    >
+      <div className="section-heading">
+        <div className="section-heading-copy">
+          <p className="section-kicker">Book</p>
+          <h2 id="services-title">Hotels, packages &amp; cabs</h2>
+        </div>
+      </div>
+
+      <div className="service-book-grid">
+        {products.map((product) => (
+          <Link
+            key={product.href}
+            href={product.href}
+            className={`service-book-card ${product.className}`}
+            aria-label={product.name}
+          >
+            <Image
+              className="service-book-image"
+              src={product.image}
+              alt=""
+              fill
+              sizes="(max-width: 700px) 100vw, 33vw"
+              unoptimized
+            />
+            <span className="service-book-shade" aria-hidden />
+            <span className="service-book-copy">
+              <strong>{product.name}</strong>
+              <span>{product.detail}</span>
             </span>
-            <span className="service-card-image-wrap"><Image src={service.image} alt="" fill sizes="(max-width: 600px) 44vw, 16vw" unoptimized /></span>
-            <span className="service-card-arrow"><ArrowUpRight size={13} /></span>
           </Link>
         ))}
       </div>

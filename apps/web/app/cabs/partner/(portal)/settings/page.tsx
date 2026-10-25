@@ -107,7 +107,7 @@ export default function PartnerSettingsPage() {
         </dl>
         <Link
           href="/cabs/list-your-cab"
-          className="mt-5 inline-flex rounded-lg border border-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-[#ef6614]"
+          className="mt-5 inline-flex rounded-lg border border-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-[#0f766e]"
         >
           View application profile
         </Link>
@@ -136,7 +136,7 @@ export default function PartnerSettingsPage() {
 
         {loadingBank ? (
           <div className="mt-6 grid place-items-center py-6">
-            <span className="h-6 w-6 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+            <span className="h-6 w-6 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
           </div>
         ) : (
           <form onSubmit={onSaveBank} className="mt-5 space-y-3">
@@ -152,7 +152,7 @@ export default function PartnerSettingsPage() {
                 minLength={2}
                 value={holder}
                 onChange={(e) => setHolder(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]"
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]"
               />
             </label>
             <label className="block">
@@ -164,7 +164,7 @@ export default function PartnerSettingsPage() {
                 value={ifsc}
                 onChange={(e) => setIfsc(e.target.value.toUpperCase())}
                 placeholder="HDFC0001234"
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold uppercase outline-none focus:border-[#ef6614]"
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold uppercase outline-none focus:border-[#0f766e]"
               />
             </label>
             <label className="block">
@@ -179,7 +179,7 @@ export default function PartnerSettingsPage() {
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ""))}
                 placeholder={bank?.bank_account_number || "Enter account number"}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]"
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]"
               />
             </label>
             {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
@@ -187,7 +187,7 @@ export default function PartnerSettingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-60"
+              className="rounded-lg bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-60"
             >
               {saving ? "Saving…" : "Save bank details"}
             </button>

@@ -34,7 +34,7 @@ export default function CabPartnerEntryPage() {
 
   if (auth?.isLoading || (!context && !error)) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#fffaf7] text-sm font-semibold text-[#706772]">
+      <main className="grid min-h-screen place-items-center bg-[#f3f7f5] text-sm font-semibold text-[#706772]">
         Checking your cab partner account…
       </main>
     );
@@ -42,7 +42,7 @@ export default function CabPartnerEntryPage() {
   if (error) {
     return (
       <Notice
-        icon={<ShieldAlert className="h-12 w-12 text-[#ef6614]" />}
+        icon={<ShieldAlert className="h-12 w-12 text-[#0f766e]" />}
         title="We couldn’t load your cab partner status."
         detail={error}
         link="/cabs"
@@ -62,14 +62,14 @@ export default function CabPartnerEntryPage() {
   }
   if (context.application?.onboarding_status === "approved") {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#fffaf7] text-sm font-semibold text-[#706772]">
+      <main className="grid min-h-screen place-items-center bg-[#f3f7f5] text-sm font-semibold text-[#706772]">
         Opening your partner dashboard…
       </main>
     );
   }
   return (
     <Notice
-      icon={<Clock3 className="h-12 w-12 text-[#ef6614]" />}
+      icon={<Clock3 className="h-12 w-12 text-[#0f766e]" />}
       title="Your application is being reviewed"
       detail="Our team will verify your details and documents. We’ll notify you once your account is approved."
       link="/cabs/list-your-cab"
@@ -92,12 +92,12 @@ function Notice({
   action: string;
 }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-[#fffaf7] p-6 text-center">
-      <div className="max-w-lg rounded-3xl border border-orange-100 bg-white p-8 shadow-xl shadow-orange-100/30">
+    <main className="grid min-h-screen place-items-center bg-[#f3f7f5] p-6 text-center">
+      <div className="max-w-lg rounded-3xl border border-teal-100 bg-white p-8 shadow-xl shadow-teal-100/30">
         {icon}
         <h1 className="mt-4 text-2xl font-black">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-[#706772]">{detail}</p>
-        <Link href={link} className="mt-6 inline-flex rounded-xl bg-[#ef6614] px-4 py-2.5 text-sm font-bold text-white">
+        <Link href={link} className="mt-6 inline-flex rounded-xl bg-[#0f766e] px-4 py-2.5 text-sm font-bold text-white">
           {action}
         </Link>
       </div>

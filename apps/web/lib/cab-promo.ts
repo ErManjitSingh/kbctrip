@@ -1,6 +1,6 @@
-/** UNO Cabs welcome offer — first ride 10% off. */
+/** First cab ride — 10% off. */
 
-export const CAB_WELCOME_PROMO_CODE = "UNOCABS10";
+export const CAB_WELCOME_PROMO_CODE = "KBCCABS10";
 export const CAB_WELCOME_DISCOUNT_PERCENT = 10;
 export const CAB_PROMO_STORAGE_KEY = "uno_cabs_promo_code";
 
@@ -9,7 +9,8 @@ export function normalizePromoCode(value: string) {
 }
 
 export function isValidCabWelcomeCode(value: string) {
-  return normalizePromoCode(value) === CAB_WELCOME_PROMO_CODE;
+  const code = normalizePromoCode(value);
+  return code === CAB_WELCOME_PROMO_CODE || code === "UNOCABS10";
 }
 
 export function readStoredCabPromoCode(): string | null {

@@ -1,0 +1,77 @@
+.kbc-cab-frame {
+  position: relative;
+  overflow: hidden;
+  background: #0c1210;
+}
+
+.kbc-cab-hero-stage {
+  background:
+    radial-gradient(ellipse 42% 70% at 92% -10%, rgba(15, 118, 110, 0.28), transparent 58%),
+    radial-gradient(ellipse 36% 50% at 0% 100%, rgba(15, 118, 110, 0.12), transparent 60%),
+    #0c1210;
+}
+
+.kbc-cab-frame.kbc-cab-band {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.kbc-cab-band img {
+  transform: none;
+  animation: none;
+}
+
+.kbc-cab-frame img {
+  object-fit: cover;
+  transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .kbc-cab-frame img {
+    animation: kbc-cab-drift 26s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes kbc-cab-drift {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to { transform: scale(1.14) translate3d(-1.6%, -1%, 0); }
+}
+
+.kbc-cab-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 12, 11, 0.18) 0%, rgba(8, 12, 11, 0) 32%);
+}
+
+.kbc-cab-showroom {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(15, 118, 110, 0.28), transparent 42%),
+    #0c1210;
+}
+
+.kbc-cab-car {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kbc-cab-car:hover {
+  transform: translateY(-8px);
+}
+
+.kbc-cab-car img {
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kbc-cab-car:hover img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kbc-cab-car,
+  .kbc-cab-car img,
+  .kbc-cab-car:hover,
+  .kbc-cab-car:hover img {
+    transition: none;
+    transform: none;
+  }
+}

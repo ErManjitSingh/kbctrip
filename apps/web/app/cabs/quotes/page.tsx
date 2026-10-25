@@ -27,7 +27,6 @@ import {
 } from "lucide-react";
 import { useAuthOptional } from "@/contexts/auth-context";
 import { BookingAuthModal } from "@/components/hotels/booking-auth-modal";
-import { BrandLogo } from "@/components/BrandLogo";
 import { trackEvent } from "@/lib/marketing-tracking";
 import {
   acceptCabQuote,
@@ -158,15 +157,15 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      <div className="overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-[0_18px_40px_-28px_rgba(239,102,20,0.35)]">
+      <div className="overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-[0_18px_40px_-28px_rgba(239,102,20,0.35)]">
         <div className="relative bg-[linear-gradient(145deg,#fff4eb_0%,#ffffff_42%,#f6fbf9_100%)] px-4 pb-5 pt-5 text-center sm:px-8 sm:pb-7 sm:pt-7">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-orange-200/30 blur-2xl" />
+          <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-teal-200/30 blur-2xl" />
           <div className="pointer-events-none absolute -left-8 bottom-0 h-28 w-28 rounded-full bg-emerald-200/25 blur-2xl" />
 
-          <span className="relative mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-[#ef6614] shadow-[0_10px_24px_-12px_rgba(239,102,20,0.8)] ring-4 ring-orange-50 sm:h-14 sm:w-14">
+          <span className="relative mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-[#0f766e] shadow-[0_10px_24px_-12px_rgba(239,102,20,0.8)] ring-4 ring-teal-50 sm:h-14 sm:w-14">
             <BellRing className="h-6 w-6 sm:h-7 sm:w-7" />
           </span>
-          <p className="relative mt-3 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#ef6614] sm:mt-4">
+          <p className="relative mt-3 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#0f766e] sm:mt-4">
             You’re all set
           </p>
           <h2 className="relative mt-1.5 text-xl font-black tracking-tight text-[#292229] sm:text-2xl">
@@ -177,11 +176,11 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
           </p>
 
           {/* Partner broadcast card */}
-          <div className="relative mx-auto mt-5 max-w-md overflow-hidden rounded-[22px] border border-orange-100 bg-white text-left shadow-[0_16px_36px_-22px_rgba(64,34,19,0.4)]">
+          <div className="relative mx-auto mt-5 max-w-md overflow-hidden rounded-[22px] border border-teal-100 bg-white text-left shadow-[0_16px_36px_-22px_rgba(64,34,19,0.4)]">
             <div className="relative overflow-hidden bg-[linear-gradient(120deg,#2b2521_0%,#403842_55%,#5a4030_100%)] px-4 pb-8 pt-4">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(239,102,20,0.35),transparent_42%)]" />
               <div className="relative flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-orange-200 ring-1 ring-white/15">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-teal-200 ring-1 ring-white/15">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -197,7 +196,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
                 <span className="block text-[13px] font-semibold text-white/70">who operate on this route</span>
               </p>
               <div className="relative mt-3 flex items-end justify-between gap-2">
-                <p className="inline-flex max-w-[70%] min-w-0 items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-orange-50 ring-1 ring-white/10">
+                <p className="inline-flex max-w-[70%] min-w-0 items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-teal-50 ring-1 ring-white/10">
                   <MapPin className="h-3 w-3 shrink-0 text-[#ffb070]" />
                   <span className="truncate">{routeLabel}</span>
                 </p>
@@ -216,7 +215,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
                       <Image src={src} alt="" width={40} height={28} className="h-6 w-auto object-contain" unoptimized />
                     </span>
                   ))}
-                  <span className="relative z-0 grid h-10 w-10 place-items-center rounded-full border-2 border-[#403842] bg-[#ef6614] text-[10px] font-black text-white shadow-md">
+                  <span className="relative z-0 grid h-10 w-10 place-items-center rounded-full border-2 border-[#403842] bg-[#0f766e] text-[10px] font-black text-white shadow-md">
                     +100
                   </span>
                 </div>
@@ -225,7 +224,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
 
             <div className="relative -mt-4 rounded-t-[18px] bg-white px-4 pb-3.5 pt-3.5">
               <div className="flex items-start gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-orange-50 text-[#ef6614]">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-50 text-[#0f766e]">
                   <UserRoundCheck className="h-[18px] w-[18px]" />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -237,11 +236,11 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
                   </p>
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl bg-[#fff8f2] px-3 py-2.5">
+              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl bg-[#f3f7f5] px-3 py-2.5">
                 <p className="text-[11px] font-medium text-[#8b828a]">
                   Request <strong className="text-[#514953]">{request.request_number}</strong>
                 </p>
-                <p className="text-[12px] font-black tracking-tight text-[#ef6614]">
+                <p className="text-[12px] font-black tracking-tight text-[#0f766e]">
                   Happy booking!
                 </p>
               </div>
@@ -263,12 +262,12 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
           </div>
 
           <div className="relative mx-auto mt-3.5 flex max-w-lg flex-wrap items-center justify-center gap-2 text-[11px] font-semibold sm:mt-4 sm:text-xs">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[#514953] shadow-sm ring-1 ring-orange-100">
-              <Timer className="h-3.5 w-3.5 text-[#ef6614]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[#514953] shadow-sm ring-1 ring-teal-100">
+              <Timer className="h-3.5 w-3.5 text-[#0f766e]" />
               Usually 1–30 min for first quote
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[#514953] shadow-sm ring-1 ring-orange-100">
-              <Clock3 className="h-3.5 w-3.5 text-[#ef6614]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[#514953] shadow-sm ring-1 ring-teal-100">
+              <Clock3 className="h-3.5 w-3.5 text-[#0f766e]" />
               {deadlineCopy(request.quote_deadline_at, now)}
             </span>
           </div>
@@ -276,7 +275,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
           <div className="relative mx-auto mt-4 grid max-w-md gap-2 sm:grid-cols-2">
             <Link
               href="/account?tab=quotes"
-              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-[#ef6614] px-4 text-sm font-extrabold text-white shadow-[0_12px_22px_-14px_rgba(239,102,20,0.85)]"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-[#0f766e] px-4 text-sm font-extrabold text-white shadow-[0_12px_22px_-14px_rgba(239,102,20,0.85)]"
             >
               Done for now · My quotes
             </Link>
@@ -301,7 +300,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
           { icon: ShieldCheck, title: "Nothing booked yet", text: "You only pay after you choose a quote." },
         ].map(({ icon: Icon, title, text }) => (
           <article key={title} className="flex gap-3 rounded-2xl border border-[#eee9e5] bg-white px-3.5 py-3 text-left">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-orange-50 text-[#ef6614]">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-50 text-[#0f766e]">
               <Icon className="h-4 w-4" />
             </span>
             <div>
@@ -316,9 +315,9 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
         {steps.map((step, index) => (
           <article
             key={step.title}
-            className={`rounded-2xl border p-4 ${step.active ? "border-orange-200 bg-orange-50/40" : "border-[#eee9e5] bg-white"}`}
+            className={`rounded-2xl border p-4 ${step.active ? "border-teal-200 bg-teal-50/40" : "border-[#eee9e5] bg-white"}`}
           >
-            <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${step.done ? "bg-emerald-500 text-white" : step.active ? "bg-[#ef6614] text-white" : "bg-slate-100 text-slate-500"}`}>
+            <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${step.done ? "bg-emerald-500 text-white" : step.active ? "bg-[#0f766e] text-white" : "bg-slate-100 text-slate-500"}`}>
               {step.done ? "✓" : index + 1}
             </span>
             <h3 className="mt-3 text-sm font-extrabold text-[#292229]">{step.title}</h3>
@@ -330,7 +329,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
       <div className="hidden gap-4 md:grid md:grid-cols-2">
         <section className="rounded-2xl border border-[#eee9e5] bg-white p-5">
           <h3 className="flex items-center gap-2 text-sm font-extrabold">
-            <BadgeCheck className="h-4 w-4 text-[#ef6614]" />
+            <BadgeCheck className="h-4 w-4 text-[#0f766e]" />
             What each quote will usually include
           </h3>
           <ul className="mt-3 space-y-2.5 text-sm text-[#5f565e]">
@@ -351,7 +350,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
 
         <section className="rounded-2xl border border-[#eee9e5] bg-white p-5">
           <h3 className="flex items-center gap-2 text-sm font-extrabold">
-            <HelpCircle className="h-4 w-4 text-[#ef6614]" />
+            <HelpCircle className="h-4 w-4 text-[#0f766e]" />
             While you wait
           </h3>
           <ul className="mt-3 space-y-2.5 text-sm text-[#5f565e]">
@@ -362,7 +361,7 @@ function WaitingState({ request, now }: { request: CabTripRequest; now: Date }) 
               "Resume anytime from My quotes if you leave this page.",
             ].map((item) => (
               <li key={item} className="flex gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#ef6614]" />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0f766e]" />
                 <span>{item}</span>
               </li>
             ))}
@@ -401,9 +400,9 @@ function QuoteCard({
         quote.status === "accepted"
           ? "border-emerald-300 bg-emerald-50/20"
           : isHighlighted
-            ? "border-[#ef6614] ring-2 ring-orange-100"
+            ? "border-[#0f766e] ring-2 ring-teal-100"
           : isBestPrice
-            ? "border-orange-200 ring-1 ring-orange-100"
+            ? "border-teal-200 ring-1 ring-teal-100"
             : "border-[#ece8e5]"
       }`}
     >
@@ -435,8 +434,8 @@ function QuoteCard({
               <span>Responded {relativeMinutes(respondedAt)}</span>
             </p>
             {quote.partner_message && (
-              <p className="mt-3 rounded-xl bg-[#fff8f2] px-3 py-2 text-xs leading-5 text-[#5f565e]">
-                <MessageCircle className="mr-1 inline h-3.5 w-3.5 text-[#ef6614]" />
+              <p className="mt-3 rounded-xl bg-[#f3f7f5] px-3 py-2 text-xs leading-5 text-[#5f565e]">
+                <MessageCircle className="mr-1 inline h-3.5 w-3.5 text-[#0f766e]" />
                 “{quote.partner_message}”
               </p>
             )}
@@ -453,7 +452,7 @@ function QuoteCard({
                 <IndianRupee className="h-6 w-6" />
                 {money(promoPricing.finalAmount, quote.currency).replace(/^₹\s?/, "")}
               </p>
-              <p className="mt-1 text-[11px] font-bold text-emerald-700">UNOCABS10 · 10% off</p>
+              <p className="mt-1 text-[11px] font-bold text-emerald-700">KBCCABS10 · 10% off</p>
             </div>
           ) : (
             <p className="flex items-center gap-1 text-3xl font-black tracking-tight text-[#292229] sm:justify-end">
@@ -476,7 +475,7 @@ function QuoteCard({
                 type="button"
                 disabled={Boolean(accepting) || request.status === "accepted"}
                 onClick={() => onSelect(quote.id)}
-                className="w-full rounded-xl bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white shadow-[0_10px_18px_-12px_rgba(239,102,20,0.8)] transition hover:bg-[#d95511] disabled:opacity-60 sm:w-auto"
+                className="w-full rounded-xl bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white shadow-[0_10px_18px_-12px_rgba(239,102,20,0.8)] transition hover:bg-[#115e59] disabled:opacity-60 sm:w-auto"
               >
                 {accepting === quote.id ? "Selecting…" : "Select this quote"}
               </button>
@@ -491,7 +490,7 @@ function QuoteCard({
             <span className="min-w-0 truncate">
               {quote.inclusions.length ? `Includes: ${quote.inclusions.slice(0, 2).join(" · ")}${quote.inclusions.length > 2 ? ` +${quote.inclusions.length - 2}` : ""}` : "View fare details"}
             </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-[#ef6614] transition group-open:rotate-180" />
+            <ChevronDown className="h-4 w-4 shrink-0 text-[#0f766e] transition group-open:rotate-180" />
           </summary>
           <div className="mt-3 space-y-3 border-t border-[#f0eeec] pt-3">
             <QuoteFareBreakdown quote={quote} />
@@ -698,15 +697,15 @@ export default function CabQuotesPage() {
   if (!requestId) return <MissingRequest />;
   if (!auth?.isAuthenticated) {
     return (
-      <main className="min-h-screen bg-[#fffaf7]">
+      <main className="min-h-screen bg-[#f3f7f5]">
         <div className="grid place-items-center p-5 pt-10">
-          <section className="max-w-md rounded-3xl border border-orange-100 bg-white p-7 text-center shadow-xl shadow-orange-100/30">
+          <section className="max-w-md rounded-3xl border border-teal-100 bg-white p-7 text-center shadow-xl shadow-teal-100/30">
             <h1 className="text-2xl font-black">Sign in to view your quotes</h1>
             <p className="mt-2 text-sm text-slate-600">Quotes are only visible to the traveller who posted this request. Your link is saved.</p>
             <button
               type="button"
               onClick={() => setAuthModalOpen(true)}
-              className="mt-5 inline-flex rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-bold text-white"
+              className="mt-5 inline-flex rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-bold text-white"
             >
               Sign in
             </button>
@@ -766,9 +765,7 @@ export default function CabQuotesPage() {
 
   return (
     <main className="min-h-screen bg-[var(--kbc-paper,#f3f7f5)] pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-[#0c1210] md:pb-0">
-      <header className="hidden border-b border-[#eee9e5] bg-white md:block">
-        <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-2 px-4 sm:h-16 sm:px-7">
-          <BrandLogo size="sm" className="shrink-0" />
+      <div className="mx-auto flex max-w-[1440px] items-center justify-end gap-2 px-4 pt-4 sm:px-7">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <Link
               href="/account?tab=quotes"
@@ -785,15 +782,14 @@ export default function CabQuotesPage() {
               <span className="hidden sm:inline">Post another trip</span>
             </Link>
           </div>
-        </div>
-      </header>
+      </div>
 
       <div className="mx-auto max-w-[1440px] px-4 pt-4 sm:px-7">
         <QuoteFunnelProgress current={funnelStep} className="mb-4" />
       </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-3 sm:px-7 sm:py-7">
-        <p className="mb-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#ef6614] lg:hidden">
+        <p className="mb-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#0f766e] lg:hidden">
           Step 2 of 4 · Quotes
         </p>
         <section className="hidden overflow-hidden rounded-2xl border border-[#eee9e5] bg-white shadow-sm lg:block">
@@ -813,7 +809,7 @@ export default function CabQuotesPage() {
                       <span
                         aria-hidden
                         className={`absolute left-[-50%] right-1/2 top-[18px] h-0.5 ${
-                          done || active ? "bg-[#ef6614]/45" : "bg-slate-200"
+                          done || active ? "bg-[#0f766e]/45" : "bg-slate-200"
                         }`}
                       />
                     )}
@@ -822,20 +818,20 @@ export default function CabQuotesPage() {
                         done
                           ? "border-emerald-500 bg-emerald-500 text-white"
                           : active
-                            ? "border-[#ef6614] bg-white text-[#ef6614]"
+                            ? "border-[#0f766e] bg-white text-[#0f766e]"
                             : "border-slate-300 bg-white text-slate-400"
                       }`}
                     >
                       {index + 1}
                     </span>
-                    <strong className={`mt-2 block ${active ? "text-[#ef6614]" : ""}`}>{label}</strong>
+                    <strong className={`mt-2 block ${active ? "text-[#0f766e]" : ""}`}>{label}</strong>
                   </li>
                 );
               })}
             </ol>
             <div className="relative min-h-24 overflow-hidden rounded-xl bg-[linear-gradient(115deg,#fff7ef,#fffdfa_58%,#f4f8f7)] p-4">
               <p className="relative z-10 flex items-center gap-2 text-sm font-extrabold">
-                <BellRing className="h-4 w-4 text-[#ef6614]" />
+                <BellRing className="h-4 w-4 text-[#0f766e]" />
                 {request.status === "accepted"
                   ? "Your cab is selected!"
                   : quotes.length
@@ -869,17 +865,17 @@ export default function CabQuotesPage() {
                 {dateOnly(request.pickup_at)} · {timeOnly(request.pickup_at)} · {request.passengers} pax
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-bold text-[#d95717]">
+            <span className="shrink-0 rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-bold text-[#115e59]">
               {STATUS_LABEL[request.status]}
             </span>
           </div>
           <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-[#514953]">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#fff7ef] px-2.5 py-1 text-[#d95717]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#fff7ef] px-2.5 py-1 text-[#115e59]">
               <Timer className="h-3 w-3" />
               {deadlineCopy(request.quote_deadline_at, now)}
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
-              <BellRing className="h-3 w-3 text-[#ef6614]" />
+              <BellRing className="h-3 w-3 text-[#0f766e]" />
               {quotes.length
                 ? `${quotes.length} quote${quotes.length === 1 ? "" : "s"}`
                 : "We’ll notify you"}
@@ -899,7 +895,7 @@ export default function CabQuotesPage() {
                   <h2 className="text-sm font-extrabold sm:text-base">Your trip summary</h2>
                   <p className="mt-0.5 text-[11px] text-[#746a73] sm:mt-1 sm:text-xs">{routeLabel}</p>
                 </div>
-                <span className="hidden rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-bold text-[#d95717] lg:inline-flex">
+                <span className="hidden rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-bold text-[#115e59] lg:inline-flex">
                   {STATUS_LABEL[request.status]}
                 </span>
               </div>
@@ -1027,7 +1023,7 @@ export default function CabQuotesPage() {
                       max={50}
                       value={editPassengers}
                       onChange={(e) => setEditPassengers(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
-                      className="mt-1 h-10 w-full rounded-lg border border-[#ddd5d1] px-3 text-sm font-semibold outline-none focus:border-[#ef6614]"
+                      className="mt-1 h-10 w-full rounded-lg border border-[#ddd5d1] px-3 text-sm font-semibold outline-none focus:border-[#0f766e]"
                     />
                   </label>
                   <label className="block text-xs font-bold text-[#403842]">
@@ -1036,7 +1032,7 @@ export default function CabQuotesPage() {
                       type="datetime-local"
                       value={editPickupAt}
                       onChange={(e) => setEditPickupAt(e.target.value)}
-                      className="mt-1 h-10 w-full rounded-lg border border-[#ddd5d1] px-3 text-sm font-semibold outline-none focus:border-[#ef6614]"
+                      className="mt-1 h-10 w-full rounded-lg border border-[#ddd5d1] px-3 text-sm font-semibold outline-none focus:border-[#0f766e]"
                     />
                   </label>
                   {request.trip_type === "round_trip" && (
@@ -1046,7 +1042,7 @@ export default function CabQuotesPage() {
                         type="datetime-local"
                         value={editReturnAt}
                         onChange={(e) => setEditReturnAt(e.target.value)}
-                        className="mt-1 h-10 w-full rounded-lg border border-[#ddd5d1] px-3 text-sm font-semibold outline-none focus:border-[#ef6614]"
+                        className="mt-1 h-10 w-full rounded-lg border border-[#ddd5d1] px-3 text-sm font-semibold outline-none focus:border-[#0f766e]"
                       />
                     </label>
                   )}
@@ -1066,7 +1062,7 @@ export default function CabQuotesPage() {
                             }
                             className={`rounded-full border px-2.5 py-1 text-[11px] font-bold ${
                               selected
-                                ? "border-[#ef6614] bg-orange-50 text-[#b84710]"
+                                ? "border-[#0f766e] bg-teal-50 text-[#115e59]"
                                 : "border-[#e4dbd5] bg-white text-[#514953]"
                             }`}
                           >
@@ -1082,7 +1078,7 @@ export default function CabQuotesPage() {
                       value={editRequirements}
                       onChange={(e) => setEditRequirements(e.target.value)}
                       rows={2}
-                      className="mt-1 w-full resize-y rounded-lg border border-[#ddd5d1] px-3 py-2 text-sm outline-none focus:border-[#ef6614]"
+                      className="mt-1 w-full resize-y rounded-lg border border-[#ddd5d1] px-3 py-2 text-sm outline-none focus:border-[#0f766e]"
                       placeholder="Child seat, luggage, accessibility…"
                     />
                   </label>
@@ -1091,7 +1087,7 @@ export default function CabQuotesPage() {
                       type="button"
                       disabled={saving}
                       onClick={() => void saveEdit()}
-                      className="inline-flex min-h-9 flex-1 items-center justify-center rounded-lg bg-[#ef6614] text-xs font-bold text-white disabled:opacity-60"
+                      className="inline-flex min-h-9 flex-1 items-center justify-center rounded-lg bg-[#0f766e] text-xs font-bold text-white disabled:opacity-60"
                     >
                       {saving ? "Saving…" : "Save changes"}
                     </button>
@@ -1115,7 +1111,7 @@ export default function CabQuotesPage() {
                       setSummaryOpen(true);
                       startEdit();
                     }}
-                    className="inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg border border-orange-200 bg-[#fffaf7] text-xs font-bold text-[#d95717]"
+                    className="inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg border border-teal-200 bg-[#f3f7f5] text-xs font-bold text-[#115e59]"
                   >
                     <FilePenLine className="h-3.5 w-3.5" /> Edit
                   </button>
@@ -1139,13 +1135,13 @@ export default function CabQuotesPage() {
 
             <section className="hidden rounded-2xl border border-[#eee9e5] bg-white p-4 shadow-sm lg:block">
               <h2 className="flex items-center gap-2 text-sm font-extrabold">
-                <HelpCircle className="h-4 w-4 text-[#ef6614]" /> Need help?
+                <HelpCircle className="h-4 w-4 text-[#0f766e]" /> Need help?
               </h2>
               <p className="mt-1 text-xs leading-5 text-[#746a73]">Our travel team can help if partners are slow to respond.</p>
               <div className="mt-3 grid gap-2">
                 <a
                   href="tel:+919999999999"
-                  className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-[#ef6614] text-xs font-bold text-white"
+                  className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-[#0f766e] text-xs font-bold text-white"
                 >
                   <Phone className="h-3.5 w-3.5" /> Call support
                 </a>
@@ -1156,13 +1152,13 @@ export default function CabQuotesPage() {
               <h2 className="font-extrabold">Why KBC Cabs</h2>
               <ul className="mt-3 space-y-3 text-[#665c65]">
                 <li className="flex gap-2">
-                  <ShieldCheck className="h-4 w-4 shrink-0 text-[#ef6614]" /> Verified, approved cab partners only
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-[#0f766e]" /> Verified, approved cab partners only
                 </li>
                 <li className="flex gap-2">
-                  <BadgeCheck className="h-4 w-4 shrink-0 text-[#ef6614]" /> Compare multiple quotes before you pay
+                  <BadgeCheck className="h-4 w-4 shrink-0 text-[#0f766e]" /> Compare multiple quotes before you pay
                 </li>
                 <li className="flex gap-2">
-                  <Phone className="h-4 w-4 shrink-0 text-[#ef6614]" /> Support before and during your trip
+                  <Phone className="h-4 w-4 shrink-0 text-[#0f766e]" /> Support before and during your trip
                 </li>
               </ul>
             </section>
@@ -1187,7 +1183,7 @@ export default function CabQuotesPage() {
               )}
             </div>
 
-            <CabPromoCodeField className="mt-4 rounded-xl border border-orange-100 bg-[#fffaf7] p-3" />
+            <CabPromoCodeField className="mt-4 rounded-xl border border-teal-100 bg-[#f3f7f5] p-3" />
 
             {quotes.length === 0 ? (
               <div className="mt-4 sm:mt-5">
@@ -1245,7 +1241,7 @@ function StickyQuoteBar({
   const pricing = useCabPromoPricing(quote.total_amount);
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-orange-100 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-teal-100 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
       <div className="mb-2 flex items-center justify-between gap-3 text-xs">
         <span className="truncate font-semibold text-[#514953]">
           {quote.business_name || quote.partner_name}
@@ -1257,7 +1253,7 @@ function StickyQuoteBar({
         type="button"
         disabled={Boolean(accepting)}
         onClick={onSelect}
-        className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#ef6614] text-sm font-extrabold text-white disabled:opacity-60"
+        className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#0f766e] text-sm font-extrabold text-white disabled:opacity-60"
       >
         {accepting === quote.id ? "Selecting…" : "Select this quote"}
       </button>
@@ -1267,12 +1263,12 @@ function StickyQuoteBar({
 
 function MissingRequest({ message }: { message?: string }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-[#fffaf7] p-5">
-      <section className="max-w-md rounded-3xl border border-orange-100 bg-white p-7 text-center">
-        <MapPin className="mx-auto h-10 w-10 text-[#ef6614]" />
+    <main className="grid min-h-screen place-items-center bg-[#f3f7f5] p-5">
+      <section className="max-w-md rounded-3xl border border-teal-100 bg-white p-7 text-center">
+        <MapPin className="mx-auto h-10 w-10 text-[#0f766e]" />
         <h1 className="mt-4 text-2xl font-black">Trip request not found</h1>
         <p className="mt-2 text-sm text-slate-600">{message || "Post a cab request first to receive partner quotes."}</p>
-        <Link href="/cabs" className="mt-5 inline-flex rounded-xl bg-[#ef6614] px-4 py-3 text-sm font-bold text-white">
+        <Link href="/cabs" className="mt-5 inline-flex rounded-xl bg-[#0f766e] px-4 py-3 text-sm font-bold text-white">
           Post a trip request
         </Link>
       </section>

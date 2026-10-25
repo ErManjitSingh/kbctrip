@@ -182,7 +182,7 @@ export default function PartnerBookingDetailPage() {
   if (loading) {
     return (
       <div className="grid min-h-40 place-items-center">
-        <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -194,7 +194,7 @@ export default function PartnerBookingDetailPage() {
         <button
           type="button"
           onClick={() => router.push("/cabs/partner/bookings")}
-          className="mt-4 text-xs font-extrabold text-[#ef6614]"
+          className="mt-4 text-xs font-extrabold text-[#0f766e]"
         >
           Back to bookings
         </button>
@@ -208,7 +208,7 @@ export default function PartnerBookingDetailPage() {
         <div>
           <Link
             href="/cabs/partner/bookings"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#ef6614]"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#0f766e]"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Bookings
           </Link>
@@ -316,7 +316,7 @@ export default function PartnerBookingDetailPage() {
               </div>
               <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-2 text-sm">
                 <span className="font-extrabold text-[#192131]">Your net</span>
-                <span className="font-black text-[#ef6614]">
+                <span className="font-black text-[#0f766e]">
                   {formatMoney(booking.subtotal_net, booking.currency)}
                 </span>
               </div>
@@ -425,7 +425,7 @@ export default function PartnerBookingDetailPage() {
             type="button"
             disabled={savingDriver || !driverName.trim() || !driverPhone.trim()}
             onClick={() => void saveDriver()}
-            className="mt-3 rounded-lg bg-[#ef6614] px-3 py-2 text-xs font-extrabold text-white disabled:opacity-50"
+            className="mt-3 rounded-lg bg-[#0f766e] px-3 py-2 text-xs font-extrabold text-white disabled:opacity-50"
           >
             {savingDriver ? "Saving…" : "Save driver"}
           </button>

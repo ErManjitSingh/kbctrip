@@ -67,7 +67,7 @@ export default function PartnerVehiclesPage() {
         </div>
         <Link
           href="/cabs/partner/vehicles/new"
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white"
         >
           <Plus className="h-4 w-4" /> Add car
         </Link>
@@ -75,14 +75,14 @@ export default function PartnerVehiclesPage() {
 
       {loading ? (
         <div className="grid min-h-48 place-items-center">
-          <span className="h-8 w-8 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       ) : error ? (
         <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       ) : vehicles.length === 0 ? (
         <section className="rounded-2xl border border-dashed border-slate-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="text-center">
-            <CarFront className="mx-auto h-8 w-8 text-[#ef6614]" />
+            <CarFront className="mx-auto h-8 w-8 text-[#0f766e]" />
             <h3 className="mt-2 text-lg font-black">Add your first car</h3>
             <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-slate-500">
               Tap a type below. We fill seats for you — then add driver and city.
@@ -93,19 +93,19 @@ export default function PartnerVehiclesPage() {
               <Link
                 key={vehicle.value}
                 href={`/cabs/partner/vehicles/new?category=${vehicle.value}`}
-                className="group overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 transition hover:-translate-y-0.5 hover:border-orange-300 hover:shadow-md"
+                className="group overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 transition hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-md"
               >
                 <span className="relative block h-20 rounded-lg bg-white sm:h-24">
                   <Image src={vehicle.image} alt={vehicle.label} fill sizes="(max-width: 640px) 42vw, 180px" className="object-contain p-1" />
                 </span>
-                <strong className="block truncate px-1 pb-1 pt-1.5 text-center text-[11px] font-extrabold text-[#192131] group-hover:text-[#ef6614]">
+                <strong className="block truncate px-1 pb-1 pt-1.5 text-center text-[11px] font-extrabold text-[#192131] group-hover:text-[#0f766e]">
                   {vehicle.label}
                 </strong>
               </Link>
             ))}
           </div>
           <p className="mt-4 text-center text-xs text-slate-400">
-            Need mini bus / luxury? Use <Link href="/cabs/partner/vehicles/new" className="font-bold text-[#ef6614]">Add car</Link> and open “Show more types”.
+            Need mini bus / luxury? Use <Link href="/cabs/partner/vehicles/new" className="font-bold text-[#0f766e]">Add car</Link> and open “Show more types”.
           </p>
         </section>
       ) : (
@@ -117,7 +117,7 @@ export default function PartnerVehiclesPage() {
                 <li key={cab.id}>
                   <Link
                     href={`/cabs/partner/vehicles/${cab.id}`}
-                    className="flex items-center gap-3 px-3 py-3 transition hover:bg-orange-50/50 sm:gap-4 sm:px-4"
+                    className="flex items-center gap-3 px-3 py-3 transition hover:bg-teal-50/50 sm:gap-4 sm:px-4"
                   >
                     <div className="grid h-14 w-20 shrink-0 place-items-center overflow-hidden rounded-xl bg-slate-50 sm:h-16 sm:w-24">
                       {cab.featured_image ? (

@@ -3,7 +3,25 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  Bath,
+  BedDouble,
+  CalendarDays,
+  Car,
+  Check,
+  Coffee,
+  Compass,
+  CookingPot,
+  MapPin,
+  Plane,
+  UserRound,
+  Users,
+  UtensilsCrossed,
+  Waves,
+  Wifi,
+  type LucideIcon,
+} from 'lucide-react';
 import {
   formatPrice,
   listHolidayPackages,
@@ -19,14 +37,106 @@ function photoOf(urls: string[] | undefined, fallback: string) {
   return first || fallback;
 }
 
+function clip(text: string | null | undefined, max = 88) {
+  const clean = text?.replace(/\s+/g, ' ').trim();
+  if (!clean) return null;
+  if (clean.length <= max) return clean;
+  return `${clean.slice(0, max - 1).trimEnd()}…`;
+}
+
+function amenityFact(name: string): { Icon: LucideIcon; label: string; rank: number } | null {
+  const n = name.toLowerCase();
+  if (/listing|homey|imported/.test(n)) return null;
+  if (/wifi|wi-fi|internet/.test(n)) return { Icon: Wifi, label: 'Wi-Fi', rank: 0 };
+  if (/breakfast/.test(n)) return { Icon: Coffee, label: 'Breakfast', rank: 1 };
+  if (/meal/.test(n)) return { Icon: UtensilsCrossed, label: 'Meals', rank: 2 };
+  if (/jacuzzi/.test(n)) return { Icon: Waves, label: 'Jacuzzi', rank: 3 };
+  if (/pool|swim/.test(n)) return { Icon: Waves, label: 'Pool', rank: 3 };
+  if (/park/.test(n)) return { Icon: Car, label: 'Parking', rank: 4 };
+  if (/kitchen/.test(n)) return { Icon: CookingPot, label: 'Kitchen', rank: 5 };
+  return { Icon: Check, label: name.length > 18 ? `${name.slice(0, 16).trimEnd()}…` : name, rank: 8 };
+}
+
+function stayLayout(stay: MarketplaceProperty) {
+  const text = `${stay.name} ${stay.description ?? ''}`;
+  const rooms = text.match(/(\d+)\s+bedrooms?/i);
+  const baths = text.match(/(\d+)\s+bathrooms?/i);
+  const guests = text.match(/up to\s+(\d+)\s+guests?/i);
+  const facts: { Icon: LucideIcon; label: string }[] = [];
+  if (rooms) {
+    const n = Number(rooms[1]);
+    facts.push({ Icon: BedDouble, label: `${n} bedroom${n === 1 ? '' : 's'}` });
+  }
+  if (baths) {
+    const n = Number(baths[1]);
+    facts.push({ Icon: Bath, label: `${n} bath${n === 1 ? '' : 's'}` });
+  }
+  if (guests) facts.push({ Icon: Users, label: `${guests[1]} guests` });
+  return facts;
+}
+
+function stayFacts(stay: MarketplaceProperty) {
+  const fromName: { Icon: LucideIcon; label: string; rank: number }[] = [];
+  if (/jacuzzi/i.test(stay.name)) fromName.push({ Icon: Waves, label: 'Jacuzzi', rank: 3 });
+  else if (/pool/i.test(stay.name)) fromName.push({ Icon: Waves, label: 'Pool', rank: 3 });
+  const seen = new Set<string>();
+  return [...stay.amenities.map(amenityFact), ...fromName]
+    .flatMap((item) => (item ? [item] : []))
+    .sort((a, b) => a.rank - b.rank)
+    .filter((item) => {
+      if (seen.has(item.label)) return false;
+      seen.add(item.label);
+      return true;
+    })
+    .slice(0, 3);
+}
+
+function inclusionFact(name: string): { Icon: LucideIcon; label: string } {
+  const n = name.toLowerCase();
+  if (/flight|airfare/.test(n)) return { Icon: Plane, label: 'Flights' };
+  if (/transfer|cab|airport|ferry/.test(n)) return { Icon: Car, label: 'Transfers' };
+  if (/breakfast/.test(n)) return { Icon: Coffee, label: 'Breakfast' };
+  if (/meal|dinner|lunch/.test(n)) return { Icon: UtensilsCrossed, label: 'Meals' };
+  if (/stay|hotel|houseboat|resort/.test(n)) return { Icon: BedDouble, label: 'Stay' };
+  if (/guide|permit/.test(n)) return { Icon: UserRound, label: 'Guide' };
+  if (/shikara/.test(n)) return { Icon: Compass, label: 'Shikara' };
+  if (/bonfire/.test(n)) return { Icon: Check, label: 'Bonfire' };
+  if (/sight|tour|safari|palace|fort|walk|aarti|cruise|boat|snorkel|raft|trip/.test(n)) {
+    return { Icon: Compass, label: 'Sightseeing' };
+  }
+  const short = name.split(/\s+/).slice(0, 2).join(' ');
+  return { Icon: Check, label: short.length > 16 ? short.slice(0, 14) : short };
+}
+
+function stayTitle(name: string) {
+  return name.replace(/\s*_\d+$/, '').trim();
+}
+
+function stayHref(stay: MarketplaceProperty) {
+  const city = (stay.city || 'india').trim().toLowerCase().replace(/\s+/g, '-');
+  return `/hotel/${encodeURIComponent(city)}/${encodeURIComponent(stay.slug)}`;
+}
+
+function packageFacts(pack: MarketplaceHolidayPackage) {
+  const seen = new Set<string>();
+  return pack.inclusions
+    .map(inclusionFact)
+    .filter((item) => {
+      if (seen.has(item.label)) return false;
+      seen.add(item.label);
+      return true;
+    })
+    .slice(0, 3);
+}
+
 function CatalogSkeleton({ label }: { label: string }) {
   return (
     <section className="home-band" aria-busy="true" aria-label={`Loading ${label}`}>
       <div className="page-width">
         <Skeleton className="mb-3 h-3 w-28" />
         <Skeleton className="mb-8 h-9 w-72 max-w-full" />
-        <div className="home-card-grid home-card-grid-3">
-          {Array.from({ length: 3 }).map((_, i) => (
+        <div className="home-card-grid home-card-grid-4">
+          {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="home-product-card pointer-events-none">
               <Skeleton className="aspect-[16/11] w-full rounded-none" />
               <div className="space-y-2 p-4">
@@ -47,7 +157,7 @@ export function HomePackagesSection() {
 
   useEffect(() => {
     let cancelled = false;
-    void listHolidayPackages({ limit: 6, page: 1, sort: 'popular' })
+    void listHolidayPackages({ limit: 4, page: 1, sort: 'popular' })
       .then((data) => {
         if (!cancelled) setPacks(data?.packages ?? []);
       })
@@ -87,37 +197,72 @@ export function HomePackagesSection() {
           <div>
             <p className="section-kicker">Holiday packages</p>
             <h2 id="home-packages-title">Curated trips, ready to book</h2>
-            <p className="home-section-lead">Itineraries with stays and transfers — from the live catalog.</p>
+            <p className="home-section-lead">Stays and transfers, priced per person.</p>
           </div>
           <Link href="/packages" className="home-section-link">
-            All packages <ArrowRight size={15} aria-hidden />
+            View all <ArrowRight size={15} aria-hidden />
           </Link>
         </div>
-        <div className="home-card-grid home-card-grid-3">
-          {packs.slice(0, 6).map((pack) => (
-            <Link key={pack.id} href={`/packages/${pack.slug}`} className="home-product-card">
-              <span className="home-product-media kbc-media-cover">
-                <Image
-                  src={photoOf(pack.photos, '/reference/destination-backgrounds/goa-bg.png')}
-                  alt=""
-                  fill
-                  sizes="(max-width: 700px) 90vw, 33vw"
-                  unoptimized
-                />
-                {pack.badge ? <span className="home-product-badge">{pack.badge}</span> : null}
-              </span>
-              <span className="home-product-body">
-                <span className="home-product-meta">
-                  {pack.destination} · {pack.days}D / {pack.nights}N
+        <div className="home-card-grid home-card-grid-4">
+          {packs.slice(0, 4).map((pack) => {
+            const facts = packageFacts(pack);
+            const extra = Math.max(0, pack.inclusions.length - facts.length);
+            const blurb = clip(pack.description);
+            return (
+              <Link key={pack.id} href={`/packages/${pack.slug}`} className="home-product-card">
+                <span className="home-product-media kbc-media-cover">
+                  <Image
+                    src={photoOf(pack.photos, '/reference/destination-backgrounds/goa-bg.png')}
+                    alt=""
+                    fill
+                    sizes="(max-width: 700px) 90vw, 33vw"
+                    unoptimized
+                  />
+                  {pack.badge ? <span className="home-product-badge">{pack.badge}</span> : null}
+                  <span className="home-product-duration">
+                    {pack.days}D / {pack.nights}N
+                  </span>
                 </span>
-                <strong>{pack.title}</strong>
-                <b>
-                  {formatPrice(pack.pricePerPersonMinor, pack.currency)}
-                  <small>/ person</small>
-                </b>
-              </span>
-            </Link>
-          ))}
+                <span className="home-product-body">
+                  <span className="home-product-meta">
+                    <MapPin size={13} aria-hidden />
+                    {pack.destination}
+                  </span>
+                  <strong>{pack.title}</strong>
+                  <span className="home-product-facts">
+                    <span>
+                      <CalendarDays size={13} aria-hidden />
+                      {pack.days} days · {pack.nights} nights
+                    </span>
+                    {pack.departureCity ? (
+                      <span>
+                        <Plane size={13} aria-hidden />
+                        From {pack.departureCity}
+                      </span>
+                    ) : null}
+                  </span>
+                  {facts.length ? (
+                    <span className="home-chip-row" aria-label="Included">
+                      {facts.map(({ Icon, label }) => (
+                        <span key={label} className="home-chip">
+                          <Icon size={12} aria-hidden />
+                          {label}
+                        </span>
+                      ))}
+                      {extra > 0 ? <span className="home-chip home-chip-more">+{extra}</span> : null}
+                    </span>
+                  ) : blurb ? (
+                    <span className="home-product-blurb">{blurb}</span>
+                  ) : null}
+                  <b>
+                    <small>From</small>
+                    {formatPrice(pack.pricePerPersonMinor, pack.currency)}
+                    <small>/ person</small>
+                  </b>
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -129,7 +274,7 @@ export function HomeStaysSection() {
 
   useEffect(() => {
     let cancelled = false;
-    void listProperties(undefined, 1, 6)
+    void listProperties(undefined, 1, 4)
       .then((data) => {
         if (!cancelled) setStays(data?.properties ?? []);
       })
@@ -169,38 +314,67 @@ export function HomeStaysSection() {
           <div>
             <p className="section-kicker">Hotels &amp; stays</p>
             <h2 id="home-stays-title">Places guests actually book</h2>
-            <p className="home-section-lead">Verified properties — photos and rates from ops.</p>
+            <p className="home-section-lead">Photos, amenities, and a nightly rate.</p>
           </div>
           <Link href="/hotels" className="home-section-link">
-            Browse stays <ArrowRight size={15} aria-hidden />
+            View all <ArrowRight size={15} aria-hidden />
           </Link>
         </div>
-        <div className="home-card-grid home-card-grid-3">
-          {stays.slice(0, 6).map((stay) => (
-            <Link key={stay.id} href={`/hotel/${stay.slug}`} className="home-product-card">
-              <span className="home-product-media kbc-media-cover">
-                <Image
-                  src={photoOf(stay.photos, '/reference/service-cards/hotels.png')}
-                  alt=""
-                  fill
-                  sizes="(max-width: 700px) 90vw, 33vw"
-                  unoptimized
-                />
-              </span>
-              <span className="home-product-body">
-                <span className="home-product-meta">
-                  {[stay.city, stay.state].filter(Boolean).join(', ') || 'India'}
+        <div className="home-card-grid home-card-grid-4">
+          {stays.slice(0, 4).map((stay) => {
+            const place = [stay.city, stay.state].filter(Boolean).join(', ') || stay.country || 'India';
+            const layout = stayLayout(stay);
+            const facts = stayFacts(stay);
+            const blurb = layout.length || facts.length ? null : clip(stay.description);
+            return (
+              <Link key={stay.id} href={stayHref(stay)} className="home-product-card">
+                <span className="home-product-media kbc-media-cover">
+                  <Image
+                    src={photoOf(stay.photos, '/reference/service-cards/hotels.png')}
+                    alt=""
+                    fill
+                    sizes="(max-width: 700px) 90vw, 33vw"
+                    unoptimized
+                  />
                 </span>
-                <strong>{stay.name}</strong>
-                <b>
-                  {stay.startingPriceMinor != null
-                    ? formatPrice(stay.startingPriceMinor, stay.currency)
-                    : 'View rates'}
-                  {stay.startingPriceMinor != null ? <small>/ night</small> : null}
-                </b>
-              </span>
-            </Link>
-          ))}
+                <span className="home-product-body">
+                  <span className="home-product-meta">
+                    <MapPin size={13} aria-hidden />
+                    {place}
+                  </span>
+                  <strong>{stayTitle(stay.name)}</strong>
+                  {layout.length ? (
+                    <span className="home-product-facts">
+                      {layout.map(({ Icon, label }) => (
+                        <span key={label}>
+                          <Icon size={13} aria-hidden />
+                          {label}
+                        </span>
+                      ))}
+                    </span>
+                  ) : null}
+                  {facts.length ? (
+                    <span className="home-chip-row" aria-label="Amenities">
+                      {facts.map(({ Icon, label }) => (
+                        <span key={label} className="home-chip">
+                          <Icon size={12} aria-hidden />
+                          {label}
+                        </span>
+                      ))}
+                    </span>
+                  ) : null}
+                  {blurb ? <span className="home-product-blurb">{blurb}</span> : null}
+                  <b>
+                    {stay.startingPriceMinor != null ? <small>From</small> : null}
+                    {stay.startingPriceMinor != null
+                      ? formatPrice(stay.startingPriceMinor, stay.currency)
+                      : 'View rates'}
+                    {stay.startingPriceMinor != null ? <small>/ night</small> : null}
+                  </b>
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,23 +1,35 @@
 /**
- * Legacy Unotrips cabs proxy — disabled.
- * Cabs product is deferred until KBC booking owns cab APIs.
+ * Guest cab marketplace proxy.
+ * Browser calls /api/cabs/* → kbc-booking /api/v1/cabs/*.
  */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { fetchBackendWithRetry, getBackendOrigin, stripHopByHopHeaders } from "@/lib/backend-fetch";
 
-function gone() {
-  return NextResponse.json(
-    {
-      message: "Unotrips cabs API proxy is disabled. Cabs will use KBC APIs when available.",
-      status: 410,
-      data: null,
-    },
-    { status: 410 },
-  );
+async function handle(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+  const { path } = await context.params;
+  const target = new URL(`${getBackendOrigin()}/api/v1/cabs/${path.join("/")}`);
+  target.search = req.nextUrl.search;
+  const headers = new Headers(req.headers);
+  ["host", "connection", "content-length", "expect", "accept-encoding"].forEach((key) => headers.delete(key));
+  const body = ["GET", "HEAD"].includes(req.method) ? undefined : await req.arrayBuffer();
+  try {
+    const upstream = await fetchBackendWithRetry(
+      target.toString(),
+      { method: req.method, headers, body: body?.byteLength ? body : undefined },
+      { timeoutMs: 20_000, maxAttempts: 2, wakeOnFailure: false },
+    );
+    return new NextResponse(await upstream.arrayBuffer(), {
+      status: upstream.status,
+      headers: stripHopByHopHeaders(upstream.headers),
+    });
+  } catch {
+    return NextResponse.json({ message: "Cab service is unavailable. Please try again." }, { status: 503 });
+  }
 }
 
-export const GET = gone;
-export const POST = gone;
-export const PUT = gone;
-export const PATCH = gone;
-export const DELETE = gone;
+export const GET = handle;
+export const POST = handle;
+export const PUT = handle;
+export const PATCH = handle;
+export const DELETE = handle;
 export const dynamic = "force-dynamic";

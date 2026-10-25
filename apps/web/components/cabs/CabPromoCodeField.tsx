@@ -90,7 +90,7 @@ export function CabPromoCodeField({ className = "", compact = false }: CabPromoC
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#514954]">
-        <Tag className="h-3.5 w-3.5 text-[#ef6614]" />
+        <Tag className="h-3.5 w-3.5 text-[#0f766e]" />
         Have a promo code?
       </label>
       <div className="flex gap-2">
@@ -102,7 +102,7 @@ export function CabPromoCodeField({ className = "", compact = false }: CabPromoC
           }}
           onKeyDown={onKeyDown}
           placeholder={CAB_WELCOME_PROMO_CODE}
-          className="min-w-0 flex-1 rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold uppercase tracking-wide outline-none focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100"
+          className="min-w-0 flex-1 rounded-xl border border-[#eee9e5] px-3 py-2.5 text-sm font-semibold uppercase tracking-wide outline-none focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100"
           autoComplete="off"
           spellCheck={false}
         />

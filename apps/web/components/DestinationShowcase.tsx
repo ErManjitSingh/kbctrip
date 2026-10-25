@@ -78,9 +78,10 @@ export function DestinationShowcase() {
         <div className="section-heading-copy">
           <p className="section-kicker">Destinations</p>
           <h2 id="popular-destinations-title">Where to next</h2>
+          <p className="home-section-lead">Cities with a starting nightly rate.</p>
         </div>
-        <Link href="/hotels" className="destination-view-all">
-          View all stays
+        <Link href="/hotels" className="home-section-link">
+          View all
           <ArrowRight size={15} aria-hidden />
         </Link>
       </div>

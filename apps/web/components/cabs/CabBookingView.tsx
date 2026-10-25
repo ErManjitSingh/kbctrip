@@ -468,7 +468,7 @@ export function CabBookingView({ cab, fare }: Props) {
             )}
 
             {/* Support */}
-            <div className="rounded-xl border border-dashed border-[#FDBA74] bg-orange-50/50 p-4">
+            <div className="rounded-xl border border-dashed border-[#FDBA74] bg-teal-50/50 p-4">
               <p className="text-[13px] font-bold text-[#1a1a1a]">Need help?</p>
               <div className="mt-2 flex gap-2 justify-center">
                 <a href={siteWhatsAppChatUrl(`Cab booking: ${cab.name} ${pickupCity}→${dropCity}`)} target="_blank" rel="noopener noreferrer"

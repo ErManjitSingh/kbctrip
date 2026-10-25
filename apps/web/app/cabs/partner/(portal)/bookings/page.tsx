@@ -93,7 +93,7 @@ export default function PartnerBookingsPage() {
             onClick={() => setFilter(item.id)}
             className={`rounded-full px-3 py-1 text-[11px] font-extrabold transition ${
               filter === item.id
-                ? "bg-[#ef6614] text-white"
+                ? "bg-[#0f766e] text-white"
                 : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -109,18 +109,18 @@ export default function PartnerBookingsPage() {
 
       {loading ? (
         <div className="grid min-h-40 place-items-center">
-          <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
         </div>
       ) : error ? (
         <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       ) : visible.length === 0 ? (
         <section className="rounded-xl border border-dashed border-slate-200 bg-white px-6 py-12 text-center">
-          <CalendarDays className="mx-auto h-9 w-9 text-[#ef6614]" />
+          <CalendarDays className="mx-auto h-9 w-9 text-[#0f766e]" />
           <h3 className="mt-3 text-base font-black">No bookings yet</h3>
           <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
             Paid trips for your cabs will show up here with route, guest, and payout details.
           </p>
-          <Link href="/cabs/partner/quotes" className="mt-5 inline-flex text-xs font-extrabold text-[#ef6614]">
+          <Link href="/cabs/partner/quotes" className="mt-5 inline-flex text-xs font-extrabold text-[#0f766e]">
             Check quote requests →
           </Link>
         </section>
@@ -131,7 +131,7 @@ export default function PartnerBookingsPage() {
               <li key={booking.id}>
                 <Link
                   href={`/cabs/partner/bookings/${booking.id}`}
-                  className="flex items-center gap-3 px-3 py-2.5 transition hover:bg-orange-50/50 sm:px-4"
+                  className="flex items-center gap-3 px-3 py-2.5 transition hover:bg-teal-50/50 sm:px-4"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">

@@ -157,7 +157,7 @@ function toPayload(form: FormState): PartnerCabPayload {
 }
 
 const inputClass =
-  "mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100";
+  "mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100";
 const labelClass = "block text-xs font-bold text-slate-600";
 
 function CategoryGrid({
@@ -329,7 +329,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
         <button
           type="button"
           onClick={() => router.push("/cabs/partner/vehicles")}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#ef6614]"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#0f766e]"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> My cars
         </button>
@@ -343,7 +343,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
                 index < step
                   ? "bg-emerald-500 text-white"
                   : index === step
-                    ? "bg-[#ef6614] text-white"
+                    ? "bg-[#0f766e] text-white"
                     : "bg-slate-100 text-slate-500"
               }`}
             >
@@ -367,7 +367,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
               <button
                 type="button"
                 onClick={() => setShowMoreCategories((v) => !v)}
-                className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#ef6614]"
+                className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#0f766e]"
               >
                 {showMoreCategories ? "Hide other types" : "Show more types"}
                 <ChevronDown className={`h-3.5 w-3.5 transition ${showMoreCategories ? "rotate-180" : ""}`} />
@@ -403,7 +403,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
               <label className={`${labelClass} flex items-center gap-3 pt-7`}>
                 <input
                   type="checkbox"
-                  className="h-5 w-5 rounded border-slate-300 text-[#ef6614] focus:ring-[#ef6614]"
+                  className="h-5 w-5 rounded border-slate-300 text-[#0f766e] focus:ring-[#0f766e]"
                   checked={form.ac}
                   onChange={(e) => patch({ ac: e.target.checked })}
                 />
@@ -480,7 +480,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
                         key={item}
                         type="button"
                         onClick={() => toggleList("features", item)}
-                        className={`rounded-lg border px-3 py-1.5 text-xs font-bold ${form.features.includes(item) ? "border-[#ef6614] bg-orange-50 text-[#ef6614]" : "border-slate-200 text-slate-600"}`}
+                        className={`rounded-lg border px-3 py-1.5 text-xs font-bold ${form.features.includes(item) ? "border-[#0f766e] bg-teal-50 text-[#0f766e]" : "border-slate-200 text-slate-600"}`}
                       >
                         {item}
                       </button>
@@ -495,7 +495,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
                         key={item.value}
                         type="button"
                         onClick={() => toggleList("service_types", item.value)}
-                        className={`rounded-lg border px-3 py-1.5 text-xs font-bold ${form.service_types.includes(item.value) ? "border-[#ef6614] bg-orange-50 text-[#ef6614]" : "border-slate-200 text-slate-600"}`}
+                        className={`rounded-lg border px-3 py-1.5 text-xs font-bold ${form.service_types.includes(item.value) ? "border-[#0f766e] bg-teal-50 text-[#0f766e]" : "border-slate-200 text-slate-600"}`}
                       >
                         {item.label}
                       </button>
@@ -513,7 +513,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
 
         {step === 1 && (
           <div className="space-y-4">
-            <p className="rounded-xl border border-orange-100 bg-orange-50/60 px-3 py-2.5 text-xs leading-5 text-[#6a5040]">
+            <p className="rounded-xl border border-teal-100 bg-teal-50/60 px-3 py-2.5 text-xs leading-5 text-[#6a5040]">
               Driver details are needed before this car can go <strong>Active</strong> and send quotes.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -540,7 +540,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
               <label className={`${labelClass} sm:col-span-2 flex items-center gap-3`}>
                 <input
                   type="checkbox"
-                  className="h-5 w-5 rounded border-slate-300 text-[#ef6614] focus:ring-[#ef6614]"
+                  className="h-5 w-5 rounded border-slate-300 text-[#0f766e] focus:ring-[#0f766e]"
                   checked={form.whatsapp_same}
                   onChange={(e) => {
                     const same = e.target.checked;
@@ -589,7 +589,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
                     <option key={state} value={state}>{state}</option>
                   ))}
                 </select>
-                <button type="button" onClick={addCity} className="inline-flex min-h-12 items-center justify-center gap-1 rounded-xl bg-[#ef6614] px-4 text-xs font-extrabold text-white">
+                <button type="button" onClick={addCity} className="inline-flex min-h-12 items-center justify-center gap-1 rounded-xl bg-[#0f766e] px-4 text-xs font-extrabold text-white">
                   <Plus className="h-3.5 w-3.5" /> Add city
                 </button>
               </div>
@@ -620,7 +620,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
                 ) : (
                   <div className="grid h-24 w-36 place-items-center rounded-xl border border-dashed border-slate-300 text-[11px] text-slate-400">No photo yet</div>
                 )}
-                <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 hover:border-[#ef6614] hover:text-[#ef6614]">
+                <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 hover:border-[#0f766e] hover:text-[#0f766e]">
                   <Upload className="h-3.5 w-3.5" />
                   {uploading ? "Uploading…" : form.featured_image ? "Change photo" : "Upload photo"}
                   <input
@@ -639,7 +639,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
               <button
                 type="button"
                 onClick={() => setShowGallery((v) => !v)}
-                className="mt-3 text-xs font-bold text-[#ef6614]"
+                className="mt-3 text-xs font-bold text-[#0f766e]"
               >
                 {showGallery ? "Hide extra photos" : "Add more photos (optional)"}
               </button>
@@ -659,7 +659,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
                     </div>
                   ))}
                   {form.gallery_images.length < 10 && (
-                    <label className="grid h-20 w-28 cursor-pointer place-items-center rounded-lg border border-dashed border-slate-300 text-[11px] font-bold text-slate-500 hover:border-[#ef6614] hover:text-[#ef6614]">
+                    <label className="grid h-20 w-28 cursor-pointer place-items-center rounded-lg border border-dashed border-slate-300 text-[11px] font-bold text-slate-500 hover:border-[#0f766e] hover:text-[#0f766e]">
                       + Add
                       <input
                         type="file"
@@ -698,7 +698,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
             type="button"
             disabled={!canContinue}
             onClick={() => setStep((value) => value + 1)}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#ef6614] px-5 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#0f766e] px-5 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
           >
             Continue <ArrowRight className="h-3.5 w-3.5" />
           </button>
@@ -706,7 +706,7 @@ export function PartnerVehicleForm({ initial }: { initial?: PartnerCab | null })
           <button
             type="submit"
             disabled={saving || uploading || !canContinue}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#ef6614] px-5 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#0f766e] px-5 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"
           >
             {saving ? "Saving…" : editing ? "Save changes" : "Add car"}
           </button>

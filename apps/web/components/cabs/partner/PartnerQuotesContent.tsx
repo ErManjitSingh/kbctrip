@@ -318,7 +318,7 @@ export default function PartnerQuotesContent() {
             <p className="mt-1 text-sm text-slate-600">
               Guest will see your fare for <strong>{receipt.route}</strong>.
             </p>
-            <p className="mt-2 text-2xl font-black text-[#ef6614]">{formatMoney(receipt.amount)}</p>
+            <p className="mt-2 text-2xl font-black text-[#0f766e]">{formatMoney(receipt.amount)}</p>
           </div>
           <p className="rounded-xl bg-emerald-50 px-3 py-2.5 text-[12px] font-medium text-emerald-800">
             We’ll notify you if the guest chooses your cab.
@@ -330,7 +330,7 @@ export default function PartnerQuotesContent() {
                 setReceipt(null);
                 closeSheet();
               }}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#ef6614] px-5 text-sm font-extrabold text-white"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0f766e] px-5 text-sm font-extrabold text-white"
             >
               Back to trip requests
             </button>
@@ -362,7 +362,7 @@ export default function PartnerQuotesContent() {
           </div>
           <div className="mt-3 grid gap-2 text-xs text-slate-600 sm:grid-cols-2">
             <p className="flex gap-2">
-              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#ef6614]" />
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#0f766e]" />
               <span>
                 <strong className="block text-[10px] uppercase text-slate-400">Pickup</strong>
                 {selected.pickup_address}
@@ -412,7 +412,7 @@ export default function PartnerQuotesContent() {
           <div>
             <div className="flex items-center justify-between gap-2">
               <label className="text-sm font-extrabold text-[#192131]">1. Choose your car</label>
-              <Link href="/cabs/partner/vehicles" className="text-[11px] font-bold text-[#ef6614]">
+              <Link href="/cabs/partner/vehicles" className="text-[11px] font-bold text-[#0f766e]">
                 My cars
               </Link>
             </div>
@@ -424,7 +424,7 @@ export default function PartnerQuotesContent() {
                 <p className="mt-1 text-[12px] text-amber-800/80">Turn a car on, then come back to reply.</p>
                 <Link
                   href="/cabs/partner/vehicles/new"
-                  className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl bg-[#ef6614] px-5 text-sm font-extrabold text-white"
+                  className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0f766e] px-5 text-sm font-extrabold text-white"
                 >
                   Add your first car
                 </Link>
@@ -443,10 +443,10 @@ export default function PartnerQuotesContent() {
                       className={cn(
                         "flex min-h-[4.5rem] flex-col items-center gap-1.5 rounded-xl border px-1.5 py-2 text-center transition sm:min-h-14 sm:flex-row sm:items-center sm:gap-2 sm:px-2.5 sm:py-2.5 sm:text-left",
                         active
-                          ? "border-[#ef6614] bg-orange-50"
+                          ? "border-[#0f766e] bg-teal-50"
                           : tooSmall
                             ? "cursor-not-allowed border-slate-100 bg-slate-50 opacity-50"
-                            : "border-slate-200 hover:border-orange-200",
+                            : "border-slate-200 hover:border-teal-200",
                       )}
                     >
                       <div className="grid h-9 w-12 shrink-0 place-items-center overflow-hidden rounded-lg bg-white sm:h-10 sm:w-14">
@@ -484,7 +484,7 @@ export default function PartnerQuotesContent() {
                   setAmount(e.target.value);
                   setUsedSuggestedRate(false);
                 }}
-                className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 text-base font-semibold outline-none focus:border-[#ef6614]"
+                className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 text-base font-semibold outline-none focus:border-[#0f766e]"
                 placeholder="e.g. 4500"
               />
             </label>
@@ -506,7 +506,7 @@ export default function PartnerQuotesContent() {
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="mt-2 min-h-20 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-[#ef6614]"
+              className="mt-2 min-h-20 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-[#0f766e]"
               placeholder="AC cab, experienced hill driver, etc."
             />
           </label>
@@ -528,7 +528,7 @@ export default function PartnerQuotesContent() {
                   type="datetime-local"
                   value={validUntil}
                   onChange={(e) => setValidUntil(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#ef6614]"
+                  className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold outline-none focus:border-[#0f766e]"
                 />
               </label>
               {pricing && (
@@ -538,7 +538,7 @@ export default function PartnerQuotesContent() {
                   </span>
                   <button
                     type="button"
-                    className="font-extrabold text-[#ef6614]"
+                    className="font-extrabold text-[#0f766e]"
                     onClick={() => {
                       const suggested = suggestFare(selected.trip_type, pricing);
                       if (suggested) {
@@ -606,7 +606,7 @@ export default function PartnerQuotesContent() {
             <button
               disabled={saving || !cabId || activeFleet.length === 0}
               type="submit"
-              className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-[#ef6614] px-5 text-sm font-extrabold text-white disabled:opacity-50"
+              className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-[#0f766e] px-5 text-sm font-extrabold text-white disabled:opacity-50"
             >
               {saving ? "Sending…" : myQuote ? "Update quote" : "Send quote"}
             </button>
@@ -691,8 +691,8 @@ export default function PartnerQuotesContent() {
                     type="button"
                     onClick={() => openRequest(request)}
                     className={cn(
-                      "w-full px-4 py-3.5 text-left transition hover:bg-orange-50/60",
-                      active && "bg-orange-50",
+                      "w-full px-4 py-3.5 text-left transition hover:bg-teal-50/60",
+                      active && "bg-teal-50",
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">

@@ -1,54 +1,50 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  CalendarDays,
-  MapPinned,
-  Sparkles,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export function HomeCabsSection() {
   return (
     <section className="home-band home-band-cabs" aria-labelledby="home-cabs-title">
-      <div className="page-width">
-        <div className="home-cabs-panel kbc-media-cover">
+      <div className="home-cabs-stage">
+        <div className="home-cabs-media" aria-hidden="true">
           <Image
             src="/images/cabs/uno-cabs-traveller-pickup-v2.png"
             alt=""
             fill
-            sizes="(max-width: 900px) 100vw, 1120px"
-            className="home-cabs-panel-img"
+            sizes="100vw"
+            className="home-cabs-media-img"
             priority={false}
             unoptimized
           />
-          <span className="home-cabs-panel-shade" aria-hidden />
+          <span className="home-cabs-media-veil" />
+          <span className="home-cabs-media-grain" />
+        </div>
 
+        <div className="page-width home-cabs-frame">
           <div className="home-cabs-copy">
-            <p className="section-kicker">Cabs</p>
-            <h2 id="home-cabs-title">Airport &amp; outstation, without the chase</h2>
-            <p className="home-section-lead">
-              Post once. Partners quote. You compare and book when the fare feels right —
-              sedan to tempo, city to hills.
+            <p className="home-cabs-kicker">
+              <span className="home-cabs-kicker-dot" aria-hidden />
+              Private cabs
+            </p>
+            <h2 id="home-cabs-title">
+              The car is waiting.
+              <span> You just arrive.</span>
+            </h2>
+            <p className="home-cabs-lead">
+              Airport runs and hill routes. Post once, compare quotes, then book.
             </p>
 
-            <ul className="home-cabs-stats">
-              <li>
-                <strong>Free quotes</strong>
-                <span>No chase, no pressure</span>
-              </li>
-              <li>
-                <strong>Verified partners</strong>
-                <span>Local fleet, clear fares</span>
-              </li>
-              <li>
-                <strong>Any route</strong>
-                <span>Airport · outstation · hills</span>
-              </li>
-            </ul>
+            <div className="home-cabs-route" aria-hidden="true">
+              <span>Airport</span>
+              <span className="home-cabs-route-line" />
+              <span>City</span>
+              <span className="home-cabs-route-line" />
+              <span>Hills</span>
+            </div>
 
             <div className="home-cabs-actions">
               <Link href="/cabs" className="home-cabs-btn-primary">
-                Get free quotes
+                Get cab quotes
                 <ArrowRight size={16} aria-hidden />
               </Link>
               <Link href="/cabs/list-your-cab" className="home-cabs-btn-ghost">
@@ -65,44 +61,61 @@ export function HomeCabsSection() {
 export function HomeHowItWorksSection() {
   const steps = [
     {
-      icon: MapPinned,
       title: 'Pick your lane',
-      body: 'Hotels, packages, or cabs — start with what you need.',
+      body: 'Hotels, packages, or cabs — begin with the piece that unlocks the rest of the trip.',
     },
     {
-      icon: CalendarDays,
-      title: 'Compare & choose',
-      body: 'Clear options and pricing before you commit.',
+      title: 'Compare without the fog',
+      body: 'Options and pricing stay visible. No chase, no opaque add-ons before you decide.',
     },
     {
-      icon: Sparkles,
-      title: 'Book in one account',
-      body: 'Confirm once. Manage everything under My trips.',
+      title: 'Confirm once',
+      body: 'Book into one KBC Trip account. Hotels, packages, and cabs live together under My trips.',
     },
   ] as const;
 
   return (
     <section className="home-band home-band-steps" aria-labelledby="home-steps-title">
-      <div className="page-width">
-        <div className="home-section-head home-section-head-center">
-          <div>
-            <p className="section-kicker">How it works</p>
-            <h2 id="home-steps-title">Three steps. One trip.</h2>
-          </div>
-        </div>
+      <div className="page-width home-steps-spread">
+        <figure className="home-steps-visual">
+          <Image
+            src="/images/brochure-himalayan-dawn.png"
+            alt=""
+            fill
+            sizes="(max-width: 900px) 100vw, 46vw"
+            className="home-steps-visual-img"
+            unoptimized
+          />
+          <figcaption className="home-steps-visual-cap">
+            <span>India first</span>
+            <strong>Then the map opens</strong>
+          </figcaption>
+        </figure>
 
-        <ol className="home-steps-rail">
-          {steps.map((step, index) => (
-            <li key={step.title} className="home-step">
-              <span className="home-step-num">{String(index + 1).padStart(2, '0')}</span>
-              <span className="home-step-icon-wrap" aria-hidden>
-                <step.icon size={18} />
-              </span>
-              <strong>{step.title}</strong>
-              <p>{step.body}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="home-steps-copy">
+          <p className="home-steps-kicker">How it works</p>
+          <h2 id="home-steps-title">
+            A short path
+            <em> to a real trip.</em>
+          </h2>
+          <p className="home-steps-lead">
+            No maze. Three quiet moves from curiosity to confirmation.
+          </p>
+
+          <ol className="home-steps-list">
+            {steps.map((step, index) => (
+              <li key={step.title} className="home-step" style={{ ['--step-i' as string]: index }}>
+                <span className="home-step-index" aria-hidden>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <div className="home-step-body">
+                  <strong>{step.title}</strong>
+                  <p>{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );
@@ -117,16 +130,16 @@ export function HomeFinalCtaSection() {
             <p className="section-kicker">Ready when you are</p>
             <h2 id="home-cta-title">Plan the next escape today</h2>
             <p className="home-section-lead">
-              Stays, packages, and cab quotes — India first, one KBC Trip account.
+              Stays, packages, and cab quotes. One KBC Trip account.
             </p>
           </div>
           <div className="home-cta-actions">
             <Link href="/hotels" className="home-primary-btn">
-              Find a stay
+              Browse stays
               <ArrowRight size={16} aria-hidden />
             </Link>
             <Link href="/packages" className="home-ghost-btn">
-              Explore packages
+              View packages
             </Link>
             <Link href="/cabs" className="home-ghost-btn">
               Get cab quotes

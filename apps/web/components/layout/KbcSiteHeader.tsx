@@ -10,6 +10,7 @@ import '@/components/layout/kbc-site-header.css';
 const NAV_LINKS = [
   { label: 'Hotels', href: '/hotels' },
   { label: 'Packages', href: '/packages' },
+  { label: 'Cabs', href: '/cabs' },
   { label: 'Offers', href: '/#offers' },
   // Flights / trains / buses / cabs deferred until KBC owns those APIs.
 ] as const;

@@ -70,7 +70,7 @@ export default function PartnerReviewsPage() {
   if (loading) {
     return (
       <div className="grid min-h-40 place-items-center">
-        <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -123,8 +123,8 @@ export default function PartnerReviewsPage() {
               {review.comment && <p className="mt-1 text-sm leading-6 text-slate-600">{review.comment}</p>}
 
               {review.partner_reply ? (
-                <div className="mt-3 rounded-lg border border-orange-100 bg-orange-50/60 px-3 py-2">
-                  <p className="text-[10px] font-extrabold uppercase tracking-wide text-[#ef6614]">Your reply</p>
+                <div className="mt-3 rounded-lg border border-teal-100 bg-teal-50/60 px-3 py-2">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wide text-[#0f766e]">Your reply</p>
                   <p className="mt-1 text-sm text-[#514752]">{review.partner_reply}</p>
                 </div>
               ) : (
@@ -142,7 +142,7 @@ export default function PartnerReviewsPage() {
                     type="button"
                     disabled={savingId === review.id || !(replyDrafts[review.id] || "").trim()}
                     onClick={() => void saveReply(review.id)}
-                    className="rounded-lg bg-[#ef6614] px-3 py-1.5 text-xs font-extrabold text-white disabled:opacity-50"
+                    className="rounded-lg bg-[#0f766e] px-3 py-1.5 text-xs font-extrabold text-white disabled:opacity-50"
                   >
                     {savingId === review.id ? "Saving…" : "Post reply"}
                   </button>

@@ -64,7 +64,7 @@ export default function PartnerPayoutsPage() {
   if (loading) {
     return (
       <div className="grid min-h-40 place-items-center">
-        <span className="h-7 w-7 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+        <span className="h-7 w-7 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
       </div>
     );
   }
@@ -127,7 +127,7 @@ export default function PartnerPayoutsPage() {
         {!payouts.length ? (
           <div className="px-4 py-10 text-center text-sm text-slate-500">
             No payout records yet. Mark confirmed trips completed to create settlement rows.{" "}
-            <Link href="/cabs/partner/earnings" className="font-bold text-[#ef6614]">
+            <Link href="/cabs/partner/earnings" className="font-bold text-[#0f766e]">
               View earnings →
             </Link>
           </div>

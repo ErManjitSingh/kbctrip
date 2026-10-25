@@ -126,15 +126,15 @@ export default function PartnerDashboardPage() {
       <section
         className={cn(
           "overflow-hidden rounded-2xl border shadow-sm",
-          needsReply.length > 0 ? "border-orange-200 bg-[linear-gradient(160deg,#fff7ed_0%,#ffffff_55%)]" : "border-slate-200 bg-white",
+          needsReply.length > 0 ? "border-teal-200 bg-[linear-gradient(160deg,#fff7ed_0%,#ffffff_55%)]" : "border-slate-200 bg-white",
         )}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-orange-100/80 px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-teal-100/80 px-4 py-3">
           <div className="flex items-center gap-2">
             <span
               className={cn(
                 "grid h-9 w-9 place-items-center rounded-xl",
-                needsReply.length > 0 ? "bg-[#ef6614] text-white" : "bg-slate-100 text-slate-500",
+                needsReply.length > 0 ? "bg-[#0f766e] text-white" : "bg-slate-100 text-slate-500",
               )}
             >
               <MessageCircle className="h-4 w-4" />
@@ -146,7 +146,7 @@ export default function PartnerDashboardPage() {
               </p>
             </div>
           </div>
-          <Link href="/cabs/partner/quotes" className="text-[12px] font-extrabold text-[#ef6614]">
+          <Link href="/cabs/partner/quotes" className="text-[12px] font-extrabold text-[#0f766e]">
             Open all
           </Link>
         </div>
@@ -160,12 +160,12 @@ export default function PartnerDashboardPage() {
             </p>
           </div>
         ) : (
-          <ul className="divide-y divide-orange-50">
+          <ul className="divide-y divide-teal-50">
             {needsReply.slice(0, 4).map((request) => (
               <li key={request.id}>
                 <Link
                   href={`/cabs/partner/quotes?request=${request.id}`}
-                  className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-orange-50/70"
+                  className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-teal-50/70"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[15px] font-extrabold text-[#192131]">
@@ -180,7 +180,7 @@ export default function PartnerDashboardPage() {
                       {timeLeft(request.quote_deadline_at)}
                     </span>
                   </div>
-                  <span className="inline-flex shrink-0 items-center gap-1 rounded-xl bg-[#ef6614] px-3 py-2 text-[12px] font-extrabold text-white">
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-xl bg-[#0f766e] px-3 py-2 text-[12px] font-extrabold text-white">
                     Reply
                     <ArrowRight className="h-3.5 w-3.5" />
                   </span>
@@ -203,7 +203,7 @@ export default function PartnerDashboardPage() {
               <p className="text-[11px] text-slate-500">Confirmed bookings</p>
             </div>
           </div>
-          <Link href="/cabs/partner/bookings" className="text-[12px] font-extrabold text-[#ef6614]">
+          <Link href="/cabs/partner/bookings" className="text-[12px] font-extrabold text-[#0f766e]">
             My trips
           </Link>
         </div>
@@ -263,12 +263,12 @@ export default function PartnerDashboardPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/cabs/partner/vehicles/new"
-              className="inline-flex h-8 items-center gap-1 rounded-lg bg-[#ef6614] px-2.5 text-[11px] font-extrabold text-white"
+              className="inline-flex h-8 items-center gap-1 rounded-lg bg-[#0f766e] px-2.5 text-[11px] font-extrabold text-white"
             >
               <Plus className="h-3 w-3" />
               Add
             </Link>
-            <Link href="/cabs/partner/vehicles" className="text-[12px] font-extrabold text-[#ef6614]">
+            <Link href="/cabs/partner/vehicles" className="text-[12px] font-extrabold text-[#0f766e]">
               All
             </Link>
           </div>
@@ -276,7 +276,7 @@ export default function PartnerDashboardPage() {
 
         {vehiclesLoading ? (
           <div className="grid place-items-center py-8">
-            <span className="h-5 w-5 animate-spin rounded-full border-2 border-orange-100 border-t-[#ef6614]" />
+            <span className="h-5 w-5 animate-spin rounded-full border-2 border-teal-100 border-t-[#0f766e]" />
           </div>
         ) : vehicles.length === 0 ? (
           <div className="px-4 py-7 text-center">
@@ -284,7 +284,7 @@ export default function PartnerDashboardPage() {
             <p className="mt-1 text-[12px] text-slate-500">Add one car so you can reply to trip requests.</p>
             <Link
               href="/cabs/partner/vehicles/new"
-              className="mt-3 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#ef6614] px-4 text-[13px] font-extrabold text-white"
+              className="mt-3 inline-flex min-h-10 items-center justify-center rounded-xl bg-[#0f766e] px-4 text-[13px] font-extrabold text-white"
             >
               Add your first car
             </Link>
@@ -330,7 +330,7 @@ export default function PartnerDashboardPage() {
       {/* Money — one quiet row, only useful when real */}
       <Link
         href="/cabs/partner/earnings"
-        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-orange-200"
+        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-teal-200"
       >
         <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet-50 text-violet-600">
           <Wallet className="h-4 w-4" />

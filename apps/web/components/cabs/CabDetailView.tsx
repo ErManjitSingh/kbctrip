@@ -168,7 +168,7 @@ export function CabDetailView({ cab, fare }: CabDetailViewProps) {
           )}
 
           {/* Support */}
-          <div className="rounded-xl border border-dashed border-[#FDBA74] bg-orange-50/50 p-4">
+          <div className="rounded-xl border border-dashed border-[#FDBA74] bg-teal-50/50 p-4">
             <p className="text-[13px] font-bold text-[#1a1a1a]">Need help choosing?</p>
             <p className="mt-0.5 text-[11px] text-[#757575]">
               Our team is available 24/7 — reach us on WhatsApp or call directly.

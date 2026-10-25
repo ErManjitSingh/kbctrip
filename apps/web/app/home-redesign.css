@@ -1,20 +1,17 @@
 /**
- * Homepage polish — Inter/system via tokens. Teal + Ink.
- * Scoped under .kbc-home-v2 so other product pages stay intact.
+ * Homepage below-fold — Inter only. Hero stays on original kbc-home.css styles.
  */
 
 .kbc-home-v2 {
-  --ink: var(--kbc-ink, #0c1210);
-  --teal: var(--kbc-teal, #0f766e);
-  --teal-deep: var(--kbc-teal-deep, #115e59);
-  --muted: var(--kbc-muted, #5c6562);
-  --line: var(--kbc-line, #d9e3df);
-  --paper: var(--kbc-paper, #f3f7f5);
-  --paper-warm: var(--kbc-paper-warm, #f7faf8);
-  --ui: var(--font-roboto), var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ink: #0c1210;
+  --teal: #0f766e;
+  --teal-deep: #115e59;
+  --muted: #5c6562;
+  --line: #d9e3df;
+  --paper: #f3f7f5;
+  --paper-warm: #f7faf8;
+  --ui: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-family: var(--ui);
-  position: relative;
-  overflow-x: clip;
 }
 
 .kbc-home-v2,
@@ -24,40 +21,22 @@
 .kbc-home-v2 strong,
 .kbc-home-v2 .section-heading h2,
 .kbc-home-v2 .destination-card-title,
+.kbc-home-v2 .service-book-copy strong,
 .kbc-home-v2 .offer-card-copy strong,
 .kbc-home-v2 .home-product-body strong {
-  font-family: var(--font-roboto), system-ui, sans-serif !important;
+  font-family: var(--font-sans), system-ui, sans-serif !important;
   font-style: normal;
 }
 
-.kbc-home-v2 .kbc-atmosphere {
-  pointer-events: none;
-  position: absolute;
-  inset: 0 0 auto;
-  height: 720px;
-  background:
-    radial-gradient(ellipse 70% 55% at 85% 0%, rgba(15, 118, 110, 0.1), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 10% 10%, rgba(12, 18, 16, 0.04), transparent 50%);
-  z-index: 0;
-}
-
-.kbc-home-v2 > main,
-.kbc-home-v2 > footer {
-  position: relative;
-  z-index: 1;
-}
-
-.kbc-home-v2 .section-kicker {
+.kbc-home-v2 .section-kicker,
+.kbc-home-v2 .home-cabs-kicker,
+.kbc-home-v2 .home-steps-kicker {
   margin: 0 0 8px;
   color: var(--teal);
   font-weight: 700;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 11px;
-}
-
-.kbc-home-v2 .section-heading-copy .section-kicker {
-  margin-bottom: 6px;
 }
 
 .kbc-home-v2 .home-section-head {
@@ -73,13 +52,19 @@
   text-align: center;
 }
 
-.kbc-home-v2 .home-section-head h2 {
+.kbc-home-v2 .home-section-head h2,
+.kbc-home-v2 .section-heading h2,
+.kbc-home-v2 .home-cta-panel h2 {
   margin: 0;
-  font-size: clamp(26px, 3.2vw, 36px);
-  font-weight: 750;
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 700;
   letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.kbc-home-v2 .home-section-head h2,
+.kbc-home-v2 .section-heading h2 {
   color: var(--ink);
-  line-height: 1.15;
 }
 
 .kbc-home-v2 .home-section-lead {
@@ -112,213 +97,8 @@
   background: var(--paper);
 }
 
-.kbc-home-v2 .home-band-cabs {
-  background: #fff;
-  padding: 56px 0 40px;
-}
+/* band backgrounds overridden in section blocks below */
 
-.kbc-home-v2 .home-band-steps {
-  background: var(--paper-warm);
-}
-
-.kbc-home-v2 .home-band-cta {
-  padding: 28px 0 72px;
-  background: #fff;
-}
-
-/* Hero v3 — cover lifestyle, not cutout plate */
-.kbc-home-v2 .hero-v3 {
-  gap: 28px;
-  align-items: center;
-}
-
-.kbc-home-v2 .hero-v3 .hero-copy {
-  padding-bottom: 12px;
-}
-
-.kbc-home-v2 .hero-v3 h1 em {
-  color: var(--teal);
-  font-style: italic;
-}
-
-.kbc-home-v2 .hero-lead {
-  margin: 0;
-  max-width: 38ch;
-  color: var(--muted);
-  font-size: 17px;
-  line-height: 1.65;
-}
-
-.kbc-home-v2 .hero-proof {
-  margin-top: 22px;
-}
-
-.kbc-home-v2 .hero-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 26px;
-}
-
-.kbc-home-v2 .hero-cta-primary,
-.kbc-home-v2 .hero-cta-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 18px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-}
-
-.kbc-home-v2 .hero-cta-primary {
-  background: var(--ink);
-  color: #fff;
-}
-
-.kbc-home-v2 .hero-cta-primary:hover {
-  background: var(--teal);
-}
-
-.kbc-home-v2 .hero-cta-secondary {
-  border: 1px solid rgba(12, 18, 16, 0.16);
-  color: var(--ink);
-  background: #fff;
-}
-
-.kbc-home-v2 .hero-cta-secondary:hover {
-  border-color: var(--teal);
-  color: var(--teal-deep);
-}
-
-.kbc-home-v2 .hero-visual {
-  position: relative;
-  align-self: stretch;
-  min-height: 480px;
-  border-radius: var(--kbc-radius-xl, 28px);
-  overflow: hidden;
-  box-shadow: var(--kbc-shadow-lg, 0 28px 60px -32px rgba(12, 18, 16, 0.55));
-  background: var(--kbc-ink-soft, #1a2420);
-}
-
-.kbc-home-v2 .hero-visual-img {
-  object-fit: cover;
-  object-position: center;
-}
-
-.kbc-home-v2 .hero-visual-shade {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(135deg, rgba(12, 18, 16, 0.08) 0%, transparent 45%),
-    linear-gradient(180deg, transparent 55%, rgba(12, 18, 16, 0.28) 100%);
-  pointer-events: none;
-}
-
-.kbc-home-v2 .home-search-wrap {
-  position: relative;
-  z-index: 4;
-  margin-top: -12px;
-  margin-bottom: 8px;
-}
-
-.kbc-home-v2 .home-search-wrap .search-panel {
-  border-color: rgba(15, 118, 110, 0.12);
-  box-shadow: var(--kbc-shadow, 0 18px 40px -28px rgba(12, 18, 16, 0.45));
-}
-
-.kbc-home-v2 .search-tabs button.active {
-  color: var(--ink);
-  border-bottom-color: var(--teal);
-}
-
-.kbc-home-v2 .search-submit {
-  background: var(--ink);
-}
-
-.kbc-home-v2 .search-submit:hover {
-  background: var(--teal);
-}
-
-@keyframes home-reveal {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.kbc-home-v2 .home-reveal {
-  animation: home-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.kbc-home-v2 .home-reveal-delay {
-  animation: home-reveal 0.65s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.kbc-home-v2 .home-reveal-late {
-  animation: home-reveal 0.55s 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Destinations — 6-up even grid */
-.kbc-home-v2 .destination-card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(220px, 280px));
-  height: auto;
-  gap: 14px;
-}
-
-.kbc-home-v2 .destination-card {
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-  flex: unset;
-  height: auto;
-  min-height: 220px;
-  width: auto;
-  min-width: 0;
-  grid-row: auto !important;
-  grid-column: auto !important;
-}
-
-.kbc-home-v2 .destination-view-all {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 650;
-  text-decoration: none;
-  transition: color 0.18s ease;
-}
-
-.kbc-home-v2 .destination-view-all:hover {
-  color: var(--ink);
-}
-
-/* Offers — keep min width so cards never collapse */
-.kbc-home-v2 .offer-card {
-  flex: 0 0 auto;
-  min-width: min(320px, 82vw);
-  width: min(360px, 82vw);
-}
-
-.kbc-home-v2 .offer-card-goa,
-.kbc-home-v2 .offer-card-packages,
-.kbc-home-v2 .offer-card-cabs,
-.kbc-home-v2 .offer-card-weekend,
-.kbc-home-v2 .offer-card-flights,
-.kbc-home-v2 .offer-card-buses {
-  flex-basis: min(360px, 82vw);
-  min-width: min(300px, 82vw);
-}
-
-.kbc-home-v2 .offer-card-shade {
-  background: linear-gradient(90deg, rgba(8, 14, 12, 0.62) 0%, rgba(8, 14, 12, 0.18) 66%, rgba(8, 14, 12, 0.04) 100%);
-}
-
-/* Catalog cards */
 .kbc-home-v2 .home-card-grid {
   display: grid;
   gap: 18px;
@@ -328,8 +108,13 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.kbc-home-v2 .home-card-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .kbc-home-v2 .home-product-card {
   display: flex;
+  height: 100%;
   flex-direction: column;
   border-radius: 18px;
   overflow: hidden;
@@ -339,6 +124,10 @@
   color: inherit;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 14px 34px -28px rgba(12, 18, 16, 0.45);
+}
+
+.kbc-home-v2 .home-band-stays .home-product-card {
+  background: #fff;
 }
 
 .kbc-home-v2 .home-product-card:hover {
@@ -372,15 +161,24 @@
 
 .kbc-home-v2 .home-product-body {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding: 14px 16px 16px;
 }
 
 .kbc-home-v2 .home-product-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
   font-weight: 600;
   color: var(--muted);
+}
+
+.kbc-home-v2 .home-product-meta svg {
+  flex: none;
+  color: var(--teal);
 }
 
 .kbc-home-v2 .home-product-body strong {
@@ -389,25 +187,222 @@
   letter-spacing: -0.02em;
   line-height: 1.3;
   color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+.kbc-home-v2 .home-product-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.kbc-home-v2 .home-product-facts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 550;
+  color: #3d4944;
+}
+
+.kbc-home-v2 .home-product-facts svg {
+  flex: none;
+  color: var(--teal);
+}
+
+.kbc-home-v2 .home-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kbc-home-v2 .home-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f3f7f5;
+  color: #3d4944;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.kbc-home-v2 .home-chip svg {
+  flex: none;
+  color: var(--teal);
+}
+
+.kbc-home-v2 .home-chip-more {
+  color: var(--muted);
+}
+
+.kbc-home-v2 .home-product-blurb {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.kbc-home-v2 .home-product-duration {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .kbc-home-v2 .home-product-body b {
-  margin-top: 4px;
-  font-size: 15px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(12, 18, 16, 0.08);
+  font-size: 16px;
   font-weight: 750;
-  color: var(--teal-deep);
+  color: var(--ink);
 }
 
 .kbc-home-v2 .home-product-body b small {
-  margin-left: 4px;
+  margin-right: 6px;
   font-size: 12px;
   font-weight: 550;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--muted);
+}
+
+.kbc-home-v2 .home-product-body b small:last-child {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+/* Destinations polish — 6-up even grid (no orphan cards) */
+.kbc-home-v2 .destination-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(220px, 280px));
+  height: auto;
+  gap: 14px;
+}
+
+.kbc-home-v2 .destination-card {
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  flex: unset;
+  height: auto;
+  min-height: 220px;
+  width: auto;
+  min-width: 0;
+  grid-row: auto;
+  grid-column: auto;
+}
+
+.kbc-home-v2 .destination-card-goa,
+.kbc-home-v2 .destination-card-manali,
+.kbc-home-v2 .destination-card-kashmir,
+.kbc-home-v2 .destination-card-dubai,
+.kbc-home-v2 .destination-card-jaipur,
+.kbc-home-v2 .destination-card-shimla {
+  grid-row: auto;
+  grid-column: auto;
+}
+
+.kbc-home-v2 .hero h1,
+.kbc-home-v2 .hero h1 em {
+  font-style: normal;
+  font-weight: 700;
+}
+
+.kbc-home-v2 .hero h1 em {
+  color: var(--teal);
+}
+
+.kbc-home-v2 .hero-lead,
+.kbc-home-v2 .home-section-lead,
+.kbc-home-v2 .home-cabs-lead {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.kbc-home-v2 .destination-card-title,
+.kbc-home-v2 .offer-card-copy strong {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.kbc-home-v2 .destination-card-price,
+.kbc-home-v2 .home-product-body b {
+  font-weight: 700;
+}
+
+.kbc-home-v2 .offer-actions a.home-section-link {
+  width: auto;
+  height: auto;
+  margin-right: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.kbc-home-v2 .destination-view-all:hover {
+  color: var(--kbc-ink);
+}
+
+/* Hero lifestyle visual (no white cutout plate) */
+.kbc-home-v2 .hero-v3 {
+  gap: 28px;
+}
+
+.kbc-home-v2 .hero-visual {
+  position: relative;
+  align-self: stretch;
+  min-height: 480px;
+  border-radius: var(--kbc-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--kbc-shadow-lg);
+}
+
+.kbc-home-v2 .hero-visual-img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.kbc-home-v2 .hero-visual-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(12, 18, 16, 0.08) 0%, transparent 45%),
+    linear-gradient(180deg, transparent 55%, rgba(12, 18, 16, 0.28) 100%);
+  pointer-events: none;
+}
+
+/* Search panel — homepage keeps the connected tray */
+.kbc-home-v2 .search-submit {
+  background: var(--kbc-ink);
+}
+
+.kbc-home-v2 .search-submit:hover {
+  background: var(--kbc-teal);
 }
 
 /* Trust */
 .kbc-home-v2 .home-band-trust {
-  background: var(--paper);
+  background: var(--kbc-paper);
   padding: 64px 0;
 }
 
@@ -423,7 +418,7 @@
   font-size: clamp(26px, 3.2vw, 36px);
   font-weight: 750;
   letter-spacing: -0.035em;
-  color: var(--ink);
+  color: var(--kbc-ink);
 }
 
 .kbc-home-v2 .home-trust-grid {
@@ -439,7 +434,7 @@
   display: grid;
   gap: 10px;
   padding: 22px 18px;
-  border-radius: var(--kbc-radius, 16px);
+  border-radius: var(--kbc-radius);
   background: #fff;
   border: 1px solid rgba(12, 18, 16, 0.06);
 }
@@ -450,208 +445,519 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: var(--paper);
-  color: var(--teal-deep);
+  background: var(--kbc-paper);
+  color: var(--kbc-teal-deep);
   border: 1px solid rgba(15, 118, 110, 0.12);
 }
 
 .kbc-home-v2 .home-trust-grid strong {
   font-size: 15px;
   font-weight: 750;
-  color: var(--ink);
+  color: var(--kbc-ink);
 }
 
 .kbc-home-v2 .home-trust-grid p {
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--muted);
+  color: var(--kbc-muted);
 }
 
-/* Cinematic cabs — full-bleed lifestyle cover */
-.kbc-home-v2 .home-cabs-panel {
+
+/* Cabs — cinematic full-bleed stage (section 4 only) */
+.kbc-home-v2 .home-band-cabs {
+  background: transparent;
+  padding: 72px 0 48px;
+}
+
+.kbc-home-v2 .home-cabs-stage {
   position: relative;
-  display: grid;
-  align-items: end;
-  min-height: 520px;
-  border-radius: 28px;
+  isolation: isolate;
+  min-height: min(78vh, 720px);
   overflow: hidden;
+  border-radius: 0;
   background: #0c1210;
-  box-shadow: 0 28px 60px -36px rgba(8, 28, 24, 0.5);
 }
 
-.kbc-home-v2 .home-cabs-panel-img {
-  object-fit: cover;
-  object-position: center 40%;
-}
-
-.kbc-home-v2 .home-cabs-panel-shade {
+.kbc-home-v2 .home-cabs-media {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  pointer-events: none;
+  z-index: 0;
+}
+
+.kbc-home-v2 .home-cabs-media-img {
+  object-fit: cover;
+  object-position: 58% 42%;
+  transform: scale(1.08);
+  animation: home-cabs-drift 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.kbc-home-v2 .home-cabs-media-veil {
+  position: absolute;
+  inset: 0;
   background:
-    linear-gradient(90deg, rgba(8, 14, 12, 0.78) 0%, rgba(8, 14, 12, 0.35) 48%, rgba(8, 14, 12, 0.12) 100%),
-    linear-gradient(180deg, transparent 35%, rgba(8, 14, 12, 0.72) 100%);
+    linear-gradient(
+      100deg,
+      rgba(8, 12, 11, 0.82) 0%,
+      rgba(8, 12, 11, 0.55) 34%,
+      rgba(8, 12, 11, 0.18) 58%,
+      rgba(8, 12, 11, 0.08) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 12, 11, 0.25) 0%, transparent 28%, rgba(8, 12, 11, 0.55) 100%);
+  pointer-events: none;
+}
+
+.kbc-home-v2 .home-cabs-media-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+.kbc-home-v2 .home-cabs-frame {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  min-height: inherit;
+  padding-block: 72px 64px;
 }
 
 .kbc-home-v2 .home-cabs-copy {
-  position: relative;
-  z-index: 2;
-  max-width: 460px;
-  padding: 40px 36px 44px;
+  max-width: 34rem;
   color: #fff;
+  animation: home-cabs-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.kbc-home-v2 .home-cabs-copy .section-kicker {
-  color: #5eead4;
+.kbc-home-v2 .home-cabs-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  color: #9ae8dc;
+}
+
+.kbc-home-v2 .home-cabs-kicker-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5eead4;
+  box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.55);
+  animation: home-cabs-pulse 2.4s ease-out infinite;
 }
 
 .kbc-home-v2 .home-cabs-copy h2 {
   margin: 0;
-  font-size: clamp(28px, 3.4vw, 40px);
-  font-weight: 750;
-  letter-spacing: -0.038em;
-  line-height: 1.05;
-  color: #fff;
-}
-
-.kbc-home-v2 .home-cabs-copy .home-section-lead {
-  color: rgba(255, 255, 255, 0.78);
-  max-width: 40ch;
-}
-
-.kbc-home-v2 .home-cabs-stats {
-  list-style: none;
-  margin: 22px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 10px;
-}
-
-.kbc-home-v2 .home-cabs-stats li {
-  display: grid;
-  gap: 2px;
-}
-
-.kbc-home-v2 .home-cabs-stats strong {
-  font-size: 14px;
+  font-size: clamp(28px, 3.2vw, 40px);
   font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
   color: #fff;
+  text-wrap: balance;
 }
 
-.kbc-home-v2 .home-cabs-stats span {
+.kbc-home-v2 .home-cabs-copy h2 span {
+  display: block;
+  margin-top: 0.08em;
+  font-style: normal;
+  font-weight: 700;
+  color: #b7f5ea;
+}
+
+.kbc-home-v2 .home-cabs-lead {
+  margin: 12px 0 0;
+  max-width: 42ch;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.kbc-home-v2 .home-cabs-route {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.68);
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kbc-home-v2 .home-cabs-route-line {
+  position: relative;
+  width: 42px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.28);
+  overflow: hidden;
+}
+
+.kbc-home-v2 .home-cabs-route-line::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: #5eead4;
+  animation: home-cabs-route 2.8s ease-in-out infinite;
 }
 
 .kbc-home-v2 .home-cabs-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 26px;
-}
-
-.kbc-home-v2 .home-cabs-btn-primary,
-.kbc-home-v2 .home-cabs-btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 0 20px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  gap: 12px;
+  margin-top: 32px;
 }
 
 .kbc-home-v2 .home-cabs-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
   background: #fff;
-  color: var(--ink);
+  color: #0c1210;
+  font-size: 14px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);
 }
 
 .kbc-home-v2 .home-cabs-btn-primary:hover {
   background: #5eead4;
-  color: #0c1210;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 44px -16px rgba(15, 118, 110, 0.55);
+}
+
+.kbc-home-v2 .home-cabs-btn-primary svg {
+  transition: transform 0.2s ease;
+}
+
+.kbc-home-v2 .home-cabs-btn-primary:hover svg {
+  transform: translateX(3px);
 }
 
 .kbc-home-v2 .home-cabs-btn-ghost {
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
   color: #fff;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .kbc-home-v2 .home-cabs-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
 }
 
-/* How it works */
-.kbc-home-v2 .home-steps-rail {
-  list-style: none;
+@keyframes home-cabs-drift {
+  from { transform: scale(1.08) translate3d(0, 0, 0); }
+  to { transform: scale(1.14) translate3d(-1.6%, -1.2%, 0); }
+}
+
+@keyframes home-cabs-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes home-cabs-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.55); }
+  70% { box-shadow: 0 0 0 12px rgba(94, 234, 212, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0); }
+}
+
+@keyframes home-cabs-route {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(280%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kbc-home-v2 .home-cabs-media-img,
+  .kbc-home-v2 .home-cabs-kicker-dot,
+  .kbc-home-v2 .home-cabs-route-line::after,
+  .kbc-home-v2 .home-cabs-copy {
+    animation: none !important;
+  }
+
+  .kbc-home-v2 .home-cabs-media-img {
+    transform: scale(1.04);
+  }
+}
+
+/* How it works — editorial spread (image + vertical path) */
+.kbc-home-v2 .home-band-steps {
+  position: relative;
+  background: #fff;
+  padding: 88px 0 96px;
+  overflow: hidden;
+}
+
+.kbc-home-v2 .home-steps-spread {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: stretch;
+}
+
+.kbc-home-v2 .home-steps-visual {
+  position: relative;
   margin: 0;
+  min-height: 560px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #0c1210;
+}
+
+.kbc-home-v2 .home-steps-visual-img {
+  object-fit: cover;
+  object-position: center 40%;
+  transform: scale(1.06);
+  animation: home-steps-drift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.kbc-home-v2 .home-steps-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 48%, rgba(8, 12, 11, 0.72) 100%),
+    linear-gradient(90deg, rgba(8, 12, 11, 0.12), transparent 40%);
+  pointer-events: none;
+}
+
+.kbc-home-v2 .home-steps-visual-cap {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+  color: #fff;
+}
+
+.kbc-home-v2 .home-steps-visual-cap span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9ae8dc;
+}
+
+.kbc-home-v2 .home-steps-visual-cap strong {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.kbc-home-v2 .home-steps-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 0 8px;
+}
+
+.kbc-home-v2 .home-steps-kicker {
+  margin: 0 0 14px;
+}
+
+.kbc-home-v2 .home-steps-copy h2 {
+  margin: 0;
+  max-width: 12ch;
+  font-size: clamp(36px, 4.8vw, 56px);
+  font-weight: 750;
+  letter-spacing: -0.048em;
+  line-height: 0.98;
+  color: var(--kbc-ink);
+  text-wrap: balance;
+}
+
+.kbc-home-v2 .home-steps-copy h2 em {
+  font-style: italic;
+  font-weight: 560;
+  color: var(--kbc-teal);
+}
+
+.kbc-home-v2 .home-steps-lead {
+  margin: 18px 0 0;
+  max-width: 34ch;
+  color: var(--kbc-muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.kbc-home-v2 .home-steps-list {
+  list-style: none;
+  margin: 36px 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 0;
+  border-top: 1px solid rgba(12, 18, 16, 0.1);
 }
 
 .kbc-home-v2 .home-step {
-  position: relative;
-  padding: 24px 22px 22px;
-  border-radius: 18px;
-  background: #fff;
-  border: 1px solid rgba(12, 18, 16, 0.08);
-}
-
-.kbc-home-v2 .home-step-num {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  font-size: 13px;
-  font-weight: 800;
-  color: rgba(15, 118, 110, 0.35);
-}
-
-.kbc-home-v2 .home-step-icon-wrap {
   display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 14px;
-  border-radius: 12px;
-  background: var(--paper);
-  color: var(--teal);
-  border: 1px solid rgba(15, 118, 110, 0.14);
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(12, 18, 16, 0.1);
+  animation: home-steps-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--step-i, 0) * 90ms + 60ms);
+  transition: background 0.2s ease;
 }
 
-.kbc-home-v2 .home-step strong {
-  display: block;
-  font-size: 17px;
+.kbc-home-v2 .home-step:hover {
+  background: linear-gradient(90deg, rgba(15, 118, 110, 0.04), transparent 70%);
+}
+
+.kbc-home-v2 .home-step-index {
+  padding-top: 3px;
+  font-size: 13px;
   font-weight: 750;
-  letter-spacing: -0.02em;
-  color: var(--ink);
+  letter-spacing: 0.08em;
+  color: var(--kbc-teal);
 }
 
-.kbc-home-v2 .home-step p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
+.kbc-home-v2 .home-step-body {
+  display: grid;
+  gap: 6px;
+}
+
+.kbc-home-v2 .home-step-body strong {
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.028em;
+  color: var(--kbc-ink);
+  line-height: 1.2;
+}
+
+.kbc-home-v2 .home-step-body p {
+  margin: 0;
+  max-width: 42ch;
+  color: var(--kbc-muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+@keyframes home-steps-drift {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+}
+
+@keyframes home-steps-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kbc-home-v2 .home-steps-visual-img,
+  .kbc-home-v2 .home-step {
+    animation: none !important;
+  }
+
+  .kbc-home-v2 .home-steps-visual-img {
+    transform: scale(1.03);
+  }
+}
+
+/* Services — same language as destinations (photo tiles, no gimmicks) */
+.kbc-home-v2 .services-section {
+  background: transparent;
+  color: var(--kbc-ink);
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 56px 0 24px;
+}
+
+.kbc-home-v2 .service-book-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.kbc-home-v2 .service-book-card {
+  position: relative;
+  display: block;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 18px;
+  text-decoration: none;
+  color: #fff;
+  background: #0c1210;
+}
+
+.kbc-home-v2 .service-book-image {
+  object-fit: cover;
+  transition: transform 0.55s ease;
+}
+
+.kbc-home-v2 .service-book-card:hover .service-book-image {
+  transform: scale(1.05);
+}
+
+.kbc-home-v2 .service-book-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 42%, rgba(8, 12, 11, 0.78) 100%);
+  pointer-events: none;
+}
+
+.kbc-home-v2 .service-book-copy {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+}
+
+.kbc-home-v2 .service-book-copy strong {
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.kbc-home-v2 .service-book-copy span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 /* Final CTA */
+.kbc-home-v2 .home-band-cta {
+  padding: 28px 0 88px;
+  background: #fff;
+}
+
 .kbc-home-v2 .home-cta-panel {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 36px 40px;
-  border-radius: 24px;
+  gap: 28px;
+  padding: 44px 48px;
+  border-radius: 28px;
   background:
-    radial-gradient(circle at 90% 10%, rgba(15, 118, 110, 0.14), transparent 40%),
-    linear-gradient(135deg, #0c1210, #16352c);
+    radial-gradient(circle at 92% 12%, rgba(94, 234, 212, 0.18), transparent 36%),
+    radial-gradient(circle at 8% 88%, rgba(15, 118, 110, 0.22), transparent 40%),
+    linear-gradient(135deg, #0c1210, #143028 55%, #0f2a24);
   color: #fff;
+  overflow: hidden;
+  position: relative;
 }
 
 .kbc-home-v2 .home-cta-panel .section-kicker {
@@ -659,15 +965,15 @@
 }
 
 .kbc-home-v2 .home-cta-panel h2 {
-  margin: 0;
   color: #fff;
-  font-size: clamp(24px, 3vw, 34px);
-  font-weight: 750;
-  letter-spacing: -0.03em;
 }
 
 .kbc-home-v2 .home-cta-panel .home-section-lead {
-  color: rgba(255, 255, 255, 0.75);
+  margin: 12px 0 0;
+  max-width: 42ch;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .kbc-home-v2 .home-cta-actions {
@@ -688,11 +994,16 @@
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
 .kbc-home-v2 .home-primary-btn {
   background: #fff;
   color: var(--ink);
+}
+
+.kbc-home-v2 .home-primary-btn:hover {
+  transform: translateY(-1px);
 }
 
 .kbc-home-v2 .home-ghost-btn {
@@ -706,20 +1017,8 @@
 }
 
 @media (max-width: 980px) {
-  .kbc-home-v2 .hero-v3 {
-    grid-template-columns: 1fr;
-    height: auto;
-    min-height: 0;
-    padding-top: 36px;
-    gap: 20px;
-  }
-
-  .kbc-home-v2 .hero-visual {
-    min-height: 300px;
-    aspect-ratio: 16 / 11;
-  }
-
-  .kbc-home-v2 .home-card-grid-3 {
+  .kbc-home-v2 .home-card-grid-3,
+  .kbc-home-v2 .home-card-grid-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -731,6 +1030,9 @@
   }
 
   .kbc-home-v2 .destination-card {
+    flex: unset;
+    width: auto;
+    min-width: 0;
     min-height: 190px;
     aspect-ratio: 3 / 4;
     height: auto;
@@ -738,36 +1040,142 @@
   }
 
   .kbc-home-v2 .home-trust-layout,
-  .kbc-home-v2 .home-trust-grid,
-  .kbc-home-v2 .home-steps-rail {
+  .kbc-home-v2 .home-trust-grid {
     grid-template-columns: 1fr;
   }
 
-  .kbc-home-v2 .home-cabs-panel {
-    min-height: 480px;
-    border-radius: 22px;
+  .kbc-home-v2 .hero-visual {
+    min-height: 280px;
   }
 
-  .kbc-home-v2 .home-cabs-panel-shade {
-    background:
-      linear-gradient(180deg, rgba(8, 14, 12, 0.08) 0%, rgba(8, 14, 12, 0.5) 42%, rgba(8, 14, 12, 0.92) 78%, rgba(8, 14, 12, 0.96) 100%);
+  .kbc-home-v2 .destination-card-title {
+    font-size: clamp(22px, 5.5vw, 28px);
   }
 
-  .kbc-home-v2 .home-cabs-copy {
-    max-width: none;
-    padding: 28px 24px 32px;
+  .kbc-home-v2 .destination-card-top {
+    top: 14px;
+    left: 14px;
   }
 
-  .kbc-home-v2 .home-cta-panel {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 28px 24px;
+  .kbc-home-v2 .destination-card-bottom {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .kbc-home-v2 .destination-card-trending {
+    top: 12px;
+    right: 12px;
+    padding: 5px 8px;
+    font-size: 9px;
   }
 
   .kbc-home-v2 .section-heading {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .kbc-home-v2 .destination-actions,
+  .kbc-home-v2 .offer-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .kbc-home-v2 .home-cabs-stage {
+    min-height: min(88vh, 680px);
+  }
+
+  .kbc-home-v2 .home-cabs-media-img {
+    object-position: 72% 40%;
+    animation-duration: 36s;
+  }
+
+  .kbc-home-v2 .home-cabs-media-veil {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(8, 12, 11, 0.35) 0%,
+        rgba(8, 12, 11, 0.2) 38%,
+        rgba(8, 12, 11, 0.78) 72%,
+        rgba(8, 12, 11, 0.92) 100%
+      );
+  }
+
+  .kbc-home-v2 .home-cabs-frame {
+    align-items: flex-end;
+    padding-block: 48px 36px;
+  }
+
+  .kbc-home-v2 .home-cabs-copy h2 {
+    font-size: clamp(32px, 9vw, 44px);
+  }
+
+  .kbc-home-v2 .home-cabs-route {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .kbc-home-v2 .home-cabs-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .kbc-home-v2 .home-cabs-btn-primary,
+  .kbc-home-v2 .home-cabs-btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kbc-home-v2 .home-band-steps {
+    padding: 56px 0 64px;
+  }
+
+  .kbc-home-v2 .home-steps-spread {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .kbc-home-v2 .home-steps-visual {
+    min-height: 320px;
+    border-radius: 22px;
+  }
+
+  .kbc-home-v2 .home-steps-copy h2 {
+    max-width: none;
+    font-size: clamp(32px, 8vw, 42px);
+  }
+
+  .kbc-home-v2 .home-steps-list {
+    margin-top: 28px;
+  }
+
+  .kbc-home-v2 .home-cta-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 22px;
+    border-radius: 22px;
+  }
+
+  .kbc-home-v2 .home-cta-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .kbc-home-v2 .home-cta-actions .home-primary-btn,
+  .kbc-home-v2 .home-cta-actions .home-ghost-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kbc-home-v2 .service-book-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kbc-home-v2 .service-book-card {
+    min-height: 220px;
   }
 }
 
@@ -796,61 +1204,80 @@
     padding: 16px 0 56px;
   }
 
-  .kbc-home-v2 .hero-v3 {
-    padding-top: 28px;
-  }
-
-  .kbc-home-v2 .hero-v3 h1 {
-    font-size: clamp(36px, 10vw, 48px);
-  }
-
-  .kbc-home-v2 .hero-lead {
-    font-size: 15px;
-  }
-
-  .kbc-home-v2 .hero-visual {
-    min-height: 240px;
-  }
-
   .kbc-home-v2 .home-section-head {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 20px;
   }
 
-  .kbc-home-v2 .home-card-grid-3 {
+  .kbc-home-v2 .home-section-head h2,
+  .kbc-home-v2 .section-heading h2 {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+
+  .kbc-home-v2 .home-card-grid-3,
+  .kbc-home-v2 .home-card-grid-4 {
     grid-template-columns: 1fr;
   }
 
-  .kbc-home-v2 .home-cabs-actions,
-  .kbc-home-v2 .home-cta-actions,
-  .kbc-home-v2 .hero-cta-row {
-    flex-direction: column;
-    align-items: stretch;
+  /* Hero art sits on its own white stage so the PNG plate doesn't clash */
+  .kbc-home-v2 .hero-art {
+    height: 260px;
+    min-height: 260px;
+    margin: 8px 0 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
   }
 
-  .kbc-home-v2 .home-cabs-btn-primary,
-  .kbc-home-v2 .home-cabs-btn-ghost,
-  .kbc-home-v2 .home-primary-btn,
-  .kbc-home-v2 .home-ghost-btn,
-  .kbc-home-v2 .hero-cta-primary,
-  .kbc-home-v2 .hero-cta-secondary {
-    width: 100%;
-    justify-content: center;
+  .kbc-home-v2 .hero-art img {
+    mix-blend-mode: normal;
   }
 
-  .kbc-home-v2 .offer-card {
-    width: 82vw;
-    min-width: 82vw;
+  .kbc-home-v2 .home-search-wrap {
+    margin-top: 8px;
+    padding-inline: 0;
+  }
+
+  .kbc-home-v2 .home-band-cabs {
+    padding: 40px 0 28px;
+  }
+
+  .kbc-home-v2 .home-cabs-stage {
+    min-height: 620px;
+  }
+
+  .kbc-home-v2 .home-cabs-lead {
+    font-size: 15px;
+  }
+
+  .kbc-home-v2 .offer-card-copy {
+    left: 16px;
+    top: 16px;
+    bottom: 16px;
+  }
+
+  .kbc-home-v2 .offer-card-copy strong {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+
+  .kbc-home-v2 .services-section {
+    padding: 40px 0 16px;
+  }
+
+  .kbc-home-v2 .destination-card {
+    min-height: 168px;
+  }
+
+  .kbc-home-v2 .destination-card-weather svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
+
 @media (prefers-reduced-motion: reduce) {
-  .kbc-home-v2 .home-reveal,
-  .kbc-home-v2 .home-reveal-delay,
-  .kbc-home-v2 .home-reveal-late,
-  .kbc-home-v2 .home-product-card:hover {
-    animation: none !important;
-    transform: none !important;
+  .kbc-home-v2 .service-book-card:hover .service-book-image {
+    transform: none;
   }
 }

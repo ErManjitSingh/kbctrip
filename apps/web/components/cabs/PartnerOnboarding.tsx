@@ -78,7 +78,7 @@ function OnboardingStepper({
                   complete
                     ? "bg-emerald-500 text-white"
                     : active
-                      ? "bg-[#ef6614] text-white shadow-[0_8px_16px_-8px_rgba(239,102,20,0.9)]"
+                      ? "bg-[#0f766e] text-white shadow-[0_8px_16px_-8px_rgba(239,102,20,0.9)]"
                       : "bg-slate-100 text-slate-500"
                 }`}
               >
@@ -176,7 +176,7 @@ const BENEFITS = [
 function OptionMark({ active }: { active: boolean }) {
   return (
     <span
-      className={`grid h-6 w-6 place-items-center rounded-full border-2 transition ${active ? "border-[#ef6614] bg-[#ef6614] text-white" : "border-slate-300 bg-white text-transparent"}`}
+      className={`grid h-6 w-6 place-items-center rounded-full border-2 transition ${active ? "border-[#0f766e] bg-[#0f766e] text-white" : "border-slate-300 bg-white text-transparent"}`}
     >
       <Check className="h-3.5 w-3.5" />
     </span>
@@ -249,8 +249,8 @@ function PartnerAccountStart({
 
   return (
     <section className="mx-auto mt-3 grid min-h-[calc(100dvh-64px)] max-w-[980px] overflow-hidden rounded-[22px] border border-slate-200/80 bg-white shadow-[0_28px_70px_-42px_rgba(48,35,39,0.38)] lg:grid-cols-[0.9fr_1.1fr]">
-      <div className="relative overflow-hidden bg-[linear-gradient(155deg,#251411_0%,#5c260f_50%,#ef6614_125%)] p-7 text-white sm:p-10">
-        <div className="absolute -right-20 top-8 h-64 w-64 rounded-full bg-orange-300/20 blur-3xl" />
+      <div className="relative overflow-hidden bg-[linear-gradient(155deg,#251411_0%,#5c260f_50%,#0f766e_125%)] p-7 text-white sm:p-10">
+        <div className="absolute -right-20 top-8 h-64 w-64 rounded-full bg-teal-300/20 blur-3xl" />
         <div className="relative">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em]">
             <CarFront className="h-4 w-4" /> KBC Cabs partner
@@ -273,7 +273,7 @@ function PartnerAccountStart({
                 className="flex items-center gap-3 text-sm font-semibold"
               >
                 <span className="grid h-7 w-7 place-items-center rounded-full bg-white/15">
-                  <Check className="h-4 w-4 text-orange-200" />
+                  <Check className="h-4 w-4 text-teal-200" />
                 </span>
                 {item}
               </p>
@@ -282,7 +282,7 @@ function PartnerAccountStart({
         </div>
       </div>
       <div className="p-7 sm:p-10">
-        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ef6614]">
+        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0f766e]">
           Step 1 · Account
         </p>
         <h2 className="mt-2 text-2xl font-black tracking-tight text-[#292229]">
@@ -302,7 +302,7 @@ function PartnerAccountStart({
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   autoComplete="name"
-                  className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100"
+                  className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100"
                   placeholder="Enter your full name"
                 />
               </label>
@@ -313,7 +313,7 @@ function PartnerAccountStart({
                   onChange={(event) => setPhone(event.target.value)}
                   inputMode="numeric"
                   autoComplete="tel"
-                  className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100"
+                  className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100"
                   placeholder="10-digit mobile number"
                 />
               </label>
@@ -326,7 +326,7 @@ function PartnerAccountStart({
               onChange={(event) => setEmail(event.target.value)}
               type="email"
               autoComplete="email"
-              className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100"
+              className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100"
               placeholder="name@example.com"
             />
           </label>
@@ -339,7 +339,7 @@ function PartnerAccountStart({
               autoComplete={
                 mode === "register" ? "new-password" : "current-password"
               }
-              className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100"
+              className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100"
               placeholder={
                 mode === "register"
                   ? "Create at least 8 characters"
@@ -355,7 +355,7 @@ function PartnerAccountStart({
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 type="password"
                 autoComplete="new-password"
-                className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#ef6614] focus:ring-4 focus:ring-orange-100"
+                className="mt-1.5 h-12 w-full rounded-xl border border-[#e5dfe1] px-3 text-sm font-medium outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-teal-100"
                 placeholder="Re-enter your password"
               />
             </label>
@@ -370,7 +370,7 @@ function PartnerAccountStart({
           )}
           <button
             disabled={saving}
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ef6614] text-sm font-extrabold text-white shadow-[0_12px_22px_-12px_rgba(239,102,20,0.9)] transition hover:bg-[#d95511] disabled:cursor-not-allowed disabled:opacity-65"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#0f766e] text-sm font-extrabold text-white shadow-[0_12px_22px_-12px_rgba(239,102,20,0.9)] transition hover:bg-[#115e59] disabled:cursor-not-allowed disabled:opacity-65"
           >
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             {saving
@@ -390,7 +390,7 @@ function PartnerAccountStart({
             );
             setError("");
           }}
-          className="mt-5 w-full text-center text-xs font-bold text-[#d95717]"
+          className="mt-5 w-full text-center text-xs font-bold text-[#115e59]"
         >
           {mode === "register"
             ? "Already have an account? Sign in"
@@ -768,25 +768,16 @@ export function PartnerOnboarding() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_10%_0%,#fff8ef_0%,transparent_30%),linear-gradient(135deg,#f7fafc_0%,#ffffff_45%,#fffaf5_100%)] px-3 py-3 text-[#272129] sm:px-5 sm:py-4">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_10%_0%,#f3f7f5_0%,transparent_30%),linear-gradient(135deg,#f7fafc_0%,#ffffff_45%,#f7faf8_100%)] px-3 py-3 text-[#272129] sm:px-5 sm:py-4">
       <header className="mx-auto flex h-10 max-w-[1800px] items-center justify-between px-1">
-        <Link
-          href="/cabs"
-          className="leading-none"
-          aria-label="Back to KBC Cabs"
-        >
-          <span className="text-xl font-black tracking-tight text-[#ef6614]">
-            Uno<span className="text-[#192131]">Cabs</span>
-          </span>
-          <span className="mt-1 block text-[8px] font-semibold tracking-wide text-[#748092]">
-            Your city. Your ride. Your price.
-          </span>
+        <Link href="/cabs" className="text-sm font-semibold text-[#0f766e]">
+          Back to cabs
         </Link>
         <a
           href={siteTelHref()}
           className="flex items-center gap-2 text-right"
         >
-          <Headphones className="h-4 w-4 text-[#ef6614]" />
+          <Headphones className="h-4 w-4 text-[#0f766e]" />
           <span>
             <small className="block text-[9px] font-semibold text-[#7c8390]">
               24×7 Partner Support
@@ -800,7 +791,7 @@ export function PartnerOnboarding() {
 
       {partnerContextLoading ? (
         <div className="grid min-h-[calc(100dvh-64px)] place-items-center gap-3 text-center">
-          <span className="h-8 w-8 animate-spin rounded-full border-4 border-orange-100 border-t-[#ef6614]" />
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-100 border-t-[#0f766e]" />
           <p className="text-sm font-semibold text-slate-600">
             Loading your saved partner application…
           </p>
@@ -978,7 +969,7 @@ export function PartnerOnboarding() {
                   {step === 0 ? (
                     <Link
                       href="/cabs"
-                      className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#ded7d4] px-4 text-xs font-extrabold text-[#4c414b] transition hover:border-[#ef6614]"
+                      className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#ded7d4] px-4 text-xs font-extrabold text-[#4c414b] transition hover:border-[#0f766e]"
                     >
                       Back to KBC Cabs
                     </Link>
@@ -987,7 +978,7 @@ export function PartnerOnboarding() {
                       type="button"
                       disabled={stepSaving}
                       onClick={back}
-                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#ded7d4] px-4 text-xs font-extrabold text-[#4c414b] transition hover:border-[#ef6614] disabled:opacity-50"
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#ded7d4] px-4 text-xs font-extrabold text-[#4c414b] transition hover:border-[#0f766e] disabled:opacity-50"
                     >
                       <ArrowLeft className="h-4 w-4" /> Back
                     </button>
@@ -996,7 +987,7 @@ export function PartnerOnboarding() {
                     type="button"
                     disabled={stepSaving}
                     onClick={next}
-                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#ef6614] px-6 text-xs font-extrabold text-white shadow-[0_12px_22px_-12px_rgba(239,102,20,0.8)] transition hover:bg-[#d95511] disabled:cursor-not-allowed disabled:opacity-65"
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#0f766e] px-6 text-xs font-extrabold text-white shadow-[0_12px_22px_-12px_rgba(239,102,20,0.8)] transition hover:bg-[#115e59] disabled:cursor-not-allowed disabled:opacity-65"
                   >
                     {stepSaving && <Loader2 className="h-4 w-4 animate-spin" />}
                     {stepSaving ? (
@@ -1120,7 +1111,7 @@ function PartnerApplicationStatus({
         <div className="mt-4 text-center">
           <Link
             href="/cabs/list-your-cab"
-            className="inline-flex rounded-lg bg-[#ef6614] px-4 py-2.5 text-xs font-extrabold text-white"
+            className="inline-flex rounded-lg bg-[#0f766e] px-4 py-2.5 text-xs font-extrabold text-white"
           >
             {application.onboarding_status === "rejected"
               ? "Edit and resubmit"
@@ -1168,7 +1159,7 @@ function BusinessTypeStep({
   return (
     <>
       <div>
-        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ef6614]">
+        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0f766e]">
           Step 1 of 4
         </p>
         <h2 className="mt-1 text-xl font-black tracking-tight sm:text-2xl">
@@ -1185,7 +1176,7 @@ function BusinessTypeStep({
       )}
       <fieldset className="mt-4">
         <legend className="text-xs font-extrabold sm:text-sm">
-          I am registering as <span className="text-[#ef6614]">*</span>
+          I am registering as <span className="text-[#0f766e]">*</span>
         </legend>
         <div className="mt-2 grid gap-3 md:grid-cols-2">
           {choices.map(({ value, title, description, icon: Icon }) => {
@@ -1199,13 +1190,13 @@ function BusinessTypeStep({
                   if (typeLocked && value !== type) return;
                   onSelect(value);
                 }}
-                className={`relative min-h-[128px] rounded-xl border p-3 text-left transition sm:p-4 ${active ? "border-[#ef6614] bg-[#fffaf6] shadow-[0_14px_26px_-24px_rgba(239,102,20,0.85)]" : "border-slate-200 bg-white hover:border-orange-200"} ${typeLocked && !active ? "cursor-not-allowed opacity-45" : ""}`}
+                className={`relative min-h-[128px] rounded-xl border p-3 text-left transition sm:p-4 ${active ? "border-[#0f766e] bg-[#fffaf6] shadow-[0_14px_26px_-24px_rgba(239,102,20,0.85)]" : "border-slate-200 bg-white hover:border-teal-200"} ${typeLocked && !active ? "cursor-not-allowed opacity-45" : ""}`}
               >
                 <span className="absolute left-3 top-3">
                   <OptionMark active={active} />
                 </span>
                 <span
-                  className={`mx-auto grid h-9 w-9 place-items-center rounded-xl ${active ? "bg-orange-100 text-[#ef6614]" : "bg-slate-100 text-slate-500"}`}
+                  className={`mx-auto grid h-9 w-9 place-items-center rounded-xl ${active ? "bg-teal-100 text-[#0f766e]" : "bg-slate-100 text-slate-500"}`}
                 >
                   <Icon className="h-4.5 w-4.5" />
                 </span>
@@ -1220,8 +1211,8 @@ function BusinessTypeStep({
           })}
         </div>
       </fieldset>
-      <div className="mt-3 rounded-lg border border-orange-100 bg-[#fff8f2] px-3 py-2 text-[10px] leading-4 text-[#6d6370] sm:text-[11px]">
-        <span className="mr-2 inline-grid h-4 w-4 place-items-center rounded-full border border-[#ef6614] text-[10px] font-bold text-[#ef6614]">
+      <div className="mt-3 rounded-lg border border-teal-100 bg-[#f3f7f5] px-3 py-2 text-[10px] leading-4 text-[#6d6370] sm:text-[11px]">
+        <span className="mr-2 inline-grid h-4 w-4 place-items-center rounded-full border border-[#0f766e] text-[10px] font-bold text-[#0f766e]">
           i
         </span>{" "}
         You can add more vehicles and operating cities after approval.
@@ -1230,14 +1221,14 @@ function BusinessTypeStep({
         <input
           name="terms"
           type="checkbox"
-          className="mt-0.5 h-4 w-4 accent-[#ef6614]"
+          className="mt-0.5 h-4 w-4 accent-[#0f766e]"
         />
         I agree to the{" "}
-        <a href="#terms" className="font-bold text-[#ef6614]">
+        <a href="#terms" className="font-bold text-[#0f766e]">
           Terms &amp; Conditions
         </a>{" "}
         and{" "}
-        <a href="#privacy" className="font-bold text-[#ef6614]">
+        <a href="#privacy" className="font-bold text-[#0f766e]">
           Privacy Policy
         </a>
         .
@@ -1352,14 +1343,14 @@ function CabLocationField({
     <label
       className={`relative block ${compact ? "text-[10px] sm:text-[11px]" : "text-[11px]"} font-extrabold text-[#403641]`}
     >
-      {label} {!optional && <span className="text-[#ef6614]">*</span>}
+      {label} {!optional && <span className="text-[#0f766e]">*</span>}
       {optional && (
         <span className="font-medium text-[#8b8189]">(Optional)</span>
       )}
       <span
-        className={`mt-1 ${fieldHeight} flex items-center overflow-hidden rounded-lg border border-[#e5dfe1] bg-white focus-within:border-[#ef6614] focus-within:ring-2 focus-within:ring-orange-100`}
+        className={`mt-1 ${fieldHeight} flex items-center overflow-hidden rounded-lg border border-[#e5dfe1] bg-white focus-within:border-[#0f766e] focus-within:ring-2 focus-within:ring-teal-100`}
       >
-        <MapPin className="ml-2.5 h-3.5 w-3.5 shrink-0 text-[#ef6614]" />
+        <MapPin className="ml-2.5 h-3.5 w-3.5 shrink-0 text-[#0f766e]" />
         <input
           required={!optional}
           name={fieldName(label)}
@@ -1374,11 +1365,11 @@ function CabLocationField({
           className={`min-w-0 flex-1 bg-transparent px-2.5 ${textSize} font-medium outline-none placeholder:font-normal placeholder:text-[#aba1a9]`}
         />
         {loading && (
-          <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-orange-100 border-t-[#ef6614]" />
+          <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-teal-100 border-t-[#0f766e]" />
         )}
       </span>
       {open && query.trim().length >= 3 && (
-        <ul className="absolute inset-x-0 top-[calc(100%+5px)] z-40 max-h-56 overflow-y-auto rounded-xl border border-orange-100 bg-white py-1 shadow-[0_18px_36px_-18px_rgba(64,34,19,0.35)]">
+        <ul className="absolute inset-x-0 top-[calc(100%+5px)] z-40 max-h-56 overflow-y-auto rounded-xl border border-teal-100 bg-white py-1 shadow-[0_18px_36px_-18px_rgba(64,34,19,0.35)]">
           {suggestions.map((place) => (
             <li key={place.place_id}>
               <button
@@ -1389,9 +1380,9 @@ function CabLocationField({
                   setSuggestions([]);
                   setOpen(false);
                 }}
-                className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-orange-50"
+                className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-teal-50"
               >
-                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#ef6614]" />
+                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#0f766e]" />
                 <span>
                   <strong className="block text-[11px] text-[#403842]">
                     {place.locality || place.label.split(",")[0]}
@@ -1430,7 +1421,7 @@ function BusinessDetailsStep({
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_-26px_rgba(36,30,38,0.4)] sm:p-5">
       <div>
-        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ef6614]">
+        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0f766e]">
           Step 2 of 4
         </p>
         <h2 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
@@ -1567,8 +1558,8 @@ function IndividualFields({
 }) {
   return (
     <div className="mt-4 space-y-3">
-      <div className="flex items-center gap-3 rounded-xl bg-[#fff8f2] px-3 py-2.5 text-sm text-[#665a63]">
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-orange-100 text-[#ef6614]">
+      <div className="flex items-center gap-3 rounded-xl bg-[#f3f7f5] px-3 py-2.5 text-sm text-[#665a63]">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-teal-100 text-[#0f766e]">
           <UserRound className="h-4 w-4" />
         </span>
         <span>
@@ -1694,11 +1685,11 @@ function OnboardingInput({
 }) {
   return (
     <label className="block text-[11px] font-extrabold text-[#403641]">
-      {label} {!optional && <span className="text-[#ef6614]">*</span>}
+      {label} {!optional && <span className="text-[#0f766e]">*</span>}
       {optional && (
         <span className="font-medium text-[#8b8189]">(Optional)</span>
       )}
-      <span className="mt-1.5 flex h-10 items-center overflow-hidden rounded-lg border border-[#e5dfe1] bg-white focus-within:border-[#ef6614] focus-within:ring-2 focus-within:ring-orange-100">
+      <span className="mt-1.5 flex h-10 items-center overflow-hidden rounded-lg border border-[#e5dfe1] bg-white focus-within:border-[#0f766e] focus-within:ring-2 focus-within:ring-teal-100">
         {prefix && (
           <span className="border-r border-[#eee8e5] px-2.5 text-[11px] text-[#605762]">
             {prefix}
@@ -1732,7 +1723,7 @@ function OnboardingSelect({
 }) {
   return (
     <label className="block text-[11px] font-extrabold text-[#403641]">
-      {label} {!optional && <span className="text-[#ef6614]">*</span>}
+      {label} {!optional && <span className="text-[#0f766e]">*</span>}
       {optional && (
         <span className="font-medium text-[#8b8189]">(Optional)</span>
       )}
@@ -1740,7 +1731,7 @@ function OnboardingSelect({
         required={!optional}
         name={fieldName(label)}
         defaultValue={defaultValue || ""}
-        className="mt-1.5 h-10 w-full rounded-lg border border-[#e5dfe1] bg-white px-3 text-xs font-medium text-[#746a73] outline-none focus:border-[#ef6614] focus:ring-2 focus:ring-orange-100"
+        className="mt-1.5 h-10 w-full rounded-lg border border-[#e5dfe1] bg-white px-3 text-xs font-medium text-[#746a73] outline-none focus:border-[#0f766e] focus:ring-2 focus:ring-teal-100"
       >
         <option value="" disabled>
           {placeholder}
@@ -1764,14 +1755,14 @@ function OnboardingTextarea({
 }) {
   return (
     <label className="block text-[11px] font-extrabold text-[#403641]">
-      {label} <span className="text-[#ef6614]">*</span>
+      {label} <span className="text-[#0f766e]">*</span>
       <textarea
         required
         name={fieldName(label)}
         rows={2}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className="mt-1.5 w-full resize-none rounded-lg border border-[#e5dfe1] px-3 py-2.5 text-xs font-medium outline-none placeholder:font-normal placeholder:text-[#aba1a9] focus:border-[#ef6614] focus:ring-2 focus:ring-orange-100"
+        className="mt-1.5 w-full resize-none rounded-lg border border-[#e5dfe1] px-3 py-2.5 text-xs font-medium outline-none placeholder:font-normal placeholder:text-[#aba1a9] focus:border-[#0f766e] focus:ring-2 focus:ring-teal-100"
       />
     </label>
   );
@@ -1825,7 +1816,7 @@ function DocumentsStep({
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_-26px_rgba(36,30,38,0.4)] sm:p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ef6614]">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0f766e]">
             Step 3 of 4
           </p>
           <h2 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
@@ -1863,9 +1854,9 @@ function DocumentsStep({
         onChooseFile={chooseFile}
         uploadState={uploadState}
       />
-      <div className="mt-4 rounded-xl border border-orange-100 bg-[#fff8f2] px-4 py-3 text-xs leading-5 text-[#655962]">
+      <div className="mt-4 rounded-xl border border-teal-100 bg-[#f3f7f5] px-4 py-3 text-xs leading-5 text-[#655962]">
         <strong className="flex items-center gap-2 text-[#403641]">
-          <span className="grid h-6 w-6 place-items-center rounded-full bg-orange-100 text-[#ef6614]">
+          <span className="grid h-6 w-6 place-items-center rounded-full bg-teal-100 text-[#0f766e]">
             !
           </span>{" "}
           Note:
@@ -1901,7 +1892,7 @@ function DocumentGroup({
   return (
     <section className="mt-5">
       <h3 className="flex items-center gap-2 text-sm font-extrabold">
-        <span className="grid h-8 w-8 place-items-center rounded-xl bg-orange-50 text-[#ef6614]">
+        <span className="grid h-8 w-8 place-items-center rounded-xl bg-teal-50 text-[#0f766e]">
           <Icon className="h-4 w-4" />
         </span>
         {title}
@@ -1992,10 +1983,10 @@ function DocumentUploadCard({
       />
       <label
         htmlFor={inputId}
-        className={`mt-3 grid h-16 cursor-pointer place-items-center rounded-lg border border-dashed transition ${status === "uploaded" ? "border-emerald-300 bg-emerald-50 text-emerald-600" : "border-[#d9dfe8] bg-[#fbfcff] text-[#ef6614] hover:border-[#ef6614] hover:bg-orange-50"}`}
+        className={`mt-3 grid h-16 cursor-pointer place-items-center rounded-lg border border-dashed transition ${status === "uploaded" ? "border-emerald-300 bg-emerald-50 text-emerald-600" : "border-[#d9dfe8] bg-[#fbfcff] text-[#0f766e] hover:border-[#0f766e] hover:bg-teal-50"}`}
       >
         {status === "uploading" ? (
-          <span className="h-5 w-5 animate-spin rounded-full border-2 border-orange-200 border-t-[#ef6614]" />
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-teal-200 border-t-[#0f766e]" />
         ) : status === "uploaded" ? (
           <Check className="h-6 w-6" />
         ) : (
@@ -2077,7 +2068,7 @@ function VerificationStep({
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_-26px_rgba(36,30,38,0.4)] sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ef6614]">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0f766e]">
             Step 4 of 4
           </p>
           <h2 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
@@ -2161,7 +2152,7 @@ function VerificationStep({
             type="checkbox"
             checked={confirmed}
             onChange={(event) => onConfirm(event.target.checked)}
-            className="h-4 w-4 accent-[#ef6614]"
+            className="h-4 w-4 accent-[#0f766e]"
           />
           I confirm that all the information provided is true and correct.
         </label>
@@ -2185,7 +2176,7 @@ function ReviewCard({
     <article className="rounded-xl border border-[#e6e1e3] p-4">
       <div className="flex items-center justify-between">
         <h3 className="flex items-center gap-2 text-sm font-extrabold">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-orange-50 text-[#ef6614]">
+          <span className="grid h-8 w-8 place-items-center rounded-xl bg-teal-50 text-[#0f766e]">
             <Icon className="h-4 w-4" />
           </span>
           {title}
@@ -2194,7 +2185,7 @@ function ReviewCard({
           <button
             type="button"
             onClick={onEdit}
-            className="text-xs font-bold text-[#ef6614]"
+            className="text-xs font-bold text-[#0f766e]"
           >
             Edit
           </button>
@@ -2240,15 +2231,15 @@ function SuccessScreen() {
         </Link>
         <Link
           href="/cabs"
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#ef6614] px-5 text-sm font-extrabold text-white shadow-[0_12px_22px_-12px_rgba(239,102,20,0.8)]"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#0f766e] px-5 text-sm font-extrabold text-white shadow-[0_12px_22px_-12px_rgba(239,102,20,0.8)]"
         >
           Return to KBC Cabs <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
       <p className="mt-5 text-xs text-[#726974]">
         Need help? Email{" "}
-        <a href="mailto:partners@unocabs.com" className="font-bold text-[#ef6614]">
-          partners@unocabs.com
+        <a href="mailto:hello@kbctrip.com" className="font-bold text-[#0f766e]">
+          hello@kbctrip.com
         </a>
       </p>
     </section>

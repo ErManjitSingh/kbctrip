@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BrandLogo } from './BrandLogo';
+import './site-footer.css';
 
 export function SiteFooter() {
   return (
@@ -7,7 +8,7 @@ export function SiteFooter() {
       <div className="page-width site-footer-top">
         <div className="footer-brand-block">
           <BrandLogo tone="light" size="lg" />
-          <p>Book verified stays across India. One account for the trip — hotels first, the rest of the stack next.</p>
+          <p>Verified stays across India. Hotels, packages, and cabs in one account.</p>
           <a className="footer-mail" href="mailto:hello@kbctrip.com">hello@kbctrip.com</a>
         </div>
 

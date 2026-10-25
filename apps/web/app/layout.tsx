@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Dancing_Script, Playfair_Display, Roboto } from "next/font/google";
+import { Inter } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
 import { TopBanner } from "@/components/layout/top-banner";
 import { KbcSiteHeader } from "@/components/layout/KbcSiteHeader";
@@ -10,26 +10,11 @@ import { HERO_SLIDES, SITE } from "@/lib/constants";
 import "./kbc-tokens.css";
 import "./globals.css";
 
-const dancingScript = Dancing_Script({
+/** Clean UI font site-wide — no decorative display serif. */
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-dancing-script",
-  display: "swap",
-});
-
-/**
- * EaseMyTrip holidays (easemytrip.com/holidays) — primary UI is Roboto / system sans.
- * @see https://www.easemytrip.com/holidays/
- */
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
-  variable: "--font-roboto",
-  display: "swap",
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair-display",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -56,9 +41,6 @@ export const metadata: Metadata = {
     "cab booking",
     "Himachal packages",
   ],
-  alternates: {
-    canonical: "/",
-  },
   robots: {
     index: true,
     follow: true,
@@ -94,9 +76,13 @@ export const metadata: Metadata = {
   },
   category: "travel",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: "/icon.svg",
-    apple: "/images/kbc-trip-mark.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
@@ -115,11 +101,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${dancingScript.variable} ${roboto.variable} ${playfairDisplay.variable}`}
+      className={inter.variable}
     >
       <body className="min-h-screen font-sans" suppressHydrationWarning>
         <Script id="meta-pixel" strategy="afterInteractive">
-          {`
+          {process.env.NEXT_PUBLIC_META_PIXEL_ID
+            ? `
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -128,19 +115,22 @@ export default function RootLayout({
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1749891646008468');
+            fbq('init', '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
             fbq('track', 'PageView');
-          `}
+          `
+            : ""}
         </Script>
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1749891646008468&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
+        {process.env.NEXT_PUBLIC_META_PIXEL_ID ? (
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`}
+              alt=""
+            />
+          </noscript>
+        ) : null}
         <MarketingTracking />
         <JsonLd />
         <AppProviders>

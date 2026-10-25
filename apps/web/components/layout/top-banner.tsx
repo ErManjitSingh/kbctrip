@@ -84,7 +84,7 @@ export function TopBanner() {
   return (
     <div
       ref={bannerRef}
-      className="sticky top-0 z-[60] border-b border-[#c94f0f] bg-[#ef6614] text-white"
+      className="relative z-[60] border-b border-[#115e59] bg-[#0f766e] text-white"
       role="region"
       aria-label="KBC Cabs welcome offer"
     >
@@ -95,7 +95,7 @@ export function TopBanner() {
           <button
             type="button"
             onClick={() => void copyCode()}
-            className="inline-flex items-center gap-1 rounded-md border border-white/25 bg-white px-2 py-0.5 font-black tracking-wide text-[#d95511] shadow-sm transition hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-[#ef6614]"
+            className="inline-flex items-center gap-1 rounded-md border border-white/25 bg-white px-2 py-0.5 font-black tracking-wide text-[#115e59] shadow-sm transition hover:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-[#0f766e]"
             aria-label={`Copy promo code ${CAB_WELCOME_PROMO_CODE}`}
           >
             {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
