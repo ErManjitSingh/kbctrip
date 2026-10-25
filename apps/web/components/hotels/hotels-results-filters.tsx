@@ -77,14 +77,19 @@ function FilterCheckbox({
 function FilterSection({
   title,
   children,
-  defaultOpen = true,
+  defaultOpen = false,
 }: {
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
-    <details className="group border-b border-[#e8e8e8] py-3.5" open={defaultOpen}>
+    <details
+      className="group border-b border-[#e8e8e8] py-3.5"
+      open={open}
+      onToggle={(event) => setOpen(event.currentTarget.open)}
+    >
       <summary className="cursor-pointer list-none text-[13px] font-bold text-[#212121] marker:content-none [&::-webkit-details-marker]:hidden">
         <span className="flex items-center justify-between gap-2">
           {title}
@@ -168,7 +173,7 @@ export function HotelsResultsFilters({
       </div>
 
       <div className={cn("px-4 pb-4", !mobileOpen && "hidden lg:block")}>
-        <FilterSection title="Show Properties With">
+        <FilterSection title="Show Properties With" defaultOpen>
           <FilterCheckbox
             id="f-zero"
             label="Book with ₹0 Payment"
@@ -196,7 +201,7 @@ export function HotelsResultsFilters({
           />
         </FilterSection>
 
-        <FilterSection title="Price (PER NIGHT)">
+        <FilterSection title="Price (PER NIGHT)" defaultOpen>
           {HOTEL_PRICE_BANDS.map((band) => (
             <FilterCheckbox
               key={band.id}

@@ -1583,7 +1583,7 @@
   padding: 62px 32px 104px;
   overflow: hidden;
   border-radius: 8px;
-  background: linear-gradient(180deg, #3c8cff 0%, #2b7af6 46%, #1f6ef2 100%);
+  background: #000;
   color: #fff;
   text-align: center;
 }
@@ -1699,7 +1699,7 @@
 .kbc-home-v2 .home-search-wrap .search-fields {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(180px, 1.25fr) max-content max-content minmax(210px, 1.15fr) auto;
+  grid-template-columns: minmax(150px, 1fr) max-content max-content max-content auto;
   gap: 0;
   align-items: stretch;
   margin-top: 4px;
@@ -1747,10 +1747,35 @@
 }
 
 .kbc-home-v2 .home-search-wrap .search-control-trigger strong {
+  min-width: 0;
+  overflow: hidden;
   color: #0f294d;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0;
+}
+
+.kbc-home-v2 .home-search-wrap .search-control-location .search-control-trigger {
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+.kbc-home-v2 .home-search-wrap .search-control-location .search-control-trigger strong {
+  display: block;
+  text-overflow: ellipsis;
+}
+
+.kbc-home-v2 .home-search-wrap .search-control-date .search-control-trigger strong,
+.kbc-home-v2 .home-search-wrap .search-control-travellers .search-control-trigger strong {
+  overflow: visible;
+}
+
+.kbc-home-v2 .home-search-wrap .search-date-trip,
+.kbc-home-v2 .home-search-wrap .search-guest-home,
+.kbc-home-v2 .home-search-wrap .search-guest-trip {
+  flex: 0 0 auto;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .kbc-home-v2 .home-search-wrap .search-control-trigger strong svg {
@@ -1762,21 +1787,19 @@
   display: none;
 }
 
-.kbc-home-v2 .home-search-wrap .search-date-trip,
-.kbc-home-v2 .home-search-wrap .search-guest-trip {
+.kbc-home-v2 .home-search-wrap [data-service="Packages"] .search-guest-trip,
+.kbc-home-v2 .home-search-wrap [data-service="Hotels"] .search-guest-trip {
+  display: none;
+}
+
+.kbc-home-v2 .home-search-wrap [data-service="Packages"] .search-guest-home,
+.kbc-home-v2 .home-search-wrap [data-service="Hotels"] .search-guest-home {
   display: inline;
 }
 
-.kbc-home-v2 .home-search-wrap [data-service="Flights"] .search-date-kind,
-.kbc-home-v2 .home-search-wrap [data-service="Trains"] .search-date-kind,
-.kbc-home-v2 .home-search-wrap [data-service="Cabs"] .search-date-kind,
-.kbc-home-v2 .home-search-wrap [data-service="Activity"] .search-date-kind,
-.kbc-home-v2 .home-search-wrap [data-service="Packages"] .search-date-kind {
+.kbc-home-v2 .home-search-wrap .search-date-trip,
+.kbc-home-v2 .home-search-wrap .search-guest-trip {
   display: inline;
-  margin-right: 6px;
-  color: #8592a6;
-  font-size: 13px;
-  font-weight: 500;
 }
 
 .kbc-home-v2 .home-search-wrap .search-control-start {
@@ -1788,10 +1811,11 @@
 }
 
 .kbc-home-v2 .home-search-wrap .search-control-start strong::after {
-  margin: 0 12px;
+  margin: 0 10px;
   color: #0f294d;
   font-weight: 400;
   content: '-';
+  flex: 0 0 auto;
 }
 
 .kbc-home-v2 .home-search-wrap .search-control-end .search-control-trigger {

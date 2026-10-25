@@ -26,6 +26,11 @@ import Link from "next/link";
 import { SearchX } from "lucide-react";
 
 import type { TourPackage } from "@/lib/constants";
+import {
+  listingFiltersActive,
+  readListingFilters,
+  tourMatchesListingFilters,
+} from "@/lib/package-listing-filters";
 
 import { PackageGrid } from "./PackageGrid";
 import { PackagePagination } from "./PackagePagination";
@@ -44,22 +49,25 @@ function PackageDiscoveryInner({ tours }: PackageDiscoveryProps) {
   const rawQuery = searchParams.get("q");
   const textFilter =
     typeof rawQuery === "string" && rawQuery.trim() ? rawQuery.trim() : undefined;
+  const listingFilters = readListingFilters(searchParams);
+  const filtersOn = listingFiltersActive(listingFilters);
 
   const filtered = useMemo(() => {
     const q = textFilter?.toLowerCase();
-    const list = !q
-      ? tours
-      : tours.filter((t) => {
-          const blob = [t.title, t.location, t.slug, t.id]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-          return blob.includes(q);
-        });
+    let list = tours.filter((tour) => tourMatchesListingFilters(tour, listingFilters));
+    if (q) {
+      list = list.filter((tour) => {
+        const blob = [tour.title, tour.location, tour.slug, tour.id]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return blob.includes(q);
+      });
+    }
     if (sort === "price_asc") return [...list].sort((a, b) => a.priceINR - b.priceINR);
     if (sort === "price_desc") return [...list].sort((a, b) => b.priceINR - a.priceINR);
     return list;
-  }, [tours, textFilter, sort]);
+  }, [tours, textFilter, sort, listingFilters]);
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -92,10 +100,10 @@ function PackageDiscoveryInner({ tours }: PackageDiscoveryProps) {
       <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
         <SearchX className="mx-auto h-8 w-8 text-slate-300" aria-hidden />
         <p className="mt-3 text-sm font-bold text-slate-900">
-          No packages match &ldquo;{textFilter}&rdquo;
+          {textFilter ? <>No packages match &ldquo;{textFilter}&rdquo;</> : "No packages match these filters"}
         </p>
         <p className="mt-1.5 text-xs text-slate-600">
-          Try a shorter keyword, or{" "}
+          Try a wider selection, or{" "}
           <button
             type="button"
             className="font-semibold text-primary underline"
@@ -111,10 +119,16 @@ function PackageDiscoveryInner({ tours }: PackageDiscoveryProps) {
 
   return (
     <div className="flex flex-col">
-      {textFilter ? (
+      {textFilter || filtersOn ? (
         <p className="mb-3 text-xs text-slate-600 sm:text-sm">
-          Showing matches for{" "}
-          <span className="font-semibold text-slate-800">&ldquo;{textFilter}&rdquo;</span>{" "}
+          {textFilter ? (
+            <>
+              Showing matches for{" "}
+              <span className="font-semibold text-slate-800">&ldquo;{textFilter}&rdquo;</span>
+            </>
+          ) : (
+            <>Showing {total} matching package{total === 1 ? "" : "s"}</>
+          )}{" "}
           <Link href="/packages" className="font-semibold text-primary hover:underline">
             Clear filter
           </Link>

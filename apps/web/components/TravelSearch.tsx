@@ -31,18 +31,18 @@ import {
 } from '@/lib/hotels-catalog';
 
 const coreServices = [
-  { label: 'Hotels', icon: BedDouble },
   { label: 'Packages', icon: Gift },
+  { label: 'Hotels', icon: BedDouble },
   { label: 'Cabs', icon: Car },
 ] as const;
 
 const bannerServices = [
+  { label: 'Packages', icon: Gift },
   { label: 'Hotels', icon: BedDouble },
-  { label: 'Flights', icon: Plane },
-  { label: 'Trains', icon: TrainFront },
   { label: 'Cabs', icon: Car },
   { label: 'Activity', icon: Compass },
-  { label: 'Packages', icon: Gift },
+  { label: 'Trains', icon: TrainFront },
+  { label: 'Flights', icon: Plane },
 ] as const;
 
 type Service = (typeof bannerServices)[number]['label'];
@@ -150,7 +150,7 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
   const services = scope === 'banner' ? bannerServices : coreServices;
   const router = useRouter();
   const panelRef = useRef<HTMLElement>(null);
-  const [activeService, setActiveService] = useState<Service>('Hotels');
+  const [activeService, setActiveService] = useState<Service>('Packages');
   const [openPopover, setOpenPopover] = useState<PopoverName>(null);
   const [destination, setDestination] = useState<Destination | null>(null);
   const [query, setQuery] = useState('');
@@ -309,8 +309,8 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
   const guestTrip = activeService === 'Hotels' || activeService === 'Packages'
     ? `${rooms} room${rooms === 1 ? '' : 's'}, ${adults} adult${adults === 1 ? '' : 's'}, ${children} ${children === 1 ? 'child' : 'children'}`
     : travellerSummary;
-  const locationEmpty = activeService === 'Hotels'
-    ? (scope === 'banner' ? 'Where to?' : 'Where do you want to go?')
+  const locationEmpty = scope === 'banner' && (activeService === 'Hotels' || activeService === 'Packages')
+    ? 'Where to?'
     : copy.location;
   const nightCount = Math.max(1, Math.round((startOfDay(checkOut).getTime() - startOfDay(checkIn).getTime()) / 86400000));
 
