@@ -32,17 +32,10 @@ function replyFor(input: string) {
     ?? "I can help with packages, hotels and cabs. Tell me a destination, or use Service Chat to reach the desk on WhatsApp.";
 }
 
-function AssistantFace() {
+function AssistantFace({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" className="h-14 w-14" aria-hidden>
-      <circle cx="32" cy="32" r="32" fill="#2b62f6" />
-      <circle cx="32" cy="34" r="18" fill="#eef3ff" />
-      <circle cx="25.5" cy="33" r="2.4" fill="#16336b" />
-      <circle cx="38.5" cy="33" r="2.4" fill="#16336b" />
-      <path d="M26 40.5c2.2 2.4 9.8 2.4 12 0" fill="none" stroke="#16336b" strokeWidth="1.8" strokeLinecap="round" />
-      <rect x="29" y="13" width="6" height="7" rx="2" fill="#d5e4ff" />
-      <circle cx="32" cy="12" r="2.6" fill="#fff" />
-    </svg>
+    // Plain img so the GIF keeps looping. next/image can freeze animated GIFs.
+    <img src="/images/kbc-assistant.gif" alt="" draggable={false} className={cn("h-14 w-14", className)} />
   );
 }
 
@@ -98,9 +91,7 @@ export function RightFloatingRail() {
           aria-label="Travel assistant"
         >
           <header className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
-            <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-[#2b62f6]">
-              <AssistantFace />
-            </span>
+            <AssistantFace className="h-8 w-8 shrink-0" />
             <p className="min-w-0 flex-1 text-[16px] font-bold text-slate-900">KBC Assistant</p>
             <button type="button" onClick={() => setChatOpen(false)} className="grid h-9 w-9 place-items-center rounded-full text-slate-500 hover:bg-slate-100" aria-label="Close chat">
               <X className="h-5 w-5" />
