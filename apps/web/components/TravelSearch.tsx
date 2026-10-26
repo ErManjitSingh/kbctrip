@@ -330,7 +330,13 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
             key={label}
             onClick={() => switchService(label)}
           >
-            <Icon size={18} /> {label}
+            <Icon size={18} />
+            {label === 'Activity' ? (
+              <>
+                <span className="search-tab-desk">Activity</span>
+                <span className="search-tab-phone">Activities</span>
+              </>
+            ) : label}
           </button>
         ))}
       </div>
@@ -344,7 +350,12 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
               {copy.location}
             </span>
             <strong className={destination ? undefined : 'is-placeholder'}>
-              {destination?.name ?? locationEmpty}
+              {destination ? destination.name : (
+                <>
+                  <span className="search-loc-desk">{locationEmpty}</span>
+                  <span className="search-loc-phone">Where do you want to go?</span>
+                </>
+              )}
               <ChevronDown size={14} />
             </strong>
           </button>

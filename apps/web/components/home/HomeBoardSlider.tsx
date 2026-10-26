@@ -142,28 +142,11 @@ function PromoSlider({
 }
 
 export function HomeBoardSlider({ className = '' }: { className?: string }) {
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 760px)');
-    const sync = () => {
-      const mobile = media.matches;
-      setActive(className.includes('mobile') ? mobile : !mobile);
-    };
-    sync();
-    media.addEventListener('change', sync);
-    return () => media.removeEventListener('change', sync);
-  }, [className]);
-
   return (
     <section className={`home-board page-width ${className}`.trim()} aria-label="Trip deals">
       <div className="home-board-row">
-        {active ? (
-          <>
-            <PromoSlider slides={INTERNATIONAL} label="International trips" interval={5200} className="is-international" />
-            <PromoSlider slides={DOMESTIC} label="Domestic trips" interval={3800} className="is-domestic" />
-          </>
-        ) : null}
+        <PromoSlider slides={INTERNATIONAL} label="International trips" interval={5200} className="is-international" />
+        <PromoSlider slides={DOMESTIC} label="Domestic trips" interval={3800} className="is-domestic" />
       </div>
     </section>
   );

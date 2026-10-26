@@ -60,7 +60,10 @@ export function OfferShowcase() {
       <div className="section-heading">
         <div className="section-heading-copy">
           <p className="section-kicker">Offers</p>
-          <h2 id="offers-title">Worth booking now</h2>
+          <h2 id="offers-title">
+            <span className="home-title-desk">Worth booking now</span>
+            <span className="home-title-phone">Top Offers</span>
+          </h2>
           <p className="home-section-lead">Stays, packages, and weekend prices.</p>
         </div>
         <div className="offer-actions" aria-label="Offer actions">

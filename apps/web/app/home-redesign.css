@@ -1571,7 +1571,9 @@
 .search-nights,
 .search-date-trip,
 .search-date-kind,
-.search-guest-trip {
+.search-guest-trip,
+.search-submit-arrow,
+.loc-glass {
   display: none;
 }
 
@@ -1596,9 +1598,270 @@
 }
 
 .kbc-home-v2 .trip-banner h1,
-.kbc-home-v2 .trip-promises {
+.kbc-home-v2 .trip-promises,
+.kbc-home-v2 .trip-kicker,
+.kbc-home-v2 .trip-lead {
   position: relative;
   z-index: 1;
+}
+
+.kbc-home-v2 .trip-kicker,
+.kbc-home-v2 .trip-lead,
+.kbc-home-v2 .trip-h1-phone,
+.kbc-home-v2 .trip-banner-photo-phone,
+.kbc-home-v2 .home-title-phone,
+.kbc-home-v2 .search-loc-phone,
+.kbc-home-v2 .search-tab-phone,
+.kbc-home-v2 .home-phone-spot,
+.kbc-home-v2 .where-next-phone {
+  display: none;
+}
+
+.kbc-home-v2 .home-phone-spot,
+.kbc-home-v2 .mtrip {
+  position: relative;
+}
+
+.kbc-home-v2 .mtrip {
+  display: none;
+  padding: 8px 16px 28px;
+  background: #fff;
+  color: #0f294d;
+}
+
+.kbc-home-v2 .mtrip-app {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f5f7fb;
+}
+
+.kbc-home-v2 .mtrip-app-mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  place-items: center;
+  border-radius: 8px;
+  background: #0c1210;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.kbc-home-v2 .mtrip-app-copy {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.kbc-home-v2 .mtrip-app-copy strong {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.kbc-home-v2 .mtrip-app-copy small {
+  color: #5b6b7c;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.kbc-home-v2 .mtrip-app-btn {
+  margin-left: auto;
+  flex: none;
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: #3264ff;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kbc-home-v2 .mtrip-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 8px;
+  margin: 22px 0 8px;
+  padding: 0 4px;
+}
+
+.kbc-home-v2 .mtrip-service {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  color: #0f294d;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.kbc-home-v2 .mtrip-service span {
+  max-width: 76px;
+}
+
+.kbc-home-v2 .mtrip-bubble {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border-radius: 999px;
+  background: #3264ff;
+  color: #fff;
+}
+
+.kbc-home-v2 .mtrip-service.is-soft .mtrip-bubble {
+  background: #e8f1ff;
+  color: #3264ff;
+}
+
+.kbc-home-v2 .mtrip-deals h2,
+.kbc-home-v2 .mtrip-inspired h2 {
+  margin: 22px 0 12px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.kbc-home-v2 .mtrip-deal {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  min-height: 148px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #2f6bff 0%, #3d7bff 58%, #5b93ff 100%);
+  color: #fff;
+}
+
+.kbc-home-v2 .mtrip-deal-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 8px 16px 16px;
+}
+
+.kbc-home-v2 .mtrip-deal-copy small {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kbc-home-v2 .mtrip-deal-copy strong {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.kbc-home-v2 .mtrip-deal-copy em {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+.kbc-home-v2 .mtrip-deal-copy b {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: #3264ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.kbc-home-v2 .mtrip-deal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kbc-home-v2 .mtrip-dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.kbc-home-v2 .mtrip-dots button {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #d5deea;
+}
+
+.kbc-home-v2 .mtrip-dots button.is-on {
+  width: 14px;
+  background: #3264ff;
+}
+
+.kbc-home-v2 .mtrip-trust {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kbc-home-v2 .mtrip-trust li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kbc-home-v2 .mtrip-trust svg {
+  color: #16a34a;
+}
+
+.kbc-home-v2 .mtrip-rail {
+  display: flex;
+  gap: 10px;
+  margin: 0 -16px;
+  padding: 0 16px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.kbc-home-v2 .mtrip-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.kbc-home-v2 .mtrip-card {
+  position: relative;
+  flex: 0 0 78%;
+  height: 168px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.kbc-home-v2 .mtrip-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kbc-home-v2 .mtrip-card strong {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
 
 .kbc-home-v2 .trip-banner h1 {
@@ -2009,31 +2272,634 @@
 }
 
 @media (max-width: 760px) {
-  .kbc-home-v2 .home-board-desktop {
+  body:has(.kbc-home-v2) .kbc-note {
     display: none;
   }
 
-  .kbc-home-v2 .home-board-mobile {
+  .kbc-home-v2 {
+    background: #fff;
+  }
+
+  .kbc-home-v2 main {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  .kbc-home-v2 .kbc-atmosphere,
+  .kbc-home-v2 .trip-banner,
+  .kbc-home-v2 .home-search-wrap,
+  .kbc-home-v2 .home-phone-spot {
+    display: none;
+  }
+
+  .kbc-home-v2 .mtrip {
     display: block;
-    width: auto;
+  }
+
+  .kbc-home-v2 .trip-banner {
+    order: 1;
+    width: 100%;
+    min-height: 560px;
+    margin: 0;
+    padding: 28px 20px 128px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    text-align: left;
+  }
+
+  .kbc-home-v2 .trip-banner-photo-desk {
+    display: none;
+  }
+
+  .kbc-home-v2 .trip-banner-photo-phone {
+    display: block;
+    opacity: 1;
+    object-position: 64% 32%;
+  }
+
+  .kbc-home-v2 .trip-banner::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    height: 160px;
+    background: linear-gradient(to bottom, transparent, #f4f7fb 78%);
+  }
+
+  .kbc-home-v2 .trip-kicker,
+  .kbc-home-v2 .trip-lead,
+  .kbc-home-v2 .trip-h1-phone {
+    display: block;
+  }
+
+  .kbc-home-v2 .trip-h1-desk {
+    display: none;
+  }
+
+  .kbc-home-v2 .trip-kicker {
+    margin: 0 0 8px;
+    color: rgba(15, 41, 77, 0.72);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .kbc-home-v2 .trip-banner h1 {
+    max-width: 9.2em;
+    margin: 0;
+    color: #0f294d;
+    font-size: clamp(34px, 9.4vw, 42px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+
+  .kbc-home-v2 .trip-h1-phone em {
+    font-style: normal;
+    background: linear-gradient(#ff7a00, #ff7a00) left 92% / 100% 3px no-repeat;
+  }
+
+  .kbc-home-v2 .trip-lead {
+    max-width: 28em;
+    margin: 12px 0 0;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .kbc-home-v2 .trip-promises {
+    justify-content: flex-start;
+    gap: 8px 12px;
+    margin-top: 14px;
+  }
+
+  .kbc-home-v2 .trip-promises li {
+    padding: 0;
+    color: #0f294d;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+  }
+
+  .kbc-home-v2 .trip-promises li + li {
+    border-left: 0;
+  }
+
+  .kbc-home-v2 .home-search-wrap {
+    order: 2;
+    z-index: 4;
+    margin-top: -108px;
+    padding-inline: 16px;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-panel {
+    width: 100%;
+    margin-inline: auto;
+    padding: 6px 12px 14px;
+    border: 0;
+    border-radius: 22px;
+    box-shadow: 0 16px 40px rgba(15, 41, 77, 0.12);
+  }
+
+  .kbc-home-v2 .search-loc-desk {
+    display: none;
+  }
+
+  .kbc-home-v2 .search-loc-phone {
+    display: inline;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-tabs {
+    justify-content: space-between;
+    gap: 0;
+    overflow: visible;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-tabs button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 10px 1px 8px;
+    border-bottom-color: transparent;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-tabs button svg {
+    width: 20px;
+    height: 20px;
+    color: #94a3b8;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-tabs button.active {
+    border-bottom-color: #ff6a00;
+    color: #ff6a00;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-tabs button.active svg {
+    color: #ff6a00;
+  }
+
+  .kbc-home-v2 .search-tab-desk {
+    display: none;
+  }
+
+  .kbc-home-v2 .search-tab-phone {
+    display: inline;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-fields {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 8px;
+    column-gap: 0;
+    margin-top: 8px;
+    border: 0;
+    background: transparent;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-location,
+  .kbc-home-v2 .home-search-wrap .search-control-travellers,
+  .kbc-home-v2 .home-search-wrap .search-submit {
+    grid-column: 1 / -1;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control,
+  .kbc-home-v2 .home-search-wrap .search-control-start {
+    min-height: 48px;
+    border: 1px solid #e6ebf2;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-start {
+    border-right: 0;
+    border-radius: 12px 0 0 12px;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-end {
+    border-left: 0;
+    border-radius: 0 12px 12px 0;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-trigger {
+    min-height: 48px;
+    padding: 0 12px;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-trigger strong {
+    font-size: 14px;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-start strong::after {
+    margin: 0 6px;
+    content: "–";
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-start .search-control-trigger {
+    padding-right: 0;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-end .search-control-trigger {
+    gap: 6px;
+    padding-left: 0;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-end .search-control-trigger > span {
+    display: none;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-nights {
+    height: 22px;
+    margin-left: 8px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: #e7f0ff;
+    color: #2f6bff;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-control-travellers strong svg {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    color: #94a3b8;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-submit {
+    width: 100%;
+    height: 48px;
+    min-height: 48px;
+    margin: 4px 0 0;
+    border-radius: 12px;
+    background: #ff6a00;
+    font-size: 16px;
+  }
+
+  .kbc-home-v2 .home-search-wrap .search-submit:hover {
+    background: #e85d00;
+  }
+
+  .kbc-home-v2 .home-board {
+    display: block;
+    order: 2;
+    margin-top: 22px;
+  }
+
+  .kbc-home-v2 .home-phone-spot {
+    display: none;
+    position: relative;
+    order: 3;
+    height: 148px;
     margin: 16px 16px 0;
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(15, 41, 77, 0.12);
+  }
+
+  .kbc-home-v2 .home-phone-spot img {
+    object-fit: cover;
+    object-position: center 62%;
+  }
+
+  .kbc-home-v2 .home-phone-spot-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(8, 28, 48, 0.72) 0%, rgba(8, 28, 48, 0.28) 46%, rgba(8, 28, 48, 0.05) 100%);
+  }
+
+  .kbc-home-v2 .home-phone-spot-copy {
+    position: absolute;
+    top: 16px;
+    right: 64px;
+    bottom: 16px;
+    left: 16px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+  }
+
+  .kbc-home-v2 .home-phone-spot-copy small {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .kbc-home-v2 .home-phone-spot-copy strong {
+    margin-top: 2px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .kbc-home-v2 .home-phone-spot-copy span {
+    max-width: 18em;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+    opacity: 0.92;
+  }
+
+  .kbc-home-v2 .home-phone-spot-go {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    z-index: 1;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border-radius: 999px;
+    background: #ff6a00;
+    color: #fff;
+    transform: translateY(-50%);
   }
 
   .kbc-home-v2 .home-board-row {
-    grid-template-columns: minmax(0, 1fr);
-    width: 100%;
-    height: auto;
+    grid-template-columns: 1fr;
+    gap: 12px;
     aspect-ratio: auto;
   }
 
-  .kbc-home-v2 .home-promo.is-international {
+  .kbc-home-v2 .home-promo.is-international,
+  .kbc-home-v2 .home-promo.is-domestic {
+    display: block;
     aspect-ratio: 4.32 / 1;
     height: auto;
+    border-radius: 16px;
   }
 
-  .kbc-home-v2 .home-promo.is-domestic {
-    aspect-ratio: 3.35 / 1;
-    height: auto;
+  .kbc-home-v2 .home-promo.is-international .home-promo-slide img,
+  .kbc-home-v2 .home-promo.is-domestic .home-promo-slide img {
+    object-fit: cover;
+    object-position: center;
+    background: transparent;
+  }
+
+  .kbc-home-v2 .home-promo-nav {
+    display: none;
+  }
+
+  .kbc-home-v2 .where-next,
+  .kbc-home-v2 .offers-section {
+    margin-top: 22px;
+  }
+
+  .kbc-home-v2 .where-next {
+    order: 3;
+    padding-top: 8px;
+  }
+
+  .kbc-home-v2 .where-next:has(.where-next-viewport) .where-next-phone {
+    display: none;
+  }
+
+  .kbc-home-v2 .where-next-viewport {
+    display: block;
+  }
+
+  .kbc-home-v2 .where-next-phone {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .kbc-home-v2 .where-next-phone::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kbc-home-v2 .where-next-empty {
+    display: none;
+  }
+
+  .kbc-home-v2 .offers-section {
+    order: 6;
+  }
+
+  .kbc-home-v2 .home-band {
+    padding: 28px 0;
+  }
+
+  .kbc-home-v2 .home-band-packages { order: 4; background: #f7f9fc; }
+  .kbc-home-v2 .home-band-stays { order: 5; }
+  .kbc-home-v2 .home-band-cabs { order: 7; padding: 8px 0 20px; }
+  .kbc-home-v2 .home-band-cta { order: 8; padding: 8px 0 36px; }
+
+  .kbc-home-v2 .home-section-head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .kbc-home-v2 .home-section-head h2 {
+    font-size: 20px;
+  }
+
+  .kbc-home-v2 .home-section-lead {
+    display: none;
+  }
+
+  .kbc-home-v2 .where-next .section-heading,
+  .kbc-home-v2 .offers-section .section-heading {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .kbc-home-v2 .where-next .where-next-tools,
+  .kbc-home-v2 .offers-section .offer-actions {
+    width: auto;
+    flex: none;
+  }
+
+  .kbc-home-v2 .where-next h2,
+  .kbc-home-v2 .offers-section h2 {
+    white-space: nowrap;
+  }
+
+  .kbc-home-v2 .where-next .section-kicker,
+  .kbc-home-v2 .offers-section .section-kicker,
+  .kbc-home-v2 .where-next .home-section-lead,
+  .kbc-home-v2 .offers-section .home-section-lead,
+  .kbc-home-v2 .home-title-desk,
+  .kbc-home-v2 .where-next-tools button,
+  .kbc-home-v2 .offer-actions button {
+    display: none;
+  }
+
+  .kbc-home-v2 .home-title-phone {
+    display: inline;
+  }
+
+  .kbc-home-v2 .where-next h2,
+  .kbc-home-v2 .offers-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .kbc-home-v2 .where-next h2::before,
+  .kbc-home-v2 .offers-section h2::before {
+    content: "";
+    width: 4px;
+    height: 18px;
+    border-radius: 99px;
+    background: #ff6a00;
+  }
+
+  .kbc-home-v2 .where-next-card {
+    flex-basis: 132px;
+    width: 132px;
+    aspect-ratio: 1 / 1.02;
+    border-radius: 16px;
+  }
+
+  .kbc-home-v2 .where-next-count,
+  .kbc-home-v2 .where-next-copy span,
+  .kbc-home-v2 .where-next-copy em {
+    display: none;
+  }
+
+  .kbc-home-v2 .where-next-copy {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .kbc-home-v2 .where-next-copy strong {
+    font-size: 14px;
+    letter-spacing: -0.03em;
+  }
+
+  .kbc-home-v2 .where-next-copy::after {
+    content: "→";
+    display: grid;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0f294d;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .kbc-home-v2 .offer-card,
+  .kbc-home-v2 .offer-card-goa,
+  .kbc-home-v2 .offer-card-flights,
+  .kbc-home-v2 .offer-card-buses,
+  .kbc-home-v2 .offer-card-weekend {
+    width: 148px;
+    min-width: 148px;
+    height: 108px;
+    flex-basis: 148px;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+
+  .kbc-home-v2 .offer-card-shade,
+  .kbc-home-v2 .offer-card-eyebrow,
+  .kbc-home-v2 .offer-card-detail,
+  .kbc-home-v2 .offer-card-cta {
+    display: none;
+  }
+
+  .kbc-home-v2 .offer-card-copy {
+    top: 8px;
+    right: auto;
+    bottom: auto;
+    left: 8px;
+  }
+
+  .kbc-home-v2 .offer-card-copy strong {
+    width: max-content;
+    margin: 0;
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: #ff6a00;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-shadow: none;
+    text-transform: uppercase;
+  }
+
+  .kbc-home-v2 .home-trip-grid,
+  .kbc-home-v2 .home-card-grid-4 {
+    display: flex;
+    grid-template-columns: none;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .kbc-home-v2 .home-trip-grid::-webkit-scrollbar,
+  .kbc-home-v2 .home-card-grid-4::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kbc-home-v2 .home-trip-card,
+  .kbc-home-v2 .home-band-stays .home-product-card {
+    flex: 0 0 78%;
+    width: 78%;
+    scroll-snap-align: start;
+    aspect-ratio: 3 / 3.35;
+    border-radius: 18px;
+  }
+
+  .kbc-home-v2 .home-cta-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
+
+  .kbc-home-v2 .home-cta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .kbc-home-v2 .home-cta-actions a {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .kbc-home-v2 .home-cabs-stage {
+    min-height: 380px;
+    border-radius: 20px;
+    overflow: hidden;
   }
 }
 

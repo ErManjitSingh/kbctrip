@@ -9,6 +9,13 @@ import {
   type MarketplaceHolidayPackage,
 } from '@/lib/booking-api';
 
+const PHONE_PICKS = [
+  { name: 'Himachal', href: '/packages?q=Himachal', image: '/images/home/lite/dest-manali.jpg' },
+  { name: 'Kashmir', href: '/packages?q=Kashmir', image: '/images/home/lite/dest-kashmir.jpg' },
+  { name: 'Rajasthan', href: '/packages?q=Jaipur', image: '/images/home/lite/dest-jaipur.jpg' },
+  { name: 'Goa', href: '/packages?q=Goa', image: '/images/home/lite/dest-goa.jpg' },
+] as const;
+
 const LOCAL_PHOTO: Record<string, string> = {
   Goa: '/images/home/lite/dest-goa.jpg',
   Manali: '/images/home/lite/dest-manali.jpg',
@@ -179,7 +186,10 @@ export function DestinationShowcase() {
       <div className="section-heading">
         <div className="section-heading-copy">
           <p className="section-kicker">Destinations</p>
-          <h2 id="popular-destinations-title">Where to next</h2>
+          <h2 id="popular-destinations-title">
+            <span className="home-title-desk">Where to next</span>
+            <span className="home-title-phone">Popular Destinations</span>
+          </h2>
           <p className="home-section-lead">Only places with a package you can book.</p>
         </div>
         <div className="where-next-tools">
@@ -194,6 +204,18 @@ export function DestinationShowcase() {
             <ChevronRight size={16} />
           </button>
         </div>
+      </div>
+
+      <div className="where-next-phone">
+        {PHONE_PICKS.map((pick) => (
+          <Link key={pick.name} href={pick.href} className="where-next-card" aria-label={pick.name}>
+            <img className="where-next-photo" src={pick.image} alt="" />
+            <span className="where-next-shade" aria-hidden />
+            <span className="where-next-copy">
+              <strong>{pick.name}</strong>
+            </span>
+          </Link>
+        ))}
       </div>
 
       {failed || (ready && cards.length === 0) ? (
