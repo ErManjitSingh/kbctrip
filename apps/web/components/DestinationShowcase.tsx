@@ -6,25 +6,38 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   formatPrice,
   listHolidayPackages,
+  resolveMediaUrl,
   type MarketplaceHolidayPackage,
 } from '@/lib/booking-api';
+
+type DestinationSeed = {
+  name: string;
+  match: RegExp[];
+  image: string;
+};
+
+/** Clean destinations for “Where to next” — not raw package title strings. */
+const DESTINATION_SEEDS: DestinationSeed[] = [
+  { name: 'Manali', match: [/\bmanali\b/i], image: '/images/home/lite/dest-manali.jpg' },
+  { name: 'Shimla', match: [/\bshimla\b/i, /\bshimal\b/i], image: '/images/home/lite/dest-shimla.jpg' },
+  { name: 'Kashmir', match: [/\bkashmir\b/i, /\bsrinagar\b/i, /\bgulmarg\b/i, /\bpahalgam\b/i], image: '/images/home/lite/dest-kashmir.jpg' },
+  { name: 'Goa', match: [/\bgoa\b/i], image: '/images/home/lite/dest-goa.jpg' },
+  { name: 'Dharamshala', match: [/\bdharamshala\b/i, /\bdharmshala\b/i], image: '/images/home/lite/dest-manali.jpg' },
+  { name: 'Dalhousie', match: [/\bdalhousie\b/i, /\bdalhausie\b/i], image: '/images/home/lite/dest-shimla.jpg' },
+  { name: 'Kerala', match: [/\bkerala\b/i, /\bmunnar\b/i, /\balleppey\b/i], image: '/images/home/slides/dom-kerala.jpg' },
+  { name: 'Rajasthan', match: [/\brajasthan\b/i, /\bjaipur\b/i, /\bjodhpur\b/i, /\budaipur\b/i], image: '/images/home/lite/dest-jaipur.jpg' },
+  { name: 'Leh', match: [/\bleh\b/i, /\bladakh\b/i], image: '/images/home/slides/dom-ladakh.jpg' },
+  { name: 'Sikkim', match: [/\bsikkim\b/i, /\bgangtok\b/i], image: '/images/home/lite/dest-manali.jpg' },
+  { name: 'Darjeeling', match: [/\bdarjeeling\b/i], image: '/images/home/lite/dest-shimla.jpg' },
+  { name: 'Gujarat', match: [/\bsomnath\b/i, /\bdwarka\b/i, /\bgir\b/i, /\bdiu\b/i, /\bahmedabad\b/i], image: '/images/home/lite/dest-jaipur.jpg' },
+];
 
 const PHONE_PICKS = [
   { name: 'Himachal', href: '/packages?q=Himachal', image: '/images/home/lite/dest-manali.jpg' },
   { name: 'Kashmir', href: '/packages?q=Kashmir', image: '/images/home/lite/dest-kashmir.jpg' },
-  { name: 'Rajasthan', href: '/packages?q=Jaipur', image: '/images/home/lite/dest-jaipur.jpg' },
+  { name: 'Rajasthan', href: '/packages?q=Rajasthan', image: '/images/home/lite/dest-jaipur.jpg' },
   { name: 'Goa', href: '/packages?q=Goa', image: '/images/home/lite/dest-goa.jpg' },
 ] as const;
-
-const LOCAL_PHOTO: Record<string, string> = {
-  Goa: '/images/home/lite/dest-goa.jpg',
-  Manali: '/images/home/lite/dest-manali.jpg',
-  Kashmir: '/images/home/lite/dest-kashmir.jpg',
-  Jaipur: '/images/home/lite/dest-jaipur.jpg',
-  Dubai: '/images/home/lite/dest-dubai.jpg',
-  Shimla: '/images/home/lite/dest-shimla.jpg',
-  Kerala: '/images/home/slides/dom-kerala.jpg',
-};
 
 type DestinationCard = {
   name: string;
@@ -37,42 +50,50 @@ type DestinationCard = {
 };
 
 function photoUrl(url: string | undefined) {
-  if (!url) return '/images/home/lite/dest-goa.jpg';
-  if (url.includes('images.unsplash.com')) {
-    return url.replace(/([?&])w=\d+/, '$1w=900').replace(/([?&])q=\d+/, '$1q=72');
+  if (!url) return '';
+  const resolved = resolveMediaUrl(url) || url;
+  if (resolved.includes('images.unsplash.com')) {
+    return resolved.replace(/([?&])w=\d+/, '$1w=900').replace(/([?&])q=\d+/, '$1q=72');
   }
-  return url;
+  return resolved;
+}
+
+function packageText(pack: MarketplaceHolidayPackage): string {
+  return [pack.destination, pack.title, pack.slug].filter(Boolean).join(' ');
+}
+
+function matchSeeds(text: string): DestinationSeed[] {
+  return DESTINATION_SEEDS.filter((seed) => seed.match.some((re) => re.test(text)));
 }
 
 function cardsFrom(packages: MarketplaceHolidayPackage[]): DestinationCard[] {
-  const order: string[] = [];
   const groups = new Map<string, MarketplaceHolidayPackage[]>();
+  for (const seed of DESTINATION_SEEDS) groups.set(seed.name, []);
+
   for (const pack of packages) {
-    const name = pack.destination?.trim();
-    if (!name) continue;
-    const existing = groups.get(name);
-    if (existing) existing.push(pack);
-    else {
-      groups.set(name, [pack]);
-      order.push(name);
+    const matches = matchSeeds(packageText(pack));
+    for (const seed of matches) {
+      groups.get(seed.name)?.push(pack);
     }
   }
 
-  return order.map((name) => {
-    const items = groups.get(name) ?? [];
+  return DESTINATION_SEEDS.flatMap((seed) => {
+    const items = groups.get(seed.name) ?? [];
+    if (!items.length) return [];
     const prices = items.map((item) => item.pricePerPersonMinor).filter((price) => price > 0);
     const days = items.map((item) => item.days).filter((day) => day > 0);
-    const remote = items.flatMap((item) => item.photos ?? []).filter(Boolean).map(photoUrl);
-    const local = LOCAL_PHOTO[name];
-    return {
-      name,
-      count: items.length,
-      minPrice: prices.length ? Math.min(...prices) : 0,
-      currency: items[0]?.currency || 'INR',
-      minDays: days.length ? Math.min(...days) : 0,
-      maxDays: days.length ? Math.max(...days) : 0,
-      photos: local ? [local, ...remote] : remote,
-    };
+    const remote = items.flatMap((item) => item.photos ?? []).filter(Boolean).map(photoUrl).filter(Boolean);
+    return [
+      {
+        name: seed.name,
+        count: items.length,
+        minPrice: prices.length ? Math.min(...prices) : 0,
+        currency: items[0]?.currency || 'INR',
+        minDays: days.length ? Math.min(...days) : 0,
+        maxDays: days.length ? Math.max(...days) : 0,
+        photos: [seed.image, ...remote],
+      },
+    ];
   });
 }
 
@@ -105,10 +126,11 @@ export function DestinationShowcase() {
 
   useEffect(() => {
     let cancelled = false;
-    listHolidayPackages({ limit: 50, sort: 'popular' })
+    listHolidayPackages({ limit: 100, sort: 'popular' })
       .then((catalog) => {
         if (cancelled) return;
-        setCards(cardsFrom(catalog.packages));
+        const list = catalog?.packages ?? [];
+        setCards(cardsFrom(list));
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
