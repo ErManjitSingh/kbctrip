@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { BadgeCheck, Building2, CalendarRange, ChevronRight, Headphones, MapPin, Star } from "lucide-react";
+import { CalendarRange, ChevronRight, MapPin, Search } from "lucide-react";
 import { HotelSearchLoadingOverlay } from "@/components/hotels/hotel-search-loading-overlay";
 import {
   addDaysToIso,
@@ -29,6 +29,7 @@ import {
   type HotelSortOption,
 } from "@/lib/hotels-catalog";
 import { fetchHotelDestinations, fetchHotelLocalities } from "@/services/hotels";
+import { TRAVEL_HOME_BRAND } from "@/lib/travel-home-brand";
 import { cn } from "@/lib/utils";
 import type { HotelListing } from "@/lib/hotels-api";
 import { HotelsHeroSkeleton } from "@/components/hotels/hotels-page-skeleton";
@@ -74,19 +75,19 @@ function HeroDateRangeField({
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="flex min-h-[76px] w-full min-w-0 items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[#FAFAFA] sm:min-h-[80px] sm:px-5 sm:py-4"
+        className="flex min-h-[72px] w-full min-w-0 items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[#f8fbfa] sm:min-h-[76px] sm:px-5"
       >
-        <CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-[#757575]" strokeWidth={1.5} aria-hidden />
+        <CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-[#0f766e]" strokeWidth={1.6} aria-hidden />
         <span className="min-w-0 flex-1">
-          <span className="block text-[11px] font-normal leading-tight text-[#9E9E9E]">Check-In / Check-Out</span>
-          <span className="mt-1 block truncate text-[17px] font-bold leading-tight text-[#212121]">
+          <span className="block text-[11px] font-medium leading-tight text-[#98a2b3]">Check-In / Check-Out</span>
+          <span className="mt-1 block truncate text-[16px] font-bold leading-tight text-[#15202b]">
             {checkInFmt.main}
-            <span className="mx-1 text-[#9E9E9E]">→</span>
+            <span className="mx-1 text-[#98a2b3]">→</span>
             {checkOutFmt.main}
           </span>
-          <span className="mt-0.5 block truncate text-xs font-normal text-[#757575]">
+          <span className="mt-0.5 block truncate text-xs font-normal text-[#7b8491]">
             {checkInFmt.sub || "Start date"}{" "}
-            <span className="text-[#BDBDBD]">•</span>{" "}
+            <span className="text-[#d9ebe7]">•</span>{" "}
             {checkOutFmt.sub || "End date"}
           </span>
         </span>
@@ -305,51 +306,57 @@ export function HotelsSearchHero({
     <section
       id="hotel-search"
       className={cn(
-        "relative isolate min-h-[560px] w-full overflow-x-hidden overflow-y-visible md:min-h-[690px]",
+        "relative isolate w-full overflow-x-hidden overflow-y-visible",
         className,
       )}
     >
-      {/* Background image */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <Image
-          src={HOTELS_BANNER_IMAGE}
-          alt=""
-          fill
-          priority
-          unoptimized
-          sizes="100vw"
-          className={cn(
-            "object-cover object-center transition-opacity duration-500",
-            bannerLoaded ? "opacity-100" : "opacity-0",
-          )}
-          onLoad={() => setBannerLoaded(true)}
-          onError={() => setBannerLoaded(true)}
-        />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(15,35,40,0.92)_0%,rgba(15,55,60,0.55)_42%,rgba(15,40,45,0.35)_100%)]" aria-hidden />
-      </div>
-
-      {!bannerLoaded && (
-        <div className="pointer-events-none absolute inset-0 z-[1]">
-          <HotelsHeroSkeleton className="h-full min-h-full" />
+      {/* Full-bleed hero plane */}
+      <div className="relative min-h-[72vh] w-full sm:min-h-[78vh]">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Image
+            src={HOTELS_BANNER_IMAGE}
+            alt=""
+            fill
+            priority
+            unoptimized
+            sizes="100vw"
+            className={cn(
+              "object-cover object-[center_35%] transition-opacity duration-700 sm:object-center",
+              bannerLoaded ? "opacity-100" : "opacity-0",
+            )}
+            onLoad={() => setBannerLoaded(true)}
+            onError={() => setBannerLoaded(true)}
+          />
+          <div
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,24,22,0.55)_0%,rgba(8,24,22,0.28)_38%,rgba(8,24,22,0.72)_100%)]"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(15,118,110,0.28),transparent_55%)]"
+            aria-hidden
+          />
         </div>
-      )}
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto grid w-full max-w-[1320px] gap-8 px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(460px,0.72fr)] lg:items-center lg:gap-14 lg:px-8 lg:pt-12">
+        {!bannerLoaded && (
+          <div className="pointer-events-none absolute inset-0 z-[1]">
+            <HotelsHeroSkeleton className="h-full min-h-full" />
+          </div>
+        )}
 
-        <div className="max-w-3xl">
-          <div className="hidden items-center gap-2 rounded-full bg-white px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-slate-700 shadow-[0_12px_28px_-20px_rgba(15,23,42,0.45)] ring-1 ring-white/80 backdrop-blur-md sm:inline-flex">
-            <BadgeCheck className="h-3.5 w-3.5 fill-primary text-white" aria-hidden />
-            Verified hotel bookings
+        <div className="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-[1180px] flex-col justify-end px-4 pb-8 pt-20 sm:min-h-[78vh] sm:px-6 sm:pb-12 lg:px-8">
+          <div className="max-w-2xl animate-[hotelsHeroIn_0.7s_ease-out_both]">
+            <p className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-[#99f6e4] sm:text-sm">
+              {TRAVEL_HOME_BRAND.name}
+            </p>
+            <h1 className="mt-3 font-display text-[2.35rem] font-bold leading-[1.05] tracking-[-0.03em] text-white sm:text-5xl lg:text-[3.4rem]">
+              Stays that feel like the trip
+            </h1>
+            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/85 sm:text-lg">
+              Clear prices, real rooms, and destinations you actually want to wake up in.
+            </p>
           </div>
 
-          <h1 className="mt-5 hidden max-w-3xl font-display text-[2.5rem] font-bold leading-[1.08] tracking-tight text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.65)] sm:block sm:text-5xl md:text-[3.75rem]">
-            Find your stay, your way
-          </h1>
-          <p className="mt-4 hidden max-w-2xl border-l-4 border-teal-300/80 bg-black/35 px-4 py-3 text-[15px] font-medium leading-[1.6] text-white/95 shadow-[0_8px_24px_rgba(0,0,0,0.25)] sm:block sm:text-[17px]">
-            Browse verified stays by city or neighbourhood — clear prices, real availability.
-          </p>
-          <div className="mt-7 hidden flex-wrap items-center gap-3 sm:flex">
+          <div className="mt-8 flex flex-wrap gap-2 animate-[hotelsHeroIn_0.85s_ease-out_both] sm:mt-10">
             {QUICK_DESTINATIONS.map((item) => (
               <button
                 key={item.slug}
@@ -364,78 +371,39 @@ export function HotelsSearchHero({
                     }),
                   );
                 }}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-4 py-2.5 text-[13px] font-bold text-slate-600 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/80 backdrop-blur-md transition hover:bg-white hover:text-primary"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-2 text-[12px] font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
               >
-                <MapPin className="h-3.5 w-3.5 text-slate-500" aria-hidden />
+                <MapPin className="h-3.5 w-3.5 text-[#99f6e4]" aria-hidden />
                 {item.city}
               </button>
             ))}
             <a
               href="#popular-destinations"
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/65 px-4 py-2.5 text-[13px] font-bold text-slate-600 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/80 backdrop-blur-md transition hover:bg-white hover:text-primary"
+              className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-transparent px-3.5 py-2 text-[12px] font-semibold text-white/90 transition hover:bg-white/10"
             >
-              Explore more
+              All destinations
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden />
             </a>
           </div>
-
-          <div className="mt-9 hidden max-w-[560px] grid-cols-3 divide-x divide-slate-200 overflow-hidden rounded-3xl bg-white/95 p-1 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.45)] ring-1 ring-white/80 backdrop-blur-xl sm:grid">
-            <div className="flex items-center gap-3 px-4 py-4">
-              <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full bg-teal-50 text-primary sm:flex">
-                <Building2 className="h-5 w-5" aria-hidden />
-              </span>
-              <div>
-                <p className="text-2xl font-black leading-none text-slate-950">250+</p>
-                <p className="mt-1 text-[12px] font-semibold leading-tight text-slate-500">Verified Hotels</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-4">
-              <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full bg-teal-50 text-primary sm:flex">
-                <Star className="h-5 w-5" aria-hidden />
-              </span>
-              <div>
-                <p className="text-2xl font-black leading-none text-slate-950">4.8</p>
-                <p className="mt-1 text-[12px] font-semibold leading-tight text-slate-500">Avg Rating</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-4">
-              <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full bg-teal-50 text-primary sm:flex">
-                <Headphones className="h-5 w-5" aria-hidden />
-              </span>
-              <div>
-                <p className="text-2xl font-black leading-none text-slate-950">24/7</p>
-                <p className="mt-1 text-[12px] font-semibold leading-tight text-slate-500">Stay Support</p>
-              </div>
-            </div>
-          </div>
-
         </div>
+      </div>
 
+      {/* Search dock — interaction surface under the hero plane */}
+      <div className="relative z-20 -mt-6 px-3 sm:-mt-10 sm:px-6 lg:px-8">
         <form
-          className="relative z-20 w-full overflow-visible rounded-[1.5rem] border border-white/70 bg-white shadow-[0_24px_70px_-18px_rgba(0,0,0,0.55),0_6px_18px_rgba(0,0,0,0.14)]"
+          className="relative mx-auto w-full max-w-[1180px] overflow-visible rounded-2xl border border-[#e6eeec] bg-white/95 shadow-[0_24px_60px_-28px_rgba(15,118,110,0.45)] backdrop-blur-md"
           role="search"
           aria-busy={isSearching}
           onSubmit={(e) => { e.preventDefault(); if (!isSearching) handleSearch(); }}
         >
           {isSearching && <HotelSearchLoadingOverlay />}
-          <div className="border-b border-slate-100 px-4 py-4 sm:px-5">
-            <div className="flex items-start gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-teal-50 text-primary">
-                <Building2 className="h-5 w-5" strokeWidth={1.9} aria-hidden />
-              </span>
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary">Hotel search</p>
-                <h2 className="mt-0.5 text-xl font-black leading-tight text-slate-950">Find the right stay</h2>
-                <p className="mt-1 text-[12px] font-medium text-slate-500">Real prices, clean rooms, quick confirmation.</p>
-              </div>
-            </div>
-          </div>
           <div className={cn(
-            "flex w-full flex-col overflow-visible",
+            "flex w-full flex-col overflow-visible lg:flex-row lg:items-stretch",
             isSearching && "pointer-events-none select-none opacity-60",
           )}>
-            <div className="flex w-full min-w-0 flex-1 flex-col overflow-visible">
+            <div className="flex min-w-0 flex-1 flex-col divide-y divide-[#eef4f2] overflow-visible lg:flex-row lg:divide-x lg:divide-y-0">
               <HotelLocationField
-                className="border-b border-[#EEEEEE]"
+                className="min-w-0 flex-1"
                 city={city}
                 country={country}
                 destinations={effectiveDestinations}
@@ -451,14 +419,14 @@ export function HotelsSearchHero({
                 onNearMe={handleNearMe}
               />
               <HeroDateRangeField
-                className="border-b border-[#EEEEEE]"
+                className="min-w-0 flex-[0.9]"
                 checkInIso={checkInIso}
                 checkOutIso={checkOutIso}
                 todayIso={localDateInputString(today)}
                 onChange={handleDateRangeChange}
               />
               <HotelRoomsGuestsField
-                className="border-b border-[#EEEEEE]"
+                className="min-w-0 flex-[0.75]"
                 rooms={rooms}
                 guests={guests}
                 onRoomsChange={setRooms}
@@ -468,23 +436,26 @@ export function HotelsSearchHero({
               />
             </div>
 
-            {/* Search button — rounded on right on desktop */}
-            <button
-              type="submit"
-              disabled={isSearching}
-              className="m-4 flex h-[54px] shrink-0 items-center justify-center gap-3 rounded-xl bg-primary text-[15px] font-black text-white shadow-[0_18px_36px_-18px_rgba(15,118,110,0.55)] transition hover:-translate-y-0.5 hover:bg-primary/90 disabled:cursor-wait disabled:opacity-80 sm:m-5"
-            >
-              {isSearching ? "Searching…" : "Search available hotels"}
-              {!isSearching && (
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary">
-                  <ChevronRight className="h-5 w-5" strokeWidth={2.3} aria-hidden />
-                </span>
-              )}
-            </button>
+            <div className="flex items-center p-3 sm:p-4">
+              <button
+                type="submit"
+                disabled={isSearching}
+                className="flex h-[52px] w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#0f766e] px-6 text-[14px] font-extrabold text-white transition hover:bg-[#0d9488] disabled:cursor-wait disabled:opacity-80 lg:w-auto lg:min-w-[168px]"
+              >
+                <Search className="h-4 w-4" strokeWidth={2.4} aria-hidden />
+                {isSearching ? "Searching…" : "Search"}
+              </button>
+            </div>
           </div>
         </form>
-
       </div>
+
+      <style jsx>{`
+        @keyframes hotelsHeroIn {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </section>
   );
 }

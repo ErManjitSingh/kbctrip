@@ -44,7 +44,7 @@ export async function reverseGeocodeCity(
     headers: {
       Accept: "application/json",
       "Accept-Language": "en",
-      "User-Agent": "UNOTrips-Hotels/1.0 (info@unotrips.com)",
+      "User-Agent": "KBCTrip-Hotels/1.0 (info@kbctrip.com)",
     },
   });
 

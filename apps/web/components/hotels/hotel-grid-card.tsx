@@ -111,7 +111,7 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
   return (
     <Link
       href={href}
-      className="group/card flex h-full flex-col overflow-hidden rounded-xl border border-[#d5e0dc] bg-white shadow-[0_1px_3px_rgba(12,18,16,0.04)] transition hover:border-[#0f766e]/25 hover:shadow-[0_6px_20px_-8px_rgba(12,18,16,0.12)]"
+      className="group/card flex h-full flex-col overflow-hidden rounded-2xl border border-[#e6eeec] bg-white transition hover:border-[#cceae4] hover:shadow-[0_18px_40px_-28px_rgba(15,118,110,0.35)]"
     >
       <div
         className="hotel-card-gallery swiper-no-swiping relative overflow-hidden bg-[#1a2420]"
@@ -155,15 +155,15 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
         </Swiper>
 
         {showLastRoom && (
-          <span className="pointer-events-none absolute left-2.5 top-2.5 z-20 rounded-md bg-[#0f766e] px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">
-            Our last room!
+          <span className="pointer-events-none absolute left-2.5 top-2.5 z-20 rounded-full bg-[#0f766e]/95 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
+            Last room
           </span>
         )}
 
         <button
           type="button"
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSaved((v) => !v); }}
-          className="absolute right-2.5 top-2.5 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 shadow-md transition hover:bg-white"
+          className="absolute right-2.5 top-2.5 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:bg-white"
           aria-label={saved ? "Remove from saved" : "Save hotel"}
         >
           <Heart
@@ -199,79 +199,78 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col px-3.5 pb-3 pt-3">
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-3.5">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 min-w-0 flex-1 text-[15px] font-bold leading-snug text-[#0c1210]">
+          <h3 className="line-clamp-2 min-w-0 flex-1 text-[15px] font-bold leading-snug tracking-[-0.02em] text-[#15202b]">
             {hotel.name}
           </h3>
           {hotel.rating > 0 ? (
-            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-[#0f766e] px-1.5 py-0.5 text-[11px] font-bold text-white">
-              <Star className="h-3 w-3 fill-white text-white" aria-hidden />
+            <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[11px] font-bold text-[#0f766e]">
+              <Star className="h-3 w-3 fill-[#0f766e] text-[#0f766e]" aria-hidden />
               {hotel.rating.toFixed(1)}
             </span>
           ) : null}
         </div>
 
-        <p className="mt-1.5 flex items-center gap-1 text-[12px] text-[#5a6560]">
+        <p className="mt-1.5 flex items-center gap-1 text-[12px] text-[#667085]">
           <MapPin className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2.2} aria-hidden />
           <span className="truncate">
-            <span className="font-medium text-[#0c1210]/80">{hotel.area}</span>
+            <span className="font-medium text-[#5d6673]">{hotel.area}</span>
             {hotel.stars > 0 ? (
-              <span className="text-[#8a948e]"> · {hotel.stars}★</span>
+              <span className="text-[#98a2b3]"> · {hotel.stars}★</span>
             ) : null}
           </span>
         </p>
 
         {shownAmenities.length > 0 && (
-          <div className="mt-2 flex min-w-0 items-center gap-x-2.5 overflow-hidden border-t border-[#e8eeec] pt-2">
+          <div className="mt-2.5 flex min-w-0 items-center gap-x-2.5 overflow-hidden border-t border-[#eef4f2] pt-2.5">
             {shownAmenities.map((item) => {
               const Icon = amenityIcon(item);
               return (
                 <span
                   key={item}
-                  className="flex shrink-0 items-center gap-1 text-[11px] text-[#5a6560]"
+                  className="flex shrink-0 items-center gap-1 text-[11px] text-[#667085]"
                 >
-                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#8a948e]" aria-hidden />
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#98a2b3]" aria-hidden />
                   <span className="max-w-[72px] truncate">{amenityLabel(item)}</span>
                 </span>
               );
             })}
             {overflowCount > 0 && (
-              <span className="shrink-0 rounded border border-[#d5e0dc] px-1.5 py-0.5 text-[10px] font-semibold text-[#8a948e]">
+              <span className="shrink-0 rounded-full bg-[#f0fdfa] px-2 py-0.5 text-[10px] font-semibold text-[#0f766e]">
                 +{overflowCount}
               </span>
             )}
           </div>
         )}
 
-        <div className="mt-2.5 rounded-xl border border-[#d5e0dc] bg-[#f3f7f5] px-3 py-2.5">
+        <div className="mt-3 rounded-xl bg-[#f8fbfa] px-3.5 py-3">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#8a948e]">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[#98a2b3]">
                 Starting from
               </p>
-              <p className="mt-0.5 text-[21px] font-extrabold leading-none text-[#0c1210]">
+              <p className="mt-1 text-[22px] font-extrabold leading-none tracking-tight text-[#0f766e]">
                 ₹{formatInrAmount(hotel.price)}
-                <span className="ml-1 text-[11px] font-medium text-[#8a948e]">/night</span>
+                <span className="ml-1 text-[11px] font-medium text-[#98a2b3]">/night</span>
               </p>
-              <p className="mt-1 text-[10px] text-[#8a948e]">
+              <p className="mt-1.5 text-[11px] text-[#98a2b3]">
                 + ₹{formatInrAmount(hotel.taxes)} taxes &amp; fees
               </p>
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1.5 pt-0.5">
               {discount !== null && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] text-[#8a948e] line-through">
+                  <span className="text-[11px] text-[#98a2b3] line-through">
                     ₹{formatInrAmount(hotel.originalPrice)}
                   </span>
-                  <span className="rounded-[4px] bg-[#0f766e] px-1.5 py-0.5 text-[10px] font-extrabold text-white">
+                  <span className="rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[10px] font-extrabold text-[#0f766e]">
                     -{discount}%
                   </span>
                 </div>
               )}
               {savings > 0 && (
-                <div className="flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[10px] font-bold text-[#0f766e] ring-1 ring-[#0f766e]/15">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#0f766e]" aria-hidden />
+                <div className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-[#0f766e] ring-1 ring-[#d9ebe7]">
                   Save ₹{formatInrAmount(savings)}
                 </div>
               )}
@@ -279,8 +278,8 @@ export function HotelGridCard({ hotel }: HotelGridCardProps) {
           </div>
         </div>
 
-        <div className="mt-auto pt-2.5">
-          <span className="flex w-full items-center justify-center rounded-xl bg-[#0f766e] py-2.5 text-[13px] font-extrabold tracking-wide text-white shadow-[0_2px_8px_rgba(15,118,110,0.28)] transition group-hover/card:bg-[#115e59]">
+        <div className="mt-auto pt-3">
+          <span className="flex w-full items-center justify-center rounded-xl bg-[#0f766e] py-2.5 text-[13px] font-extrabold tracking-wide text-white transition group-hover/card:bg-[#0d9488]">
             Book Now
           </span>
         </div>

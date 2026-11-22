@@ -24,24 +24,23 @@ async function HotelsDynamicSections({
 }: {
   featuredHotels: Awaited<ReturnType<typeof fetchAllHotels>>["hotels"];
 }) {
-  const ctaHotel = featuredHotels[0] ?? null;
   const offers = getExclusiveOffers();
 
   return (
-    <div className="bg-gradient-to-b from-slate-50 via-white to-teal-50/30">
+    <>
       <HotelsPopularHotelsSection
         hotels={featuredHotels}
         viewMoreHref="/hotels#popular-destinations"
       />
       <HotelsExclusiveOffers offers={offers} />
-      <HotelsPageCta hotel={ctaHotel} />
-    </div>
+      <HotelsPageCta />
+    </>
   );
 }
 
 function HotelsSectionsFallback() {
   return (
-    <div className="bg-gradient-to-b from-slate-50 via-white to-teal-50/30">
+    <div className="bg-[#f7faf9]">
       <HotelsPopularDestinationsSkeleton />
     </div>
   );
@@ -52,7 +51,7 @@ export default async function HotelsPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-[#f3f6f5]">
+      <main className="min-h-screen bg-[#f7faf9]">
         <HotelsSearchHero
           defaultCity="Anjuna"
           defaultCountry="India"
