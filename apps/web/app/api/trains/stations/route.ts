@@ -1,4 +1,5 @@
 import { railStationByCode, railStationsByName } from '@/lib/railkit';
+import { clientIp, rateLimit, rateLimitResponse } from '@/lib/security';
 import { filterTrainStations } from '@/lib/train-stations';
 import { railkitFailureMessage, trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
@@ -13,6 +14,8 @@ function localStations(q: string) {
 }
 
 export async function GET(req: Request) {
+  const limited = rateLimit(`trains:stations:${clientIp(req)}`, 30, 60_000);
+  if (!limited.ok) return rateLimitResponse(limited.retryAfterSec);
   try {
     const { searchParams } = new URL(req.url);
     const q = searchParams.get('q')?.trim() || '';

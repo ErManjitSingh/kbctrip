@@ -1,4 +1,5 @@
 import { railTrack, railTrainInfo } from '@/lib/railkit';
+import { clientIp, rateLimit, rateLimitResponse } from '@/lib/security';
 import { trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
 export const dynamic = 'force-dynamic';
@@ -7,6 +8,8 @@ export async function GET(
   req: Request,
   context: { params: Promise<{ number: string }> },
 ) {
+  const limited = rateLimit(`trains:train:${clientIp(req)}`, 12, 60_000);
+  if (!limited.ok) return rateLimitResponse(limited.retryAfterSec);
   try {
     const { number } = await context.params;
     const train = number.replace(/\D/g, '');

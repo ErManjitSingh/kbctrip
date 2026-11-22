@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Phone, MessageCircle, ChevronRight, User, MapPin, Send, Bot } from "lucide-react";
 import { useRef } from "react";
+import { escapeHtml, sanitizeTrustedBotHtml } from "@/lib/safe-html";
 
 const WHATSAPP_NUMBER = "919810023449";
 const WHATSAPP_MSG = "Hi! I'm interested in booking a trip. Can you help me?";
@@ -85,7 +86,7 @@ function ExitIntentPopup() {
     }
 
     if (sessionStorage.getItem("uno_exit_shown")) {
-      console.log("[UNO] Exit popup already shown this session. Run: sessionStorage.removeItem('uno_exit_shown') to reset.");
+      console.log("[KBC] Exit popup already shown this session. Run: sessionStorage.removeItem('uno_exit_shown') to reset.");
       return;
     }
 
@@ -503,7 +504,12 @@ function ChatbotWidget() {
                       ? "rounded-br-sm bg-primary text-white"
                       : "rounded-bl-sm bg-white text-slate-800 shadow-sm"
                   }`}
-                  dangerouslySetInnerHTML={{ __html: msg.text }}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      msg.from === "user"
+                        ? escapeHtml(msg.text)
+                        : sanitizeTrustedBotHtml(msg.text),
+                  }}
                 />
               </div>
             ))}

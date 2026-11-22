@@ -1,9 +1,12 @@
 import { railAvailability, railFare } from '@/lib/railkit';
+import { clientIp, rateLimit, rateLimitResponse } from '@/lib/security';
 import { trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
+  const limited = rateLimit(`trains:avail:${clientIp(req)}`, 15, 60_000);
+  if (!limited.ok) return rateLimitResponse(limited.retryAfterSec);
   try {
     const { searchParams } = new URL(req.url);
     const train = searchParams.get('train')?.trim();
