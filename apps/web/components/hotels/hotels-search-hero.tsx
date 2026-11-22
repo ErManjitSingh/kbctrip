@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarRange, ChevronRight, MapPin, Search } from "lucide-react";
+import { CalendarDays, Check, Hourglass, ShieldCheck } from "lucide-react";
 import { HotelSearchLoadingOverlay } from "@/components/hotels/hotel-search-loading-overlay";
 import {
   addDaysToIso,
@@ -29,12 +29,9 @@ import {
   type HotelSortOption,
 } from "@/lib/hotels-catalog";
 import { fetchHotelDestinations, fetchHotelLocalities } from "@/services/hotels";
-import { TRAVEL_HOME_BRAND } from "@/lib/travel-home-brand";
+import { PARTNER_PORTAL_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import type { HotelListing } from "@/lib/hotels-api";
-import { HotelsHeroSkeleton } from "@/components/hotels/hotels-page-skeleton";
-
-const HOTELS_BANNER_IMAGE = "/images/home/lite/hero-mobile.jpg";
 
 type HotelsSearchHeroProps = {
   className?: string;
@@ -44,52 +41,53 @@ type HotelsSearchHeroProps = {
   defaultSlug?: string;
 };
 
-const QUICK_DESTINATIONS = [
-  { city: "Anjuna", slug: "anjuna" },
-  { city: "Goa", slug: "goa" },
-  { city: "Jaipur", slug: "jaipur" },
-  { city: "Manali", slug: "manali" },
-];
-
-function HeroDateRangeField({
+function SplitDateField({
   checkInIso,
   checkOutIso,
   todayIso,
   onChange,
-  className,
 }: {
   checkInIso: string;
   checkOutIso: string;
   todayIso: string;
   onChange: (checkIn: string, checkOut: string) => void;
-  className?: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<"in" | "out" | null>(null);
   const checkInFmt = formatHotelDateFromIso(checkInIso);
   const checkOutFmt = formatHotelDateFromIso(checkOutIso);
 
   return (
-    <div className={cn("relative min-w-0", className)}>
+    <div className="relative flex min-w-0 flex-1 divide-x divide-[#e8e8e8]">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen((v) => (v === "in" ? null : "in"))}
         aria-haspopup="dialog"
-        aria-expanded={open}
-        className="flex min-h-[72px] w-full min-w-0 items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[#f8fbfa] sm:min-h-[76px] sm:px-5"
+        aria-expanded={open === "in"}
+        className="flex min-h-[78px] min-w-0 flex-1 items-start gap-2.5 px-3 py-3.5 text-left transition-colors hover:bg-[#f7fbff] sm:px-4"
       >
-        <CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-[#0f766e]" strokeWidth={1.6} aria-hidden />
-        <span className="min-w-0 flex-1">
-          <span className="block text-[11px] font-medium leading-tight text-[#98a2b3]">Check-In / Check-Out</span>
-          <span className="mt-1 block truncate text-[16px] font-bold leading-tight text-[#15202b]">
+        <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-[#757575]" strokeWidth={1.7} aria-hidden />
+        <span className="min-w-0">
+          <span className="block text-[11px] font-medium text-[#9E9E9E]">Check-In</span>
+          <span className="mt-0.5 block truncate text-[16px] font-bold leading-tight text-[#212121] sm:text-[17px]">
             {checkInFmt.main}
-            <span className="mx-1 text-[#98a2b3]">→</span>
+          </span>
+          <span className="mt-0.5 block text-[12px] text-[#757575]">{checkInFmt.sub || "Start date"}</span>
+        </span>
+      </button>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => (v === "out" ? null : "out"))}
+        aria-haspopup="dialog"
+        aria-expanded={open === "out"}
+        className="flex min-h-[78px] min-w-0 flex-1 items-start gap-2.5 px-3 py-3.5 text-left transition-colors hover:bg-[#f7fbff] sm:px-4"
+      >
+        <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-[#757575]" strokeWidth={1.7} aria-hidden />
+        <span className="min-w-0">
+          <span className="block text-[11px] font-medium text-[#9E9E9E]">Check-Out</span>
+          <span className="mt-0.5 block truncate text-[16px] font-bold leading-tight text-[#212121] sm:text-[17px]">
             {checkOutFmt.main}
           </span>
-          <span className="mt-0.5 block truncate text-xs font-normal text-[#7b8491]">
-            {checkInFmt.sub || "Start date"}{" "}
-            <span className="text-[#d9ebe7]">•</span>{" "}
-            {checkOutFmt.sub || "End date"}
-          </span>
+          <span className="mt-0.5 block text-[12px] text-[#757575]">{checkOutFmt.sub || "End date"}</span>
         </span>
       </button>
 
@@ -101,10 +99,10 @@ function HeroDateRangeField({
           onChange={(ci, co) => {
             const nextCheckIn = ci || todayIso;
             onChange(nextCheckIn, co || (ci ? addDaysToIso(ci, 1) : ""));
-            if (ci && co) setOpen(false);
+            if (ci && co) setOpen(null);
           }}
-          onApply={() => setOpen(false)}
-          onClose={() => setOpen(false)}
+          onApply={() => setOpen(null)}
+          onClose={() => setOpen(null)}
         />
       ) : null}
     </div>
@@ -125,28 +123,26 @@ export function HotelsSearchHero({
     return d;
   }, []);
 
-  const checkInDefaultIso  = useMemo(() => localDateInputString(addDays(today, 1)),  [today]);
-  const checkOutDefaultIso = useMemo(() => addDaysToIso(checkInDefaultIso, 1),       [checkInDefaultIso]);
+  const checkInDefaultIso = useMemo(() => localDateInputString(addDays(today, 1)), [today]);
+  const checkOutDefaultIso = useMemo(() => addDaysToIso(checkInDefaultIso, 1), [checkInDefaultIso]);
 
-  const [city,           setCity]           = useState(defaultCity);
-  const [country,        setCountry]        = useState(defaultCountry);
-  const [selectedSlug,   setSelectedSlug]   = useState(defaultSlug);
-  // Keep the current destination available while the user types a hotel name.
-  // The visible input is also used for free-text hotel searches, so it must not
-  // become the city slug sent in the results URL.
+  const [city, setCity] = useState(defaultCity);
+  const [country, setCountry] = useState(defaultCountry);
+  const [selectedSlug, setSelectedSlug] = useState(defaultSlug);
   const [searchCitySlug, setSearchCitySlug] = useState(defaultSlug);
   const [searchLocation, setSearchLocation] = useState("");
-  const [nearMeActive,   setNearMeActive]   = useState(false);
-  const [nearMeLoading,  setNearMeLoading]  = useState(false);
-  const [nearMeError,    setNearMeError]    = useState<string | null>(null);
-  const [searchError,    setSearchError]    = useState<string | null>(null);
-  const [checkInIso,     setCheckInIso]     = useState(checkInDefaultIso);
-  const [checkOutIso,    setCheckOutIso]    = useState(checkOutDefaultIso);
-  const [rooms,          setRooms]          = useState(1);
-  const [guests,         setGuests]         = useState(2);
-  const [childrenAges,   setChildrenAges]   = useState<number[]>([]);
-  const [bannerLoaded,   setBannerLoaded]   = useState(false);
-  const [isSearching,    setIsSearching]    = useState(false);
+  const [nearMeActive, setNearMeActive] = useState(false);
+  const [nearMeLoading, setNearMeLoading] = useState(false);
+  const [nearMeError, setNearMeError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [checkInIso, setCheckInIso] = useState(checkInDefaultIso);
+  const [checkOutIso, setCheckOutIso] = useState(checkOutDefaultIso);
+  const [rooms, setRooms] = useState(1);
+  const [guests, setGuests] = useState(2);
+  const [childrenAges, setChildrenAges] = useState<number[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [lastMinute, setLastMinute] = useState(false);
+  const [priceGuarantee, setPriceGuarantee] = useState(true);
 
   const { data: fetchedDestinations } = useQuery({
     queryKey: ["hotels", "search-destinations"],
@@ -165,21 +161,13 @@ export function HotelsSearchHero({
   });
 
   const effectiveDestinations = destinations.length > 0 ? destinations : (fetchedDestinations ?? []);
-  const effectiveLocalities = fetchedLocalities ?? [];
-  useEffect(() => {
-    if (defaultCity)    setCity(defaultCity);
-    if (defaultCountry) setCountry(defaultCountry);
-    if (defaultSlug)    setSelectedSlug(defaultSlug);
-    if (defaultSlug)    setSearchCitySlug(defaultSlug);
-  }, [defaultCity, defaultCountry, defaultSlug]);
 
   useEffect(() => {
-    const img = new window.Image();
-    img.src = HOTELS_BANNER_IMAGE;
-    if (img.complete) { setBannerLoaded(true); return; }
-    img.onload  = () => setBannerLoaded(true);
-    img.onerror = () => setBannerLoaded(true);
-  }, []);
+    if (defaultCity) setCity(defaultCity);
+    if (defaultCountry) setCountry(defaultCountry);
+    if (defaultSlug) setSelectedSlug(defaultSlug);
+    if (defaultSlug) setSearchCitySlug(defaultSlug);
+  }, [defaultCity, defaultCountry, defaultSlug]);
 
   const handleDateRangeChange = (checkIn: string, checkOut: string) => {
     setCheckInIso(checkIn);
@@ -228,15 +216,20 @@ export function HotelsSearchHero({
   const handleSearch = () => {
     setSearchError(null);
     const trimmedCity = city.trim();
-    if (!trimmedCity)                           { setSearchError("Please enter a city or hotel location"); return; }
-    if (!checkInIso)                            { setSearchError("Please select check-in date");           return; }
-    if (!checkOutIso || checkOutIso <= checkInIso) { setSearchError("Check-out must be after check-in");  return; }
+    if (!trimmedCity) {
+      setSearchError("Please enter a city or hotel location");
+      return;
+    }
+    if (!checkInIso) {
+      setSearchError("Please select check-in date");
+      return;
+    }
+    if (!checkOutIso || checkOutIso <= checkInIso) {
+      setSearchError("Check-out must be after check-in");
+      return;
+    }
 
     const localQuery = trimmedCity.toLowerCase();
-    // A city can also be part of a locality name (for example, "Manali" is
-    // contained in "Old Manali"). Resolve an exact city before attempting a
-    // fuzzy locality match so selecting or searching a city never adds an
-    // unrelated area filter to the results URL.
     const isExactDestination =
       selectedSlug === slugifyCityName(trimmedCity) ||
       effectiveDestinations.some(
@@ -245,15 +238,17 @@ export function HotelsSearchHero({
           item.slug === slugifyCityName(trimmedCity),
       );
     const locality =
-      effectiveLocalities.find(
+      (fetchedLocalities ?? []).find(
         (item) =>
           item.slug === slugifyCityName(trimmedCity) ||
           item.name.toLowerCase() === localQuery ||
           `${item.name} ${item.city}`.toLowerCase() === localQuery,
       ) ?? (isExactDestination ? null : findHotelLocality(trimmedCity));
     const matched = matchHotelDestinationFromList(locality?.city ?? trimmedCity, effectiveDestinations);
-    const slug    = selectedSlug || locality?.citySlug || matched?.slug || searchCitySlug || slugifyCityName(trimmedCity);
-    const q       = searchLocation.trim() || locality?.name || (!matched && selectedSlug ? trimmedCity : undefined);
+    const slug =
+      selectedSlug || locality?.citySlug || matched?.slug || searchCitySlug || slugifyCityName(trimmedCity);
+    const q =
+      searchLocation.trim() || locality?.name || (!matched && selectedSlug ? trimmedCity : undefined);
 
     if (matched && !selectedSlug) {
       setSelectedSlug(matched.slug);
@@ -263,7 +258,17 @@ export function HotelsSearchHero({
 
     const sort: HotelSortOption | undefined = undefined;
     setIsSearching(true);
-    router.push(hotelResultsHref(slug, { check_in: checkInIso, check_out: checkOutIso, rooms, guests, q, sort }));
+    router.push(
+      hotelResultsHref(slug, {
+        check_in: checkInIso,
+        check_out: checkOutIso,
+        rooms,
+        guests,
+        q,
+        sort,
+        last_minute: lastMinute || undefined,
+      }),
+    );
   };
 
   const handleNearMe = () => {
@@ -278,11 +283,23 @@ export function HotelsSearchHero({
       async (position) => {
         try {
           const { city: resolvedCity, country: resolvedCountry } = await reverseGeocodeCity(
-            position.coords.latitude, position.coords.longitude,
+            position.coords.latitude,
+            position.coords.longitude,
           );
           const match = matchHotelDestinationFromList(resolvedCity, effectiveDestinations);
-          if (match) { setCity(match.city); setCountry(match.country); setSelectedSlug(match.slug); setSearchCitySlug(match.slug); setSearchLocation(""); }
-          else        { setCity(resolvedCity); setCountry(resolvedCountry); setSelectedSlug(""); setSearchCitySlug(""); setSearchLocation(resolvedCity); }
+          if (match) {
+            setCity(match.city);
+            setCountry(match.country);
+            setSelectedSlug(match.slug);
+            setSearchCitySlug(match.slug);
+            setSearchLocation("");
+          } else {
+            setCity(resolvedCity);
+            setCountry(resolvedCountry);
+            setSelectedSlug("");
+            setSearchCitySlug("");
+            setSearchLocation(resolvedCity);
+          }
           setNearMeActive(true);
         } catch {
           setNearMeError("Unable to detect city. Try again.");
@@ -294,116 +311,41 @@ export function HotelsSearchHero({
       (error) => {
         setNearMeLoading(false);
         setNearMeActive(false);
-        if (error.code === error.PERMISSION_DENIED)      setNearMeError("Allow location access to use Near Me");
-        else if (error.code === error.TIMEOUT)           setNearMeError("Location timed out. Try again.");
-        else                                             setNearMeError("Could not get your location");
+        if (error.code === error.PERMISSION_DENIED) setNearMeError("Allow location access to use Near Me");
+        else if (error.code === error.TIMEOUT) setNearMeError("Location timed out. Try again.");
+        else setNearMeError("Could not get your location");
       },
       { enableHighAccuracy: true, timeout: 12_000, maximumAge: 60_000 },
     );
   };
 
   return (
-    <section
-      id="hotel-search"
-      className={cn(
-        "relative isolate w-full overflow-x-hidden overflow-y-visible",
-        className,
-      )}
-    >
-      {/* Full-bleed hero plane */}
-      <div className="relative min-h-[72vh] w-full sm:min-h-[78vh]">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <Image
-            src={HOTELS_BANNER_IMAGE}
-            alt=""
-            fill
-            priority
-            unoptimized
-            sizes="100vw"
-            className={cn(
-              "object-cover object-[center_35%] transition-opacity duration-700 sm:object-center",
-              bannerLoaded ? "opacity-100" : "opacity-0",
-            )}
-            onLoad={() => setBannerLoaded(true)}
-            onError={() => setBannerLoaded(true)}
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,24,22,0.55)_0%,rgba(8,24,22,0.28)_38%,rgba(8,24,22,0.72)_100%)]"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(15,118,110,0.28),transparent_55%)]"
-            aria-hidden
-          />
-        </div>
+    <section id="hotel-search" className={cn("relative w-full bg-[#2196f3]", className)}>
+      <div className="mx-auto w-full max-w-[1180px] px-3 pb-5 pt-6 sm:px-4 sm:pb-6 sm:pt-8 lg:px-6">
+        <h1 className="text-center text-[22px] font-bold leading-tight tracking-tight text-white sm:text-[28px] lg:text-[32px]">
+          Same hotel, Cheapest price. Guaranteed!
+        </h1>
 
-        {!bannerLoaded && (
-          <div className="pointer-events-none absolute inset-0 z-[1]">
-            <HotelsHeroSkeleton className="h-full min-h-full" />
-          </div>
-        )}
-
-        <div className="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-[1180px] flex-col justify-end px-4 pb-8 pt-20 sm:min-h-[78vh] sm:px-6 sm:pb-12 lg:px-8">
-          <div className="max-w-2xl animate-[hotelsHeroIn_0.7s_ease-out_both]">
-            <p className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-[#99f6e4] sm:text-sm">
-              {TRAVEL_HOME_BRAND.name}
-            </p>
-            <h1 className="mt-3 font-display text-[2.35rem] font-bold leading-[1.05] tracking-[-0.03em] text-white sm:text-5xl lg:text-[3.4rem]">
-              Stays that feel like the trip
-            </h1>
-            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/85 sm:text-lg">
-              Clear prices, real rooms, and destinations you actually want to wake up in.
-            </p>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-2 animate-[hotelsHeroIn_0.85s_ease-out_both] sm:mt-10">
-            {QUICK_DESTINATIONS.map((item) => (
-              <button
-                key={item.slug}
-                type="button"
-                onClick={() => {
-                  router.push(
-                    hotelResultsHref(item.slug, {
-                      check_in: checkInIso,
-                      check_out: checkOutIso,
-                      rooms,
-                      guests,
-                    }),
-                  );
-                }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-2 text-[12px] font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
-              >
-                <MapPin className="h-3.5 w-3.5 text-[#99f6e4]" aria-hidden />
-                {item.city}
-              </button>
-            ))}
-            <a
-              href="#popular-destinations"
-              className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-transparent px-3.5 py-2 text-[12px] font-semibold text-white/90 transition hover:bg-white/10"
-            >
-              All destinations
-              <ChevronRight className="h-3.5 w-3.5" aria-hidden />
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Search dock — interaction surface under the hero plane */}
-      <div className="relative z-20 -mt-6 px-3 sm:-mt-10 sm:px-6 lg:px-8">
         <form
-          className="relative mx-auto w-full max-w-[1180px] overflow-visible rounded-2xl border border-[#e6eeec] bg-white/95 shadow-[0_24px_60px_-28px_rgba(15,118,110,0.45)] backdrop-blur-md"
+          className="relative z-20 mt-5 overflow-visible rounded-xl bg-white shadow-[0_8px_28px_rgba(0,0,0,0.18)] sm:mt-6"
           role="search"
           aria-busy={isSearching}
-          onSubmit={(e) => { e.preventDefault(); if (!isSearching) handleSearch(); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!isSearching) handleSearch();
+          }}
         >
           {isSearching && <HotelSearchLoadingOverlay />}
-          <div className={cn(
-            "flex w-full flex-col overflow-visible lg:flex-row lg:items-stretch",
-            isSearching && "pointer-events-none select-none opacity-60",
-          )}>
-            <div className="flex min-w-0 flex-1 flex-col divide-y divide-[#eef4f2] overflow-visible lg:flex-row lg:divide-x lg:divide-y-0">
+
+          <div
+            className={cn(
+              "flex flex-col overflow-visible lg:flex-row lg:items-stretch",
+              isSearching && "pointer-events-none select-none opacity-60",
+            )}
+          >
+            <div className="flex min-w-0 flex-1 flex-col divide-y divide-[#e8e8e8] lg:flex-row lg:divide-x lg:divide-y-0">
               <HotelLocationField
-                className="min-w-0 flex-1"
+                className="min-w-0 flex-[1.15]"
                 city={city}
                 country={country}
                 destinations={effectiveDestinations}
@@ -418,15 +360,14 @@ export function HotelsSearchHero({
                 onSelectHotel={handleSelectHotel}
                 onNearMe={handleNearMe}
               />
-              <HeroDateRangeField
-                className="min-w-0 flex-[0.9]"
+              <SplitDateField
                 checkInIso={checkInIso}
                 checkOutIso={checkOutIso}
                 todayIso={localDateInputString(today)}
                 onChange={handleDateRangeChange}
               />
               <HotelRoomsGuestsField
-                className="min-w-0 flex-[0.75]"
+                className="min-w-0 flex-[0.85]"
                 rooms={rooms}
                 guests={guests}
                 onRoomsChange={setRooms}
@@ -436,26 +377,65 @@ export function HotelsSearchHero({
               />
             </div>
 
-            <div className="flex items-center p-3 sm:p-4">
+            <div className="flex items-stretch p-2.5 sm:p-3">
               <button
                 type="submit"
                 disabled={isSearching}
-                className="flex h-[52px] w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#0f766e] px-6 text-[14px] font-extrabold text-white transition hover:bg-[#0d9488] disabled:cursor-wait disabled:opacity-80 lg:w-auto lg:min-w-[168px]"
+                className="flex h-[52px] w-full items-center justify-center rounded-lg bg-[#ef6c00] px-8 text-[15px] font-extrabold uppercase tracking-wide text-white transition hover:bg-[#e65100] disabled:cursor-wait disabled:opacity-80 lg:h-auto lg:min-w-[128px]"
               >
-                <Search className="h-4 w-4" strokeWidth={2.4} aria-hidden />
-                {isSearching ? "Searching…" : "Search"}
+                {isSearching ? "…" : "Search"}
               </button>
             </div>
           </div>
         </form>
-      </div>
 
-      <style jsx>{`
-        @keyframes hotelsHeroIn {
-          from { opacity: 0; transform: translateY(14px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+        <div className="mt-3.5 flex flex-col gap-3 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-2.5">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3.5 py-2 text-[12px] font-semibold text-white backdrop-blur-sm transition hover:bg-white/15">
+              <Hourglass className="h-3.5 w-3.5 text-white/90" aria-hidden />
+              Last Minute Deals
+              <span
+                className={cn(
+                  "ml-1 flex h-4 w-4 items-center justify-center rounded border",
+                  lastMinute ? "border-white bg-white text-[#2196f3]" : "border-white/70 bg-transparent",
+                )}
+              >
+                {lastMinute ? <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> : null}
+              </span>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={lastMinute}
+                onChange={(e) => setLastMinute(e.target.checked)}
+              />
+            </label>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3.5 py-2 text-[12px] font-semibold text-white backdrop-blur-sm transition hover:bg-white/15">
+              <ShieldCheck className="h-3.5 w-3.5 text-[#a5d6a7]" aria-hidden />
+              Lowest Price Guarantee
+              <span
+                className={cn(
+                  "ml-1 flex h-4 w-4 items-center justify-center rounded border",
+                  priceGuarantee ? "border-white bg-white text-[#2196f3]" : "border-white/70 bg-transparent",
+                )}
+              >
+                {priceGuarantee ? <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> : null}
+              </span>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={priceGuarantee}
+                onChange={(e) => setPriceGuarantee(e.target.checked)}
+              />
+            </label>
+          </div>
+          <Link
+            href={PARTNER_PORTAL_URL}
+            className="text-[12px] font-semibold text-white/95 underline-offset-2 hover:underline sm:text-[13px]"
+          >
+            List Your Hotel For Free
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }

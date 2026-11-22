@@ -5,7 +5,8 @@ import { HotelsSearchHero } from "@/components/hotels/hotels-search-hero";
 import { HotelsFeaturedDestinations } from "@/components/hotels/hotels-featured-destinations";
 import { HotelsExclusiveOffers } from "@/components/hotels/hotels-exclusive-offers";
 import { HotelsPopularHotelsSection } from "@/components/hotels/hotels-popular-hotels-section";
-import { HotelsPageCta } from "@/components/hotels/hotels-page-cta";
+import { HotelsMoodEscapes } from "@/components/hotels/hotels-mood-escapes";
+import { HotelsWhyBook } from "@/components/hotels/hotels-why-book";
 import { fetchAllHotels } from "@/lib/hotels-api";
 import { getExclusiveOffers } from "@/lib/exclusive-offers";
 import { TRAVEL_HOME_BRAND } from "@/lib/travel-home-brand";
@@ -28,19 +29,21 @@ async function HotelsDynamicSections({
 
   return (
     <>
+      <HotelsExclusiveOffers offers={offers} />
+      <HotelsMoodEscapes />
+      <HotelsFeaturedDestinations hotels={featuredHotels} />
       <HotelsPopularHotelsSection
         hotels={featuredHotels}
         viewMoreHref="/hotels#popular-destinations"
       />
-      <HotelsExclusiveOffers offers={offers} />
-      <HotelsPageCta />
+      <HotelsWhyBook />
     </>
   );
 }
 
 function HotelsSectionsFallback() {
   return (
-    <div className="bg-[#f7faf9]">
+    <div className="bg-white">
       <HotelsPopularDestinationsSkeleton />
     </div>
   );
@@ -51,13 +54,12 @@ export default async function HotelsPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-[#f7faf9]">
+      <main className="min-h-screen bg-white">
         <HotelsSearchHero
           defaultCity="Anjuna"
           defaultCountry="India"
           defaultSlug="anjuna"
         />
-        <HotelsFeaturedDestinations hotels={featuredDestinationHotels} />
         <Suspense fallback={<HotelsSectionsFallback />}>
           <HotelsDynamicSections featuredHotels={featuredDestinationHotels} />
         </Suspense>
