@@ -148,11 +148,8 @@ export function HotelsFeaturedDestinations({ hotels = [] }: HotelsFeaturedDestin
     >
       <div className="mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0f766e]">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0f766e]">
             Destinations
-          </p>
-          <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.03em] text-[#15202b] sm:text-4xl">
-            Where will you stay next?
           </h2>
           <p className="mt-3 text-[15px] leading-relaxed text-[#667085] sm:text-base">
             Browse cities with live inventory — tap a place and start comparing stays.
