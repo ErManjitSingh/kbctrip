@@ -62,8 +62,8 @@ export function HotelDetailTabs({
 }: HotelDetailTabsProps) {
   return (
     <div id="hotel-tabs" className={cn("scroll-mt-24", className)}>
-      <div className="overflow-x-auto rounded-t-lg border border-b-0 border-[#e0e0e0] bg-white shadow-sm [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-max px-2 pt-2">
+      <div className="overflow-x-auto rounded-t-2xl border border-b-0 border-[#e6eeec] bg-[#f8fbfa] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex min-w-max px-3 pt-1 sm:px-4">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -72,10 +72,10 @@ export function HotelDetailTabs({
                 type="button"
                 onClick={() => onTabChange(tab.id)}
                 className={cn(
-                  "flex shrink-0 items-center gap-1.5 border-b-2 px-4 py-3 text-[13px] font-medium transition-colors sm:px-5 sm:text-sm",
+                  "flex shrink-0 items-center gap-1.5 border-b-2 px-4 py-3.5 text-[13px] font-medium transition-colors sm:px-5 sm:py-4 sm:text-sm",
                   activeTab === tab.id
-                    ? "border-[#0f766e] font-bold text-[#0f766e]"
-                    : "border-transparent text-[#757575] hover:text-[#424242]",
+                    ? "border-[#0f766e] font-semibold text-[#0f766e]"
+                    : "border-transparent text-[#7b8491] hover:text-[#0f766e]",
                 )}
                 aria-current={activeTab === tab.id ? "page" : undefined}
               >
@@ -87,7 +87,7 @@ export function HotelDetailTabs({
         </div>
       </div>
 
-      <div className="rounded-b-lg border border-t-0 border-[#e0e0e0] bg-white p-0 shadow-sm">
+      <div className="rounded-b-2xl border border-t-0 border-[#e6eeec] bg-white">
         {activeTab === "rooms" ? (
           <HotelDetailRoomsTable
             city={city}

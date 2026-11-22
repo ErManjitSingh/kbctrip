@@ -443,7 +443,7 @@ function DetailGallery({
     <div id="photos">
 
       {/* ── Mobile: swipeable carousel ── */}
-      <div className="sm:hidden relative overflow-hidden rounded-xl" style={{ height: "min(62vw, 280px)" }}>
+      <div className="sm:hidden relative overflow-hidden rounded-2xl" style={{ height: "min(62vw, 280px)" }}>
         <div
           ref={carouselRef}
           className="flex h-full overflow-x-auto snap-x snap-mandatory"
@@ -461,24 +461,24 @@ function DetailGallery({
               className="relative h-full w-full shrink-0 snap-center overflow-hidden"
             >
               <Image src={hotelImageAtWidth(src, 1080)} alt={i === 0 ? hotel.name : ""} fill unoptimized className="object-cover" sizes="100vw" priority={i === 0} />
-              {i === 0 && <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />}
+              {i === 0 && <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />}
               {i === 0 && (
                 <div className="absolute bottom-3 left-3 text-white">
-                  <p className="text-[11px] font-semibold drop-shadow">Property Photos ({photoCount})</p>
+                  <p className="text-[11px] font-semibold drop-shadow-sm">Property Photos ({photoCount})</p>
                 </div>
               )}
             </button>
           ))}
         </div>
         {/* Slide counter */}
-        <div className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-bold text-white">
+        <div className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
           {activeSlide + 1}/{carouselPhotos.length}
         </div>
         {/* Dot indicators */}
         {carouselPhotos.length > 1 && (
-          <div className="pointer-events-none absolute bottom-3 left-0 right-0 flex justify-center gap-1">
+          <div className="pointer-events-none absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
             {carouselPhotos.map((_, i) => (
-              <div key={i} className={cn("h-1 rounded-full transition-all duration-300", i === activeSlide ? "w-5 bg-white" : "w-1.5 bg-white/50")} />
+              <div key={i} className={cn("h-1 rounded-full transition-all duration-300", i === activeSlide ? "w-5 bg-white" : "w-1.5 bg-white/45")} />
             ))}
           </div>
         )}
@@ -486,22 +486,22 @@ function DetailGallery({
 
       {/* ── Desktop: 5-photo mosaic (hidden on mobile) ── */}
       <div
-        className="hidden sm:grid min-h-[320px] grid-rows-2 gap-2 overflow-hidden rounded-xl"
+        className="hidden min-h-[320px] grid-rows-2 gap-2.5 overflow-hidden rounded-2xl sm:grid"
         style={{ height: "min(480px,55vw)", gridTemplateColumns: "1.5fr 1fr 1fr" }}
       >
         {/* Main photo — spans 2 rows */}
         <button
           type="button"
           onClick={() => onOpenPhoto()}
-          className="group relative row-span-2 cursor-zoom-in overflow-hidden rounded-l-xl text-left"
+          className="group relative row-span-2 cursor-zoom-in overflow-hidden rounded-l-2xl text-left"
         >
           <Image src={hotelImageAtWidth(main, 1440)} alt={hotel.name} fill unoptimized className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="50vw" priority />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
-            <span className="text-[13px] font-semibold drop-shadow">
+            <span className="text-[13px] font-semibold drop-shadow-sm">
               {photoCount} photos
             </span>
-            <span className="flex items-center gap-1 rounded-lg bg-white/20 px-2.5 py-1 text-[12px] font-semibold backdrop-blur-sm">
+            <span className="flex items-center gap-1 rounded-full bg-white/25 px-3 py-1.5 text-[12px] font-semibold backdrop-blur-md">
               View all <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
             </span>
           </div>
@@ -513,14 +513,14 @@ function DetailGallery({
         </button>
 
         {/* Top-right */}
-        <button type="button" onClick={() => onOpenPhoto()} className="group relative cursor-zoom-in overflow-hidden rounded-tr-xl text-left">
+        <button type="button" onClick={() => onOpenPhoto()} className="group relative cursor-zoom-in overflow-hidden rounded-tr-2xl text-left">
           <Image src={hotelImageAtWidth(photos[2] ?? hotel.images[2] ?? main, 640)} alt="" fill unoptimized className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="20vw" />
           {hotel.videoCount > 0 && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-white">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#212121] shadow-md">
                 <Play className="ml-0.5 h-4 w-4 fill-current" aria-hidden />
               </span>
-              <span className="text-[11px] font-semibold drop-shadow">{hotel.videoCount} video{hotel.videoCount !== 1 ? "s" : ""}</span>
+              <span className="text-[11px] font-semibold drop-shadow-sm">{hotel.videoCount} video{hotel.videoCount !== 1 ? "s" : ""}</span>
             </div>
           )}
         </button>
@@ -531,12 +531,12 @@ function DetailGallery({
         </button>
 
         {/* Bottom-right — +N overlay */}
-        <button type="button" onClick={() => onOpenPhoto()} className="group relative cursor-zoom-in overflow-hidden rounded-br-xl text-left">
+        <button type="button" onClick={() => onOpenPhoto()} className="group relative cursor-zoom-in overflow-hidden rounded-br-2xl text-left">
           <Image src={hotelImageAtWidth(photos[4] ?? hotel.images[4] ?? roomImg, 640)} alt="" fill unoptimized className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="20vw" />
           {photoCount > 5 && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white transition group-hover:bg-black/60">
-              <span className="text-[22px] font-black">+{photoCount - 5}</span>
-              <span className="mt-0.5 text-[11px] font-semibold tracking-wide">more photos</span>
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/35 text-white backdrop-blur-[1px] transition group-hover:bg-black/45">
+              <span className="text-[22px] font-bold tracking-tight">+{photoCount - 5}</span>
+              <span className="mt-0.5 text-[11px] font-medium tracking-wide">more photos</span>
             </div>
           )}
         </button>
@@ -547,12 +547,9 @@ function DetailGallery({
 
 function GallerySidebarLayout({ gallery, sidebar }: { gallery: React.ReactNode; sidebar: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-4 lg:flex-row lg:gap-5">
-      <div className="min-w-0 flex-1 overflow-hidden rounded-xl">{gallery}</div>
-      <div
-        className="hidden lg:block w-full shrink-0 lg:w-[300px] xl:w-[320px] lg:sticky lg:top-24 lg:self-start"
-        style={{ borderRadius: "0.75rem", border: "1px solid #e0e0e0", background: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
-      >
+    <div className="flex flex-col gap-5 lg:flex-row lg:gap-6">
+      <div className="min-w-0 flex-1 overflow-hidden rounded-2xl">{gallery}</div>
+      <div className="hidden w-full shrink-0 overflow-hidden rounded-2xl border border-[#e6eeec] bg-white shadow-[0_12px_40px_-28px_rgba(15,118,110,0.35)] lg:sticky lg:top-24 lg:block lg:w-[300px] lg:self-start xl:w-[320px]">
         {sidebar}
       </div>
     </div>
@@ -632,47 +629,47 @@ function BookingSummary({
     <div>
       <div className="flex flex-col">
         {/* Price header */}
-        <div className="rounded-t-xl bg-gradient-to-br from-[#fff8f3] to-[#fdf5ef] px-4 py-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#b8b8b8]">Starting from</p>
-          <p className="mt-0.5 text-[26px] font-extrabold leading-none text-[#0f766e]">
+        <div className="rounded-t-2xl bg-gradient-to-br from-[#f0fdfa] to-[#f8fbfa] px-5 py-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#98a2b3]">Starting from</p>
+          <p className="mt-1 text-[28px] font-extrabold leading-none tracking-tight text-[#0f766e]">
             ₹{formatInrAmount(hotel.price)}
-            <span className="ml-1 text-[13px] font-medium text-[#9E9E9E]">/night</span>
+            <span className="ml-1 text-[13px] font-medium text-[#98a2b3]">/night</span>
           </p>
-          <p className="mt-0.5 text-[10px] text-[#b8b8b8]">per room · {roomsCount} room{roomsCount !== 1 ? "s" : ""} · {bookingContext?.guests ?? 2} guest{(bookingContext?.guests ?? 2) !== 1 ? "s" : ""}</p>
+          <p className="mt-1.5 text-[11px] text-[#98a2b3]">per room · {roomsCount} room{roomsCount !== 1 ? "s" : ""} · {bookingContext?.guests ?? 2} guest{(bookingContext?.guests ?? 2) !== 1 ? "s" : ""}</p>
 
           {/* Total stay cost */}
-          <div className="mt-3 rounded-xl border border-[#f0d9c8] bg-white/60 px-3 py-2.5">
+          <div className="mt-4 rounded-xl border border-[#d9ebe7] bg-white/80 px-3.5 py-3">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] text-[#9E9E9E]">
+              <p className="text-[11px] text-[#98a2b3]">
                 ₹{formatInrAmount(hotel.price)} × {nights} night{nights !== 1 ? "s" : ""}{roomsCount > 1 ? ` × ${roomsCount} rooms` : ""}
               </p>
-              <p className="text-[13px] font-bold text-[#212121]">₹{formatInrAmount(baseTotal)}</p>
+              <p className="text-[13px] font-bold text-[#15202b]">₹{formatInrAmount(baseTotal)}</p>
             </div>
             {taxesTotal > 0 && (
-              <div className="mt-1 flex items-center justify-between">
-                <p className="text-[11px] text-[#9E9E9E]">Taxes &amp; fees</p>
-                <p className="text-[12px] font-medium text-[#616161]">₹{formatInrAmount(taxesTotal)}</p>
+              <div className="mt-1.5 flex items-center justify-between">
+                <p className="text-[11px] text-[#98a2b3]">Taxes &amp; fees</p>
+                <p className="text-[12px] font-medium text-[#667085]">₹{formatInrAmount(taxesTotal)}</p>
               </div>
             )}
-            <div className="mt-2 flex items-center justify-between border-t border-[#f0d9c8] pt-2">
-              <p className="text-[12px] font-bold text-[#212121]">Total for {nights} night{nights !== 1 ? "s" : ""}</p>
-              <p className="text-[16px] font-extrabold text-[#0f766e]">₹{formatInrAmount(grandTotal)}</p>
+            <div className="mt-2.5 flex items-center justify-between border-t border-[#e6eeec] pt-2.5">
+              <p className="text-[12px] font-bold text-[#15202b]">Total for {nights} night{nights !== 1 ? "s" : ""}</p>
+              <p className="text-[17px] font-extrabold text-[#0f766e]">₹{formatInrAmount(grandTotal)}</p>
             </div>
           </div>
         </div>
 
-        <div className="space-y-3 px-4 py-3">
+        <div className="space-y-3.5 px-5 py-4">
           {/* Free cancellation badge */}
           {hotel.freeCancellation && (
-            <div className="flex items-center gap-1.5 rounded-md bg-[#f0fdf4] px-3 py-2">
-              <Check className="h-3.5 w-3.5 shrink-0 text-[#166534]" strokeWidth={2.5} />
-              <span className="text-[11px] font-semibold text-[#166534]">Free cancellation available</span>
+            <div className="flex items-center gap-1.5 rounded-xl bg-[#ecfdf5] px-3 py-2">
+              <Check className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2.5} />
+              <span className="text-[11px] font-semibold text-[#0f766e]">Free cancellation available</span>
             </div>
           )}
 
           {editing ? (
             /* ── Edit mode — beautiful calendar ── */
-            <div className="rounded-xl border border-[#0f766e]/25 bg-[#f0fdfa] px-3 py-3">
+            <div className="rounded-xl border border-[#cceae4] bg-[#f0fdfa] px-3 py-3">
               <HotelDateRangePicker
                 checkIn={checkIn}
                 checkOut={checkOut}
@@ -724,22 +721,22 @@ function BookingSummary({
               className="w-full text-left"
             >
               <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-lg border border-[#eee] bg-[#fafafa] px-3 py-2 transition hover:border-[#0f766e]/40 hover:bg-[#f0fdfa]">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9E9E9E]">Check-In</p>
-                  <p className="mt-0.5 text-[13px] font-bold text-[#212121]">{checkInFmt.main}</p>
-                  {checkInFmt.sub && <p className="text-[10px] text-[#9E9E9E]">{checkInFmt.sub}</p>}
+                <div className="rounded-xl border border-[#e6eeec] bg-[#f8fbfa] px-3 py-2.5 transition hover:border-[#0f766e]/35 hover:bg-[#f0fdfa]">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#98a2b3]">Check-In</p>
+                  <p className="mt-0.5 text-[13px] font-bold text-[#15202b]">{checkInFmt.main}</p>
+                  {checkInFmt.sub && <p className="text-[10px] text-[#98a2b3]">{checkInFmt.sub}</p>}
                 </div>
-                <div className="rounded-lg border border-[#eee] bg-[#fafafa] px-3 py-2 transition hover:border-[#0f766e]/40 hover:bg-[#f0fdfa]">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9E9E9E]">Check-Out</p>
-                  <p className="mt-0.5 text-[13px] font-bold text-[#212121]">{checkOutFmt.main}</p>
-                  {checkOutFmt.sub && <p className="text-[10px] text-[#9E9E9E]">{checkOutFmt.sub}</p>}
+                <div className="rounded-xl border border-[#e6eeec] bg-[#f8fbfa] px-3 py-2.5 transition hover:border-[#0f766e]/35 hover:bg-[#f0fdfa]">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#98a2b3]">Check-Out</p>
+                  <p className="mt-0.5 text-[13px] font-bold text-[#15202b]">{checkOutFmt.main}</p>
+                  {checkOutFmt.sub && <p className="text-[10px] text-[#98a2b3]">{checkOutFmt.sub}</p>}
                 </div>
               </div>
-              <div className="mt-2 rounded-lg border border-[#eee] bg-[#fafafa] px-3 py-2 transition hover:border-[#0f766e]/40 hover:bg-[#f0fdfa]">
-                <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9E9E9E]">Guests &amp; Rooms</p>
-                <p className="mt-0.5 text-[13px] font-bold text-[#212121]">{guestsLabel}, {roomsLabel}</p>
+              <div className="mt-2 rounded-xl border border-[#e6eeec] bg-[#f8fbfa] px-3 py-2.5 transition hover:border-[#0f766e]/35 hover:bg-[#f0fdfa]">
+                <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#98a2b3]">Guests &amp; Rooms</p>
+                <p className="mt-0.5 text-[13px] font-bold text-[#15202b]">{guestsLabel}, {roomsLabel}</p>
               </div>
-              <p className="mt-1.5 text-center text-[10px] text-[#9E9E9E]">Tap to edit dates &amp; guests</p>
+              <p className="mt-2 text-center text-[10px] text-[#98a2b3]">Tap to edit dates &amp; guests</p>
             </button>
           )}
 
@@ -748,7 +745,7 @@ function BookingSummary({
             <button
               type="button"
               onClick={onViewRooms}
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-[#e1e4e8] bg-white py-3 text-[12px] font-bold text-[#4b5563] transition hover:border-[#0f766e]/40 hover:text-[#0f766e]"
+              className="flex items-center justify-center gap-1.5 rounded-xl border border-[#d9ebe7] bg-white py-3 text-[12px] font-bold text-[#4b5563] transition hover:border-[#0f766e]/40 hover:text-[#0f766e]"
             >
               View rooms
               <ChevronsDown className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
@@ -756,7 +753,7 @@ function BookingSummary({
             {bookNowHref ? (
               <Link
                 href={bookNowHref}
-                className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-b from-[#0d9488] to-[#115e59] py-3 text-[12px] font-extrabold text-white shadow-[0_3px_10px_rgba(15,118,110,0.38)] transition hover:brightness-105 active:scale-[0.98]"
+                className="flex items-center justify-center gap-1.5 rounded-xl bg-[#0f766e] py-3 text-[12px] font-extrabold text-white transition hover:bg-[#0d9488] active:scale-[0.98]"
               >
                 Book now
                 <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.75} aria-hidden />
@@ -765,7 +762,7 @@ function BookingSummary({
               <button
                 type="button"
                 onClick={onViewRooms}
-                className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-b from-[#0d9488] to-[#115e59] py-3 text-[12px] font-extrabold text-white shadow-[0_3px_10px_rgba(15,118,110,0.38)] transition hover:brightness-105 active:scale-[0.98]"
+                className="flex items-center justify-center gap-1.5 rounded-xl bg-[#0f766e] py-3 text-[12px] font-extrabold text-white transition hover:bg-[#0d9488] active:scale-[0.98]"
               >
                 View options
                 <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.75} aria-hidden />
@@ -776,10 +773,10 @@ function BookingSummary({
             <p className="-mt-1 text-center text-[10px] font-medium text-[#77808d]">Book now selects the lowest-priced room and meal plan.</p>
           ) : null}
           {/* Check-in / Check-out times */}
-          <div className="flex items-center justify-between text-[11px] text-[#9E9E9E]">
-            <span>Check-in: <span className="font-semibold text-[#424242]">2:00 PM</span></span>
-            <span className="text-[#d5d5d5]">|</span>
-            <span>Check-out: <span className="font-semibold text-[#424242]">12:00 PM</span></span>
+          <div className="flex items-center justify-between text-[11px] text-[#98a2b3]">
+            <span>Check-in: <span className="font-semibold text-[#5d6673]">2:00 PM</span></span>
+            <span className="text-[#d9ebe7]">|</span>
+            <span>Check-out: <span className="font-semibold text-[#5d6673]">12:00 PM</span></span>
           </div>
         </div>
 
@@ -806,7 +803,7 @@ function MobileBookingBar({
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 border-t border-[#e8e8e8] bg-white px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] transition-transform duration-300 lg:hidden",
+        "fixed bottom-0 left-0 right-0 z-50 border-t border-[#e6eeec] bg-white/95 px-4 py-3.5 shadow-[0_-10px_30px_-18px_rgba(15,118,110,0.35)] backdrop-blur-md transition-transform duration-300 lg:hidden",
         "translate-y-0",
       )}
     >
@@ -814,18 +811,18 @@ function MobileBookingBar({
         <div className="min-w-0">
           {hasSelection ? (
             <>
-              <p className="text-[10px] font-medium text-[#9E9E9E]">Selected room</p>
-              <p className="truncate text-[13px] font-bold text-[#212121]">{selectedRoomName}</p>
+              <p className="text-[10px] font-medium text-[#98a2b3]">Selected room</p>
+              <p className="truncate text-[13px] font-bold text-[#15202b]">{selectedRoomName}</p>
             </>
           ) : (
             <>
-              <p className="text-[10px] font-medium text-[#9E9E9E]">Starting from</p>
-              <p className="text-[18px] font-extrabold leading-tight text-[#212121]">
+              <p className="text-[10px] font-medium text-[#98a2b3]">Starting from</p>
+              <p className="text-[18px] font-extrabold leading-tight text-[#0f766e]">
                 ₹{formatInrAmount(hotel.price)}
-                <span className="ml-1 text-[11px] font-normal text-[#9E9E9E]">/night</span>
+                <span className="ml-1 text-[11px] font-normal text-[#98a2b3]">/night</span>
               </p>
               {hotel.freeCancellation && (
-                <p className="text-[10px] font-semibold text-[#166534]">✓ Free cancellation</p>
+                <p className="text-[10px] font-semibold text-[#0f766e]">✓ Free cancellation</p>
               )}
             </>
           )}
@@ -834,7 +831,7 @@ function MobileBookingBar({
         {hasSelection ? (
           <Link
             href={bookingHref!}
-            className="flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-b from-[#0d9488] to-[#115e59] px-5 py-3 text-[13px] font-extrabold text-white shadow-[0_3px_10px_rgba(15,118,110,0.38)] active:scale-[0.98]"
+            className="flex shrink-0 items-center gap-2 rounded-xl bg-[#0f766e] px-5 py-3 text-[13px] font-extrabold text-white transition hover:bg-[#0d9488] active:scale-[0.98]"
           >
             Proceed →
           </Link>
@@ -843,13 +840,13 @@ function MobileBookingBar({
             <button
               type="button"
               onClick={onViewRooms}
-              className="rounded-xl border border-[#e1e4e8] bg-white px-3 py-3 text-[12px] font-bold text-[#4b5563]"
+              className="rounded-xl border border-[#d9ebe7] bg-white px-3 py-3 text-[12px] font-bold text-[#4b5563]"
             >
               Rooms
             </button>
             <Link
               href={bookNowHref}
-              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#0d9488] to-[#115e59] px-4 py-3 text-[13px] font-extrabold text-white shadow-[0_3px_10px_rgba(15,118,110,0.38)] active:scale-[0.98]"
+              className="flex items-center gap-1.5 rounded-xl bg-[#0f766e] px-4 py-3 text-[13px] font-extrabold text-white transition hover:bg-[#0d9488] active:scale-[0.98]"
             >
               Book now <ChevronRight className="h-4 w-4" aria-hidden />
             </Link>
@@ -858,7 +855,7 @@ function MobileBookingBar({
           <button
             type="button"
             onClick={onViewRooms}
-            className="flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-b from-[#0d9488] to-[#115e59] px-5 py-3 text-[13px] font-extrabold text-white shadow-[0_3px_10px_rgba(15,118,110,0.38)] active:scale-[0.98]"
+            className="flex shrink-0 items-center gap-2 rounded-xl bg-[#0f766e] px-5 py-3 text-[13px] font-extrabold text-white transition hover:bg-[#0d9488] active:scale-[0.98]"
           >
             View Rooms
             <BedDouble className="h-4 w-4" aria-hidden />
@@ -1000,34 +997,34 @@ export function HotelDetailView({
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${hotel.name}, ${city.name}`)}`;
 
   const bookingMeta = (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]">
+    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-[12px]">
         <span className="flex items-center gap-0.5" aria-label={`${hotel.stars} stars`}>
           {Array.from({ length: hotel.stars }).map((_, i) => (
-            <Star key={i} className="h-3 w-3 fill-[#FFC107] text-[#FFC107]" aria-hidden />
+            <Star key={i} className="h-3.5 w-3.5 fill-[#FFC107] text-[#FFC107]" aria-hidden />
           ))}
         </span>
         {hotel.rating > 0 ? (
-          <button type="button" onClick={scrollToReviews} className="inline-flex items-center gap-1 font-semibold text-[#1d7a38] hover:underline">
-            <span className="rounded bg-[#eaf8ee] px-1.5 py-0.5 text-[10px] font-bold">{hotel.rating.toFixed(1)}</span>
+          <button type="button" onClick={scrollToReviews} className="inline-flex items-center gap-1.5 font-semibold text-[#0f766e] hover:underline">
+            <span className="rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[10px] font-bold">{hotel.rating.toFixed(1)}</span>
             {hotel.reviewCount > 0 ? `${hotel.reviewCount} reviews` : "Guest rating"}
           </button>
         ) : null}
-        <span className="hidden h-3.5 w-px bg-[#dfe4e9] sm:block" aria-hidden />
-        <span className="flex min-w-0 items-center gap-1 text-[#687180]">
+        <span className="hidden h-3.5 w-px bg-[#e6eeec] sm:block" aria-hidden />
+        <span className="flex min-w-0 items-center gap-1.5 text-[#667085]">
           <MapPin className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2.2} aria-hidden />
           <span className="truncate">{hotel.area}, {city.name}</span>
-          {hotel.nearbyLandmark ? <span className="hidden text-[#9aa1ad] lg:inline">· {hotel.nearbyLandmark}</span> : null}
+          {hotel.nearbyLandmark ? <span className="hidden text-[#98a2b3] lg:inline">· {hotel.nearbyLandmark}</span> : null}
         </span>
         <div className="flex flex-wrap items-center gap-1.5">
           {hotel.freeCancellation ? (
-            <span className="rounded-full bg-[#ecfdf3] px-2 py-0.5 text-[10px] font-semibold text-[#18723a]">Free cancellation</span>
+            <span className="rounded-full bg-[#ecfdf5] px-2.5 py-1 text-[10px] font-semibold text-[#0f766e]">Free cancellation</span>
           ) : null}
           {hotel.freeBreakfast ? (
-            <span className="rounded-full bg-[#fff8df] px-2 py-0.5 text-[10px] font-semibold text-[#8a5a00]">Breakfast included</span>
+            <span className="rounded-full bg-[#f0fdfa] px-2.5 py-1 text-[10px] font-semibold text-[#0f766e]">Breakfast included</span>
           ) : null}
           {hotel.freeParking ? (
-            <span className="rounded-full bg-[#eef2ff] px-2 py-0.5 text-[10px] font-semibold text-[#3f46a7]">Free parking</span>
+            <span className="rounded-full bg-[#f0fdfa] px-2.5 py-1 text-[10px] font-semibold text-[#0f766e]">Free parking</span>
           ) : null}
         </div>
       </div>
@@ -1036,18 +1033,18 @@ export function HotelDetailView({
           href={mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 rounded-md px-1 text-[11px] font-semibold text-[#4b5563] transition hover:text-[#0f766e]"
+          className="inline-flex items-center gap-1 rounded-md px-1 text-[11px] font-semibold text-[#667085] transition hover:text-[#0f766e]"
         >
           View on map <ExternalLink className="h-3 w-3" aria-hidden />
         </a>
-        <span className="h-3.5 w-px bg-[#dfe4e9]" aria-hidden />
+        <span className="h-3.5 w-px bg-[#e6eeec]" aria-hidden />
         <button
           type="button"
           onClick={() => {
             if (navigator.share) void navigator.share({ title: hotel.name, url: window.location.href });
             else void navigator.clipboard.writeText(window.location.href);
           }}
-          className="inline-flex items-center gap-1 rounded-md px-1 text-[11px] font-semibold text-[#4b5563] transition hover:text-[#0f766e]"
+          className="inline-flex items-center gap-1 rounded-md px-1 text-[11px] font-semibold text-[#667085] transition hover:text-[#0f766e]"
         >
           <Share2 className="h-3.5 w-3.5" aria-hidden /> Share
         </button>
@@ -1057,7 +1054,7 @@ export function HotelDetailView({
 
   return (
     <>
-      <main className="min-h-screen bg-[#f5f5f5] text-[#212121] antialiased">
+      <main className="min-h-screen bg-[#f7faf9] text-[#1f2933] antialiased">
         <div className="md:pt-[92px] lg:pt-[92px]">
           <DetailSearchStrip
             hotelName={hotel.name}
@@ -1067,31 +1064,31 @@ export function HotelDetailView({
           />
         </div>
 
-        <div className="mx-auto w-full max-w-[1320px] px-3 py-2.5 pb-24 sm:px-4 sm:py-3 lg:px-6 lg:pb-0">
+        <div className="mx-auto w-full max-w-[1320px] px-3 py-4 pb-28 sm:px-5 sm:py-5 lg:px-6 lg:pb-8">
           <nav
-            className="mb-2 hidden flex-wrap items-center gap-1 text-[10px] text-[#8d95a1] sm:flex sm:text-[11px]"
+            className="mb-4 hidden flex-wrap items-center gap-1.5 text-[11px] text-[#8a949e] sm:flex"
             aria-label="Breadcrumb"
           >
             <Link href="/" className="text-[#0f766e] hover:underline">Home</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-[#9E9E9E]" aria-hidden />
+            <ChevronRight className="h-3.5 w-3.5 text-[#c5cdd4]" aria-hidden />
             <Link href="/hotels" className="text-[#0f766e] hover:underline">Hotels</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-[#9E9E9E]" aria-hidden />
+            <ChevronRight className="h-3.5 w-3.5 text-[#c5cdd4]" aria-hidden />
             <Link href={listingHref} className="text-[#0f766e] hover:underline">Hotels in {city.name}</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-[#9E9E9E]" aria-hidden />
-            <span className="truncate font-medium text-[#3b414b]">{hotel.name}</span>
+            <ChevronRight className="h-3.5 w-3.5 text-[#c5cdd4]" aria-hidden />
+            <span className="truncate font-medium text-[#4b5563]">{hotel.name}</span>
           </nav>
 
-          <section className="mb-2 rounded-xl border border-[#e8e8e8] bg-white px-3.5 py-3 shadow-sm sm:hidden">
+          <section className="mb-4 rounded-2xl border border-[#e6eeec] bg-white/90 px-4 py-4 backdrop-blur-sm sm:hidden">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h1 className="text-[18px] font-extrabold leading-tight tracking-[-0.02em] text-[#1a1a1a]">{hotel.name}</h1>
-                <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+                <h1 className="text-[20px] font-extrabold leading-tight tracking-[-0.03em] text-[#15202b]">{hotel.name}</h1>
+                <div className="mt-2 flex items-center gap-2 text-[11px]">
                   <span className="flex items-center gap-0.5" aria-label={`${hotel.stars} stars`}>
                     {Array.from({ length: hotel.stars }).map((_, i) => (
                       <Star key={i} className="h-3.5 w-3.5 fill-[#FFC107] text-[#FFC107]" aria-hidden />
                     ))}
                   </span>
-                  {hotel.rating > 0 ? <span className="rounded-md bg-[#eaf8ee] px-1.5 py-0.5 text-[10px] font-bold text-[#18723a]">{hotel.rating.toFixed(1)}</span> : null}
+                  {hotel.rating > 0 ? <span className="rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[10px] font-bold text-[#0f766e]">{hotel.rating.toFixed(1)}</span> : null}
                   {hotel.reviewCount > 0 ? <span className="text-[#7b8491]">{hotel.reviewCount} reviews</span> : null}
                 </div>
               </div>
@@ -1101,20 +1098,20 @@ export function HotelDetailView({
                   if (navigator.share) void navigator.share({ title: hotel.name, url: window.location.href });
                   else void navigator.clipboard.writeText(window.location.href);
                 }}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e6e9ed] text-[#5d6673] active:bg-[#fff7f2]"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e6eeec] text-[#5d6673] active:bg-[#f0fdfa]"
                 aria-label="Share hotel"
               >
                 <Share2 className="h-4 w-4" aria-hidden />
               </button>
             </div>
-            <p className="mt-2 flex items-center gap-1 truncate text-[11px] text-[#6b7280]">
+            <p className="mt-3 flex items-center gap-1.5 truncate text-[12px] text-[#667085]">
               <MapPin className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" aria-hidden />
               {hotel.area}, {city.name}
             </p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {hotel.freeCancellation ? <span className="rounded-full bg-[#ecfdf3] px-2 py-0.5 text-[10px] font-semibold text-[#18723a]">Free cancellation</span> : null}
-              {hotel.freeBreakfast ? <span className="rounded-full bg-[#fff8df] px-2 py-0.5 text-[10px] font-semibold text-[#8a5a00]">Breakfast included</span> : null}
-              {hotel.freeParking ? <span className="rounded-full bg-[#eef2ff] px-2 py-0.5 text-[10px] font-semibold text-[#3f46a7]">Free parking</span> : null}
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {hotel.freeCancellation ? <span className="rounded-full bg-[#ecfdf5] px-2.5 py-1 text-[10px] font-semibold text-[#0f766e]">Free cancellation</span> : null}
+              {hotel.freeBreakfast ? <span className="rounded-full bg-[#f0fdfa] px-2.5 py-1 text-[10px] font-semibold text-[#0f766e]">Breakfast included</span> : null}
+              {hotel.freeParking ? <span className="rounded-full bg-[#f0fdfa] px-2.5 py-1 text-[10px] font-semibold text-[#0f766e]">Free parking</span> : null}
             </div>
           </section>
 
@@ -1131,36 +1128,29 @@ export function HotelDetailView({
               />
             }
           />
-          <div className="mt-5 space-y-5 sm:mt-6 sm:space-y-6">
+          <div className="mt-7 space-y-7 sm:mt-8 sm:space-y-8">
             {/* Trust badges */}
-            <div className="grid grid-cols-2 gap-2 rounded-xl border border-[#e8e8e8] bg-white px-3 py-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-4 sm:px-4 sm:py-3">
-              <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#424242]">
-                <ShieldCheck className="h-4 w-4 text-[#008009]" aria-hidden />
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-1 text-[12px] text-[#667085]">
+              <div className="flex items-center gap-1.5 font-medium">
+                <ShieldCheck className="h-4 w-4 text-[#0f766e]" aria-hidden />
                 Secure booking
               </div>
-              <span className="hidden text-[#e0e0e0] sm:inline">|</span>
-              <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#424242]">
-                <Check className="h-4 w-4 text-[#2196F3]" aria-hidden />
+              <div className="flex items-center gap-1.5 font-medium">
+                <Check className="h-4 w-4 text-[#0f766e]" aria-hidden />
                 Instant confirmation
               </div>
-              {hotel.reviewCount > 0 && (
-                <>
-                  <span className="hidden text-[#e0e0e0] sm:inline">|</span>
-                  <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#424242]">
-                    <Users className="h-4 w-4 text-[#0f766e]" aria-hidden />
-                    {hotel.reviewCount}+ guests reviewed
-                  </div>
-                </>
-              )}
-              {hotel.freeCancellation && (
-                <>
-                  <span className="hidden text-[#e0e0e0] sm:inline">|</span>
-                  <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#166534]">
-                    <Check className="h-4 w-4" aria-hidden />
-                    Free cancellation
-                  </div>
-                </>
-              )}
+              {hotel.reviewCount > 0 ? (
+                <div className="flex items-center gap-1.5 font-medium">
+                  <Users className="h-4 w-4 text-[#0f766e]" aria-hidden />
+                  {hotel.reviewCount}+ guests reviewed
+                </div>
+              ) : null}
+              {hotel.freeCancellation ? (
+                <div className="flex items-center gap-1.5 font-medium text-[#0f766e]">
+                  <Check className="h-4 w-4" aria-hidden />
+                  Free cancellation
+                </div>
+              ) : null}
             </div>
             <HotelDetailTabs
               hotel={hotel}
@@ -1183,13 +1173,13 @@ export function HotelDetailView({
                 <HotelDetailDeferredSimilarHotels hotelId={hotel.id} city={city} />
               </>
             ) : (
-              <div className="space-y-4 rounded-xl border border-[#e8e8e8] bg-white p-4">
-                <div className="h-4 w-40 rounded bg-[#f1f5f9]" />
+              <div className="space-y-4 rounded-2xl border border-[#e6eeec] bg-white/80 p-5">
+                <div className="h-4 w-40 rounded bg-[#eef5f3]" />
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="h-28 rounded-lg bg-[#f8fafc]" />
-                  <div className="h-28 rounded-lg bg-[#f8fafc]" />
+                  <div className="h-28 rounded-xl bg-[#f4f9f8]" />
+                  <div className="h-28 rounded-xl bg-[#f4f9f8]" />
                 </div>
-                <div className="h-24 rounded-lg bg-[#f8fafc]" />
+                <div className="h-24 rounded-xl bg-[#f4f9f8]" />
               </div>
             )}
           </div>
@@ -1198,7 +1188,7 @@ export function HotelDetailView({
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-[76px] right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-[#0f766e] text-white shadow-lg transition hover:bg-[#115e59] sm:right-6 lg:bottom-6"
+          className="fixed bottom-[76px] right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-[#0f766e] text-white shadow-[0_8px_24px_-10px_rgba(15,118,110,0.55)] transition hover:bg-[#0d9488] sm:right-6 lg:bottom-6"
           aria-label="Scroll to top"
         >
           <ArrowUp className="h-5 w-5" strokeWidth={2.5} aria-hidden />

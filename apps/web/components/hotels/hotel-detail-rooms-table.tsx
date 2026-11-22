@@ -211,48 +211,50 @@ function RoomTypeCard({
 
   return (
     <article className={cn(
-      "overflow-hidden rounded-xl border bg-white transition-all",
-      isExpanded ? "border-[#0f766e] shadow-[0_0_0_1px_#0f766e]" : "border-[#e0e0e0] shadow-sm hover:border-[#bbb] hover:shadow-md",
+      "overflow-hidden rounded-2xl border bg-white transition-all",
+      isExpanded
+        ? "border-[#0f766e]/50 shadow-[0_12px_40px_-28px_rgba(15,118,110,0.45)]"
+        : "border-[#e6eeec] hover:border-[#cceae4]",
     )}>
 
       {/* ── ROOM HEADER ── */}
-      <div className="flex flex-col gap-3 p-3 sm:flex-row">
+      <div className="flex flex-col gap-4 p-4 sm:flex-row sm:gap-5 sm:p-5">
         {/* Thumbnail */}
         <button
           type="button"
           onClick={() => onRoomPhotoClick?.(roomType.image)}
-          className="relative h-[152px] w-full shrink-0 overflow-hidden rounded-xl sm:h-[168px] sm:w-[252px]"
+          className="relative h-[160px] w-full shrink-0 overflow-hidden rounded-2xl sm:h-[176px] sm:w-[260px]"
           tabIndex={-1}
         >
-          <Image src={roomType.image} alt={roomType.name} fill unoptimized className="object-cover object-center transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, 252px" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+          <Image src={roomType.image} alt={roomType.name} fill unoptimized className="object-cover object-center transition-transform duration-500 hover:scale-105" sizes="(max-width: 640px) 100vw, 260px" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           {roomType.availableCount != null && roomType.availableCount <= 5 && roomType.availableCount > 0 && (
-            <span className="absolute bottom-2 left-2 rounded bg-[#c62828] px-1.5 py-0.5 text-[10px] font-bold text-white">
+            <span className="absolute bottom-2.5 left-2.5 rounded-full bg-[#c62828]/90 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
               Only {roomType.availableCount} left
             </span>
           )}
         </button>
 
         {/* Room info */}
-        <div className="flex min-w-0 flex-1 flex-col gap-2 px-1 py-1.5 text-left sm:flex-row sm:items-start sm:gap-4 sm:px-2 sm:py-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-2.5 px-0.5 py-0.5 text-left sm:flex-row sm:items-start sm:gap-5 sm:px-1 sm:py-1">
           <div className="min-w-0 flex-1">
             {/* Top badges */}
-            <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+            <div className="mb-2 flex flex-wrap items-center gap-1.5">
               {roomIndex === 1 && (
-                <span className="rounded-sm bg-[#0f766e] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">Most Popular</span>
+                <span className="rounded-full bg-[#0f766e] px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">Most Popular</span>
               )}
               {hasDiscount && discountPct >= 5 && (
-                <span className="flex items-center gap-0.5 rounded-sm bg-[#e8f5e9] px-2 py-0.5 text-[9px] font-bold text-[#2E7D32]">
+                <span className="flex items-center gap-0.5 rounded-full bg-[#ecfdf5] px-2.5 py-0.5 text-[9px] font-bold text-[#0f766e]">
                   <Percent className="h-2.5 w-2.5" />{discountPct}% off
                 </span>
               )}
               {hotel.freeCancellation && (
-                <span className="rounded-sm border border-[#c8e6c9] bg-[#f1fdf3] px-2 py-0.5 text-[9px] font-bold text-[#2E7D32]">Free cancellation</span>
+                <span className="rounded-full bg-[#f0fdfa] px-2.5 py-0.5 text-[9px] font-semibold text-[#0f766e]">Free cancellation</span>
               )}
             </div>
 
             {/* Room name */}
-            <p className="text-[18px] font-bold leading-snug text-[#1a1a1a]">{roomType.name}</p>
+            <p className="text-[18px] font-bold leading-snug tracking-[-0.02em] text-[#15202b]">{roomType.name}</p>
 
             {/* Key specs row */}
             <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-[#616161]">
@@ -306,15 +308,15 @@ function RoomTypeCard({
 
             {/* Amenity chips */}
             {amenities.length > 0 && (
-              <div className="mt-2 hidden flex-wrap gap-1.5 sm:flex">
+              <div className="mt-2.5 hidden flex-wrap gap-1.5 sm:flex">
                 {amenities.slice(0, 6).map(a => (
-                  <span key={a} className="flex items-center gap-1 rounded bg-[#f5f5f5] px-2 py-0.5 text-[10px] text-[#424242]">
-                    <Check className="h-2.5 w-2.5 shrink-0 text-[#2E7D32]" strokeWidth={3} />
+                  <span key={a} className="flex items-center gap-1 rounded-full bg-[#f0fdfa] px-2.5 py-1 text-[10px] text-[#5d6673]">
+                    <Check className="h-2.5 w-2.5 shrink-0 text-[#0f766e]" strokeWidth={3} />
                     {a}
                   </span>
                 ))}
                 {amenities.length > 6 && (
-                  <span className="rounded bg-[#f5f5f5] px-2 py-0.5 text-[10px] text-[#9E9E9E]">+{amenities.length - 6} more</span>
+                  <span className="rounded-full bg-[#f8fbfa] px-2.5 py-1 text-[10px] text-[#98a2b3]">+{amenities.length - 6} more</span>
                 )}
               </div>
             )}
@@ -329,29 +331,29 @@ function RoomTypeCard({
           </div>
 
           {/* Pricing + expand */}
-          <div className="flex w-full shrink-0 items-center justify-between gap-3 border-t border-[#f1f1f1] pt-3 text-left sm:block sm:w-auto sm:border-0 sm:pt-0 sm:text-right">
+          <div className="flex w-full shrink-0 items-center justify-between gap-3 border-t border-[#eef4f2] pt-3.5 text-left sm:block sm:w-auto sm:border-0 sm:pt-0 sm:text-right">
             {hasDiscount && (
-              <p className="text-[11px] text-[#9E9E9E] line-through">
+              <p className="text-[11px] text-[#98a2b3] line-through">
                 ₹{formatInrAmount(nights > 1
                   ? Math.round(lowestOriginalPrice * nights * roomsCount + cheapestPlan.taxes * nights * roomsCount)
                   : lowestOriginalPrice
                 )}
               </p>
             )}
-            <p className="text-[10px] font-medium uppercase tracking-wide text-[#9E9E9E]">
+            <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-[#98a2b3]">
               {nights > 1 ? `${nights} nights from` : "Starts from"}
             </p>
-            <p className="text-[22px] font-extrabold leading-tight text-[#1a1a1a]">
+            <p className="mt-0.5 text-[24px] font-extrabold leading-tight tracking-tight text-[#0f766e]">
               ₹{formatInrAmount(fromPriceTotal)}
             </p>
-            <p className="text-[10px] text-[#9E9E9E]">
+            <p className="mt-0.5 text-[11px] text-[#98a2b3]">
               {nights > 1 ? `incl. taxes · ${roomsCount} room${roomsCount > 1 ? "s" : ""}` : "per night + taxes"}
             </p>
             <button type="button" onClick={onToggle} className={cn(
-              "mt-0 inline-flex items-center gap-1 rounded-lg border px-3 py-2 text-[12px] font-bold transition sm:mt-2.5",
+              "mt-0 inline-flex items-center gap-1 rounded-xl border px-3.5 py-2 text-[12px] font-bold transition sm:mt-3",
               isExpanded
                 ? "border-[#0f766e] text-[#0f766e]"
-                : "border-[#e0e0e0] text-[#424242] hover:border-[#0f766e] hover:text-[#0f766e]"
+                : "border-[#d9ebe7] text-[#5d6673] hover:border-[#0f766e] hover:text-[#0f766e]"
             )}>
               {isExpanded ? <>Close <ChevronUp className="h-3.5 w-3.5" /></> : <>See options <ChevronDown className="h-3.5 w-3.5" /></>}
             </button>
@@ -361,24 +363,24 @@ function RoomTypeCard({
 
       {/* ── EXPANDED ─────────────────────────────────────────────────── */}
       {isExpanded && selectedPlan && (
-        <div className="border-t border-[#f0f0f0]">
+        <div className="border-t border-[#eef4f2]">
           <div className="flex flex-col xl:flex-row">
 
             {/* ── LEFT — Plan table + amenities ──────────────────────── */}
-            <div className="flex-1 xl:border-r xl:border-[#f0f0f0]">
+            <div className="flex-1 xl:border-r xl:border-[#eef4f2]">
 
               {/* Column headers */}
-              <div className="hidden grid-cols-[1fr_150px_150px_140px] gap-4 border-b border-[#f0f0f0] bg-[#f7f7f7] px-5 py-2.5 sm:grid">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#9E9E9E]">Board Basis</p>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#9E9E9E]">Cancellation</p>
-                <p className="text-right text-[10px] font-bold uppercase tracking-widest text-[#9E9E9E]">Per Night</p>
-                <p className="text-right text-[10px] font-bold uppercase tracking-widest text-[#9E9E9E]">
+              <div className="hidden grid-cols-[1fr_150px_150px_140px] gap-4 border-b border-[#eef4f2] bg-[#f8fbfa] px-5 py-3 sm:grid">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#98a2b3]">Board Basis</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#98a2b3]">Cancellation</p>
+                <p className="text-right text-[10px] font-bold uppercase tracking-widest text-[#98a2b3]">Per Night</p>
+                <p className="text-right text-[10px] font-bold uppercase tracking-widest text-[#98a2b3]">
                   {nights > 1 ? `Total (${nights} nights)` : "Total (incl. tax)"}
                 </p>
               </div>
 
               {/* Plan rows */}
-              <div className="divide-y divide-[#f5f5f5]">
+              <div className="divide-y divide-[#eef4f2]">
                 {roomType.ratePlans.map((plan) => {
                   const sel = plan.id === selectedPlanId;
                   const planTaxes = plan.taxes * nights * roomsCount;
@@ -393,8 +395,8 @@ function RoomTypeCard({
                       type="button"
                       onClick={() => setSelectedPlanId(plan.id)}
                       className={cn(
-                        "grid w-full grid-cols-[1fr_auto] gap-x-3 gap-y-1.5 px-3 py-2.5 text-left transition sm:grid-cols-[1fr_150px_150px_140px] sm:items-start sm:gap-4 sm:px-5 sm:py-4",
-                        sel ? "bg-[#fff8f3]" : "bg-white hover:bg-[#fafafa]",
+                        "grid w-full grid-cols-[1fr_auto] gap-x-3 gap-y-1.5 px-3 py-3 text-left transition sm:grid-cols-[1fr_150px_150px_140px] sm:items-start sm:gap-4 sm:px-5 sm:py-4",
+                        sel ? "bg-[#f0fdfa]" : "bg-white hover:bg-[#f8fbfa]",
                       )}
                     >
                       {/* Board + benefits */}
@@ -412,23 +414,23 @@ function RoomTypeCard({
                               {getMealLabel(plan)}
                             </p>
                             {plan.showBestValueBadge && (
-                              <span className="rounded-sm bg-[#003580] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">Best Value</span>
+                              <span className="rounded-full bg-[#0f766e] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">Best Value</span>
                             )}
                             {planDiscPct >= 5 && (
-                              <span className="rounded-sm bg-[#fef3c7] px-1.5 py-0.5 text-[9px] font-bold text-[#92400e]">{planDiscPct}% off</span>
+                              <span className="rounded-full bg-[#ecfdf5] px-2 py-0.5 text-[9px] font-bold text-[#0f766e]">{planDiscPct}% off</span>
                             )}
                             {plan.couponCode && (
-                              <span className="flex items-center gap-1 rounded-sm bg-[#e8f5e9] px-1.5 py-0.5 text-[9px] font-bold text-[#2E7D32]">
+                              <span className="flex items-center gap-1 rounded-full bg-[#f0fdfa] px-2 py-0.5 text-[9px] font-bold text-[#0f766e]">
                                 <Tag className="h-2.5 w-2.5" />{plan.couponCode}
                               </span>
                             )}
                           </div>
-                          <p className="mt-0.5 text-[11px] text-[#757575]">{getMealDescription(plan)}</p>
+                          <p className="mt-0.5 text-[11px] text-[#7b8491]">{getMealDescription(plan)}</p>
                           {plan.benefits.length > 0 && (
                           <ul className="mt-1.5 hidden space-y-0.5 sm:block">
                               {plan.benefits.slice(0, 4).map(b => (
-                                <li key={b} className="flex items-center gap-1.5 text-[11px] text-[#424242]">
-                                  <Check className="h-3 w-3 shrink-0 text-[#2E7D32]" strokeWidth={2.5} />
+                                <li key={b} className="flex items-center gap-1.5 text-[11px] text-[#5d6673]">
+                                  <Check className="h-3 w-3 shrink-0 text-[#0f766e]" strokeWidth={2.5} />
                                   {b}
                                 </li>
                               ))}
@@ -442,12 +444,12 @@ function RoomTypeCard({
                         {plan.nonRefundable ? (
                           <>
                             <p className="text-[12px] font-semibold text-[#c62828]">Non-refundable</p>
-                            <p className="mt-0.5 text-[10px] text-[#9E9E9E]">No refund on cancellation</p>
+                            <p className="mt-0.5 text-[10px] text-[#98a2b3]">No refund on cancellation</p>
                           </>
                         ) : (
                           <>
-                            <p className="text-[12px] font-semibold text-[#2E7D32]">Free cancellation</p>
-                            <p className="mt-0.5 text-[10px] text-[#9E9E9E]">Cancel any time before check-in</p>
+                            <p className="text-[12px] font-semibold text-[#0f766e]">Free cancellation</p>
+                            <p className="mt-0.5 text-[10px] text-[#98a2b3]">Cancel any time before check-in</p>
                           </>
                         )}
                       </div>
@@ -455,25 +457,25 @@ function RoomTypeCard({
                       {/* Per-night price */}
                       <div className="pl-7 text-left sm:pl-0 sm:text-right">
                         {plan.originalPrice > plan.price && (
-                          <p className="text-[11px] text-[#9E9E9E] line-through">₹{formatInrAmount(plan.originalPrice)}</p>
+                          <p className="text-[11px] text-[#98a2b3] line-through">₹{formatInrAmount(plan.originalPrice)}</p>
                         )}
-                        <p className="text-[16px] font-extrabold text-[#1a1a1a]">₹{formatInrAmount(plan.price)}</p>
-                        <p className="text-[10px] text-[#9E9E9E]">per room / night</p>
+                        <p className="text-[17px] font-extrabold tracking-tight text-[#15202b]">₹{formatInrAmount(plan.price)}</p>
+                        <p className="text-[10px] text-[#98a2b3]">per room / night</p>
                         {plan.discountAmount > 0 && (
-                          <p className="mt-0.5 text-[11px] font-semibold text-[#2E7D32]">
+                          <p className="mt-0.5 text-[11px] font-semibold text-[#0f766e]">
                             Save ₹{formatInrAmount(plan.discountAmount)}/nt
                           </p>
                         )}
                       </div>
 
                       {/* Total */}
-                      <div className="col-span-2 flex items-center justify-between border-t border-[#f5f5f5] pt-1.5 pl-7 text-left sm:col-span-1 sm:block sm:border-0 sm:pt-0 sm:pl-0 sm:text-right">
-                        <p className="text-[18px] font-extrabold text-[#0f766e]">
+                      <div className="col-span-2 flex items-center justify-between border-t border-[#eef4f2] pt-2 pl-7 text-left sm:col-span-1 sm:block sm:border-0 sm:pt-0 sm:pl-0 sm:text-right">
+                        <p className="text-[18px] font-extrabold tracking-tight text-[#0f766e]">
                           ₹{formatInrAmount(planGrandTotal)}
                         </p>
-                        <p className="text-[10px] text-[#9E9E9E]">incl. all taxes</p>
+                        <p className="text-[10px] text-[#98a2b3]">incl. all taxes</p>
                         {roomsCount > 1 && (
-                          <p className="text-[10px] text-[#9E9E9E]">{roomsCount} rooms</p>
+                          <p className="text-[10px] text-[#98a2b3]">{roomsCount} rooms</p>
                         )}
                       </div>
                     </button>
@@ -483,8 +485,8 @@ function RoomTypeCard({
 
               {/* Amenities section */}
               {amenityGroups.length > 0 && (
-                <div className="border-t border-[#f0f0f0] bg-[#fafafa] px-5 py-4">
-                  <p className="mb-3 text-[11px] font-bold uppercase tracking-widest text-[#9E9E9E]">Room Amenities</p>
+                <div className="border-t border-[#eef4f2] bg-[#f8fbfa] px-5 py-5">
+                  <p className="mb-3 text-[11px] font-bold uppercase tracking-widest text-[#98a2b3]">Room Amenities</p>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-3">
                     {amenityGroups.map(group => (
                       <div key={group.label}>
@@ -519,57 +521,57 @@ function RoomTypeCard({
             </div>
 
             {/* ── RIGHT — Booking summary panel ──────────────────────── */}
-            <div className="w-full shrink-0 border-t border-[#f0f0f0] xl:w-[300px] xl:border-t-0">
-              <div className="flex h-full flex-col divide-y divide-[#f0f0f0]">
+            <div className="w-full shrink-0 border-t border-[#eef4f2] xl:w-[300px] xl:border-t-0">
+              <div className="flex h-full flex-col divide-y divide-[#eef4f2]">
 
                 {/* Stay dates */}
-                <div className="bg-[#f7f7f7] px-5 py-4">
-                  <p className="mb-3 text-[11px] font-bold uppercase tracking-widest text-[#9E9E9E]">Your Stay</p>
+                <div className="bg-[#f8fbfa] px-5 py-5">
+                  <p className="mb-3 text-[11px] font-bold uppercase tracking-widest text-[#98a2b3]">Your Stay</p>
                   <div className="flex items-stretch gap-3">
-                    <div className="flex-1 rounded-lg border border-[#e8e8e8] bg-white px-3 py-2.5 text-center">
-                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#9E9E9E]">Check-in</p>
-                      <p className="mt-0.5 text-[13px] font-bold text-[#1a1a1a]">{formatDateShort(bookingContext?.check_in)}</p>
+                    <div className="flex-1 rounded-xl border border-[#e6eeec] bg-white px-3 py-2.5 text-center">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#98a2b3]">Check-in</p>
+                      <p className="mt-0.5 text-[13px] font-bold text-[#15202b]">{formatDateShort(bookingContext?.check_in)}</p>
                     </div>
                     <div className="flex items-center">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#f0f0f0]">
-                        <span className="text-[10px] font-bold text-[#757575]">{nights}N</span>
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#e6eeec]">
+                        <span className="text-[10px] font-bold text-[#5d6673]">{nights}N</span>
                       </div>
                     </div>
-                    <div className="flex-1 rounded-lg border border-[#e8e8e8] bg-white px-3 py-2.5 text-center">
-                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#9E9E9E]">Check-out</p>
-                      <p className="mt-0.5 text-[13px] font-bold text-[#1a1a1a]">{formatDateShort(bookingContext?.check_out)}</p>
+                    <div className="flex-1 rounded-xl border border-[#e6eeec] bg-white px-3 py-2.5 text-center">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-[#98a2b3]">Check-out</p>
+                      <p className="mt-0.5 text-[13px] font-bold text-[#15202b]">{formatDateShort(bookingContext?.check_out)}</p>
                     </div>
                   </div>
 
                   {/* Room, board, guests */}
                   <div className="mt-3 space-y-1.5 text-[12px]">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[#9E9E9E]">Room</span>
-                      <span className="font-semibold text-[#1a1a1a]">{roomType.name}</span>
+                      <span className="text-[#98a2b3]">Room</span>
+                      <span className="font-semibold text-[#15202b]">{roomType.name}</span>
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[#9E9E9E]">Board</span>
-                      <span className="font-semibold text-[#1a1a1a]">{getMealLabel(selectedPlan)}</span>
+                      <span className="text-[#98a2b3]">Board</span>
+                      <span className="font-semibold text-[#15202b]">{getMealLabel(selectedPlan)}</span>
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[#9E9E9E]">Guests</span>
-                      <span className="font-semibold text-[#1a1a1a]">{guests} adult{guests !== 1 ? "s" : ""}</span>
+                      <span className="text-[#98a2b3]">Guests</span>
+                      <span className="font-semibold text-[#15202b]">{guests} adult{guests !== 1 ? "s" : ""}</span>
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[#9E9E9E]">Rooms</span>
-                      <span className="font-semibold text-[#1a1a1a]">{roomsCount}</span>
+                      <span className="text-[#98a2b3]">Rooms</span>
+                      <span className="font-semibold text-[#15202b]">{roomsCount}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* What's included */}
                 {selectedPlan.benefits.length > 0 && (
-                  <div className="px-5 py-3.5">
-                    <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-[#9E9E9E]">What&apos;s Included</p>
+                  <div className="px-5 py-4">
+                    <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-[#98a2b3]">What&apos;s Included</p>
                     <ul className="space-y-1">
                       {selectedPlan.benefits.map(b => (
-                        <li key={b} className="flex items-center gap-2 text-[12px] text-[#424242]">
-                          <Check className="h-3.5 w-3.5 shrink-0 text-[#2E7D32]" strokeWidth={2.5} />
+                        <li key={b} className="flex items-center gap-2 text-[12px] text-[#5d6673]">
+                          <Check className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2.5} />
                           {b}
                         </li>
                       ))}
@@ -578,54 +580,54 @@ function RoomTypeCard({
                 )}
 
                 {/* Price breakdown */}
-                <div className="space-y-2 px-5 py-4">
+                <div className="space-y-2.5 px-5 py-4">
                   <div className="flex items-center justify-between text-[12px]">
-                    <span className="text-[#757575]">
+                    <span className="text-[#7b8491]">
                       ₹{formatInrAmount(pricePerNight)} × {nights} nt{roomsCount > 1 ? ` × ${roomsCount} rooms` : ""}
                     </span>
-                    <span className="font-medium text-[#1a1a1a]">₹{formatInrAmount(baseTotal)}</span>
+                    <span className="font-medium text-[#15202b]">₹{formatInrAmount(baseTotal)}</span>
                   </div>
                   {totalTaxes > 0 && (
                     <div className="flex items-center justify-between text-[12px]">
-                      <span className="text-[#757575]">Taxes &amp; fees</span>
-                      <span className="font-medium text-[#1a1a1a]">₹{formatInrAmount(totalTaxes)}</span>
+                      <span className="text-[#7b8491]">Taxes &amp; fees</span>
+                      <span className="font-medium text-[#667085]">₹{formatInrAmount(totalTaxes)}</span>
                     </div>
                   )}
                   {discountTotal > 0 && (
                     <div className="flex items-center justify-between text-[12px]">
-                      <span className="text-[#2E7D32]">Rate discount</span>
-                      <span className="font-semibold text-[#2E7D32]">−₹{formatInrAmount(discountTotal)}</span>
+                      <span className="text-[#0f766e]">Rate discount</span>
+                      <span className="font-semibold text-[#0f766e]">−₹{formatInrAmount(discountTotal)}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Grand total + CTA */}
-                <div className="px-5 py-4">
-                  <div className="flex items-baseline justify-between">
-                    <p className="text-[13px] font-bold text-[#1a1a1a]">Total amount</p>
-                    <p className="text-[24px] font-extrabold leading-none text-[#0f766e]">₹{formatInrAmount(grandTotal)}</p>
+                <div className="px-5 py-5">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-[13px] font-bold text-[#15202b]">Total amount</p>
+                    <p className="text-[26px] font-extrabold leading-none tracking-tight text-[#0f766e]">₹{formatInrAmount(grandTotal)}</p>
                   </div>
-                  <p className="mt-0.5 text-right text-[10px] text-[#9E9E9E]">All taxes &amp; fees included</p>
+                  <p className="mt-1 text-right text-[10px] text-[#98a2b3]">All taxes &amp; fees included</p>
 
                   <div className="mt-3">
                     {selectedPlan.nonRefundable ? (
                       <p className="text-[11px] font-semibold text-[#c2410c]">⚠ Non-refundable — no refund on cancellation</p>
                     ) : (
                       <div className="flex items-center gap-1.5">
-                        <Check className="h-3.5 w-3.5 shrink-0 text-[#2E7D32]" strokeWidth={2.5} />
-                        <p className="text-[12px] font-semibold text-[#2E7D32]">Free cancellation before check-in</p>
+                        <Check className="h-3.5 w-3.5 shrink-0 text-[#0f766e]" strokeWidth={2.5} />
+                        <p className="text-[12px] font-semibold text-[#0f766e]">Free cancellation before check-in</p>
                       </div>
                     )}
                   </div>
 
                   <Link
                     href={bookingHref}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0f766e] py-4 text-[15px] font-extrabold text-white shadow-[0_4px_16px_rgba(15,118,110,0.4)] transition hover:bg-[#0f766e] active:scale-[0.98]"
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0f766e] py-4 text-[15px] font-extrabold text-white transition hover:bg-[#0d9488] active:scale-[0.98]"
                   >
                     <ShieldCheck className="h-4 w-4" aria-hidden />
                     Reserve This Room
                   </Link>
-                  <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[11px] text-[#9E9E9E]">
+                  <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[11px] text-[#98a2b3]">
                     <Lock className="h-3 w-3" aria-hidden />
                     No payment charged at this step
                   </p>
@@ -658,16 +660,16 @@ export function HotelDetailRoomsTable({
 
   if (roomTypes.length === 0) {
     return (
-      <div className={cn("rounded-lg border border-[#e0e0e0] bg-white p-8 text-center", className)}>
-        <p className="font-semibold text-[#212121]">No rooms available</p>
-        <p className="mt-1 text-sm text-[#757575]">Room rates are not listed right now. Please try again later.</p>
+      <div className={cn("rounded-2xl border border-[#e6eeec] bg-white p-8 text-center", className)}>
+        <p className="font-semibold text-[#15202b]">No rooms available</p>
+        <p className="mt-1 text-sm text-[#7b8491]">Room rates are not listed right now. Please try again later.</p>
       </div>
     );
   }
 
   return (
-    <div className={cn("space-y-3 p-3 sm:p-4", className)}>
-      <p className="text-[12px] text-[#757575]">
+    <div className={cn("space-y-4 p-4 sm:space-y-5 sm:p-5", className)}>
+      <p className="text-[12px] text-[#7b8491]">
         Select a room to expand — choose your meal plan and extras, price updates instantly.
       </p>
       {roomTypes.map((roomType, index) => (
