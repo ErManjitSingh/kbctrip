@@ -32,7 +32,7 @@ function OfferCard({ title, subtitle, href, image, badge }: Omit<ExclusiveOffer,
           <p className="line-clamp-2 text-[16px] font-bold leading-snug sm:text-[17px]">{title}</p>
           <p className="mt-1 line-clamp-1 text-[12px] text-white/85">{subtitle}</p>
           <span className="mt-2 inline-flex items-center gap-1 text-[12px] font-bold text-white">
-            Book Now
+            View hotels
             <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </span>
         </div>

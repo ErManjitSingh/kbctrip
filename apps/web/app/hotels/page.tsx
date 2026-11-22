@@ -8,7 +8,7 @@ import { HotelsPopularHotelsSection } from "@/components/hotels/hotels-popular-h
 import { HotelsMoodEscapes } from "@/components/hotels/hotels-mood-escapes";
 import { HotelsWhyBook } from "@/components/hotels/hotels-why-book";
 import { fetchAllHotels } from "@/lib/hotels-api";
-import { getExclusiveOffers } from "@/lib/exclusive-offers";
+import { getDestinationHotelDeals } from "@/lib/exclusive-offers";
 import { TRAVEL_HOME_BRAND } from "@/lib/travel-home-brand";
 import { HotelsPopularDestinationsSkeleton } from "@/components/hotels/hotels-page-skeleton";
 
@@ -25,7 +25,7 @@ async function HotelsDynamicSections({
 }: {
   featuredHotels: Awaited<ReturnType<typeof fetchAllHotels>>["hotels"];
 }) {
-  const offers = getExclusiveOffers();
+  const offers = getDestinationHotelDeals(featuredHotels);
 
   return (
     <>
