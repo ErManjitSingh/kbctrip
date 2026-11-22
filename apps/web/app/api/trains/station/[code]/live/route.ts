@@ -1,5 +1,5 @@
 import { railLiveStation } from '@/lib/railkit';
-import { trainsJsonError, trainsJsonOk } from '@/lib/trains-api-response';
+import { trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,7 @@ export async function GET(
     if (!code?.trim()) {
       return trainsJsonError(new Error('Station code is required'));
     }
-    const result = await railLiveStation(code, hours);
+    const result = unwrapRailkit(await railLiveStation(code, hours));
     return trainsJsonOk(result);
   } catch (error) {
     return trainsJsonError(error);

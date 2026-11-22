@@ -205,9 +205,24 @@ export function TrainsResultsClient({ from, to, date, coachClass }: Props) {
         if (cancelled) return;
         if (!res.success) {
           setMessage(res.message || 'Could not load trains');
+          setRows([]);
           return;
         }
-        const list = asList(res.data);
+        // Guard against RailKit error envelopes that look like empty lists.
+        const payload = res.data;
+        if (
+          payload &&
+          typeof payload === 'object' &&
+          !Array.isArray(payload) &&
+          (payload as { success?: boolean }).success === false
+        ) {
+          const err = (payload as { error?: unknown; message?: unknown }).error
+            ?? (payload as { message?: unknown }).message;
+          setMessage(String(err || res.message || 'Could not load trains'));
+          setRows([]);
+          return;
+        }
+        const list = asList(payload);
         setRows(list);
         if (!list.length) setMessage('No direct trains found for this route.');
       })

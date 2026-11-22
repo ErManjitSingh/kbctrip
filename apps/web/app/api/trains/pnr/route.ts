@@ -1,5 +1,5 @@
 import { railPnr } from '@/lib/railkit';
-import { trainsJsonError, trainsJsonOk } from '@/lib/trains-api-response';
+import { trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     if (pnr.length !== 10) {
       return trainsJsonError(new Error('Enter a valid 10-digit PNR'));
     }
-    const result = await railPnr(pnr);
+    const result = unwrapRailkit(await railPnr(pnr));
     return trainsJsonOk(result);
   } catch (error) {
     return trainsJsonError(error);

@@ -1,5 +1,5 @@
 import { railAvailability, railFare } from '@/lib/railkit';
-import { trainsJsonError, trainsJsonOk } from '@/lib/trains-api-response';
+import { trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,21 +19,15 @@ export async function GET(req: Request) {
       railAvailability(train, from, to, date, coach, quota),
       railFare(train, from, to, date, coach, quota).catch(() => null),
     ]);
-    // Unwrap RailKit { success, data } envelopes when present.
-    const availability =
-      availabilityRaw &&
-      typeof availabilityRaw === 'object' &&
-      'data' in availabilityRaw &&
-      (availabilityRaw as { success?: boolean }).success !== false
-        ? (availabilityRaw as { data: unknown }).data
-        : availabilityRaw;
-    const fare =
-      fareRaw &&
-      typeof fareRaw === 'object' &&
-      'data' in fareRaw &&
-      (fareRaw as { success?: boolean }).success !== false
-        ? (fareRaw as { data: unknown }).data
-        : fareRaw;
+    const availability = unwrapRailkit(availabilityRaw);
+    let fare: unknown = null;
+    if (fareRaw != null) {
+      try {
+        fare = unwrapRailkit(fareRaw);
+      } catch {
+        fare = null;
+      }
+    }
     return trainsJsonOk({ availability, fare });
   } catch (error) {
     return trainsJsonError(error);

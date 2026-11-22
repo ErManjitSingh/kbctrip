@@ -1,5 +1,5 @@
 import { railTrack, railTrainInfo } from '@/lib/railkit';
-import { trainsJsonError, trainsJsonOk } from '@/lib/trains-api-response';
+import { trainsJsonError, trainsJsonOk, unwrapRailkit } from '@/lib/trains-api-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,10 +14,14 @@ export async function GET(
       return trainsJsonError(new Error('Enter a valid 5-digit train number'));
     }
     const date = new URL(req.url).searchParams.get('date')?.trim() || undefined;
-    const info = await railTrainInfo(train);
+    const info = unwrapRailkit(await railTrainInfo(train));
     let live = null;
     if (date) {
-      live = await railTrack(train, date).catch(() => null);
+      try {
+        live = unwrapRailkit(await railTrack(train, date));
+      } catch {
+        live = null;
+      }
     }
     return trainsJsonOk({ info, live });
   } catch (error) {
