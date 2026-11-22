@@ -33,10 +33,11 @@ const LIST_PROPERTY_CTA = {
   badge: "Free",
 } as const;
 
-const SOON_NAV_IDS = new Set<string>(["flights", "trains", "bus", "cabs", "activities"]);
+const SOON_NAV_IDS = new Set<string>(["flights", "bus", "cabs", "activities"]);
 
 const EASE_MAIN_NAV: EaseNavItem[] = [
   { id: "hotels",     label: "HOTELS",     href: "/hotels"     },
+  { id: "trains",     label: "TRAINS",     href: "/trains"     },
   { id: "holidays",   label: "HOLIDAYS",   href: "/packages"   },
 ];
 

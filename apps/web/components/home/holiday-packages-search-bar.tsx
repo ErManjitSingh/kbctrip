@@ -576,6 +576,14 @@ export function HolidayPackagesSearchBar({ className, catalog: rawCatalog, initi
       return;
     }
 
+    if (service === "trains") {
+      // Station codes are chosen on /trains; hand off date so search can continue there.
+      const params = new URLSearchParams();
+      if (dateIso) params.set("date", dateIso);
+      router.push(`/trains${params.size ? `?${params.toString()}` : ""}`);
+      return;
+    }
+
     if (service !== "holidays") {
       const target = service === "bus" ? "/bus" : `/${service}`;
       const params = new URLSearchParams();

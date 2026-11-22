@@ -144,6 +144,9 @@ importers:
       next:
         specifier: 15.5.22
         version: 15.5.22(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      railkit:
+        specifier: ^6.0.2
+        version: 6.0.2
       react:
         specifier: 19.1.1
         version: 19.1.1
@@ -159,6 +162,9 @@ importers:
       recharts:
         specifier: ^3.10.1
         version: 3.10.1(@types/react@19.2.18)(react-dom@19.1.1(react@19.1.1))(react-is@19.2.8)(react@19.1.1)(redux@5.0.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       swiper:
         specifier: ^14.2.0
         version: 14.2.0
@@ -2999,6 +3005,9 @@ packages:
   queue@6.0.2:
     resolution: {integrity: sha512-iHZWu+q3IdFZFX36ro/lKBkSvfkztY5Y7HMiPlOUjhupPcG2JMfst2KKEpu5XndviX/3UhFbRngUPNKtgvtZiA==}
 
+  railkit@6.0.2:
+    resolution: {integrity: sha512-3vYCoQm8MLAtUYi+TScxumUG4hnPZpPf7kgOnQIIygkhY0rNOOqoicRUrkwh0fvvKZ7RvlBgqiX3SRai+g7NvA==}
+
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
@@ -5281,7 +5290,9 @@ snapshots:
       metro-runtime: 0.84.4
     transitivePeerDependencies:
       - '@babel/core'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.74.89': {}
 
@@ -6963,6 +6974,8 @@ snapshots:
   queue@6.0.2:
     dependencies:
       inherits: 2.0.4
+
+  railkit@6.0.2: {}
 
   range-parser@1.2.1: {}
 

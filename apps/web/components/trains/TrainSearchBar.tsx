@@ -156,17 +156,29 @@ function StationInput({ label, value, onChange, placeholder, exclude }: StationI
 // ── Main component ────────────────────────────────────────────────────────────
 interface TrainSearchBarProps {
   className?: string;
+  initialFrom?: string;
+  initialTo?: string;
+  initialDate?: string;
+  initialClass?: string;
 }
 
-export function TrainSearchBar({ className }: TrainSearchBarProps) {
+export function TrainSearchBar({
+  className,
+  initialFrom = "NDLS",
+  initialTo = "BCT",
+  initialDate,
+  initialClass = "ALL",
+}: TrainSearchBarProps) {
   const router = useRouter();
 
-  const [fromCode, setFromCode] = useState("NDLS");
-  const [fromName, setFromName] = useState("New Delhi");
-  const [toCode,   setToCode]   = useState("BCT");
-  const [toName,   setToName]   = useState("Mumbai Central");
-  const [date,     setDate]     = useState(tomorrow());
-  const [tClass,   setTClass]   = useState("ALL");
+  const fromSeed = POPULAR_STATIONS.find((s) => s.code === initialFrom.toUpperCase());
+  const toSeed = POPULAR_STATIONS.find((s) => s.code === initialTo.toUpperCase());
+  const [fromCode, setFromCode] = useState(initialFrom.toUpperCase());
+  const [fromName, setFromName] = useState(fromSeed?.name ?? initialFrom.toUpperCase());
+  const [toCode,   setToCode]   = useState(initialTo.toUpperCase());
+  const [toName,   setToName]   = useState(toSeed?.name ?? initialTo.toUpperCase());
+  const [date,     setDate]     = useState(initialDate || tomorrow());
+  const [tClass,   setTClass]   = useState(initialClass.toUpperCase());
   const [showClass, setShowClass] = useState(false);
   const classRef = useRef<HTMLDivElement>(null);
   const dateRef  = useRef<HTMLInputElement>(null);

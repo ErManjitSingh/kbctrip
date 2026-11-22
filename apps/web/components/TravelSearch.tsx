@@ -29,6 +29,7 @@ import {
   matchHotelDestinationFromList,
   slugifyCityName,
 } from '@/lib/hotels-catalog';
+import { filterTrainStations, type TrainStation, TRAIN_STATIONS } from '@/lib/train-stations';
 
 const coreServices = [
   { label: 'Packages', icon: Gift },
@@ -46,12 +47,14 @@ const bannerServices = [
 ] as const;
 
 type Service = (typeof bannerServices)[number]['label'];
-type PopoverName = 'location' | 'start' | 'end' | 'travellers' | null;
+type PopoverName = 'location' | 'start' | 'end' | 'travellers' | 'trainFrom' | 'trainTo' | null;
 
 type Destination = {
   name: string;
   detail: string;
   search: string;
+  fromCode?: string;
+  toCode?: string;
 };
 
 const destinationSets: Record<Service, Destination[]> = {
@@ -83,10 +86,10 @@ const destinationSets: Record<Service, Destination[]> = {
     { name: 'Dubai', detail: 'DXB · International', search: 'Dubai' },
   ],
   Trains: [
-    { name: 'Delhi → Jaipur', detail: 'Rail · about 5 hours', search: 'Delhi to Jaipur' },
-    { name: 'Chandigarh → Shimla', detail: 'Rail · toy train', search: 'Chandigarh to Shimla' },
-    { name: 'Mumbai → Goa', detail: 'Rail · Konkan', search: 'Mumbai to Goa' },
-    { name: 'Delhi → Manali route', detail: 'Rail to Chandigarh, then hill', search: 'Delhi to Manali' },
+    { name: 'New Delhi → Mumbai Central', detail: 'NDLS → BCT', search: 'NDLS to BCT', fromCode: 'NDLS', toCode: 'BCT' },
+    { name: 'New Delhi → Howrah', detail: 'NDLS → HWH', search: 'NDLS to HWH', fromCode: 'NDLS', toCode: 'HWH' },
+    { name: 'Jaipur → New Delhi', detail: 'JP → NDLS', search: 'JP to NDLS', fromCode: 'JP', toCode: 'NDLS' },
+    { name: 'Chennai → Bengaluru', detail: 'MAS → SBC', search: 'MAS to SBC', fromCode: 'MAS', toCode: 'SBC' },
   ],
   Activity: [
     { name: 'Goa', detail: 'Beaches, cruises, water sports', search: 'Goa' },
@@ -101,7 +104,7 @@ const serviceCopy: Record<Service, { location: string; start: string; end: strin
   Cabs: { location: 'Pickup & drop', start: 'Pickup date', end: 'Pickup time', travellers: 'Passengers & Cars' },
   Packages: { location: 'Where do you want to go?', start: 'Start date', end: 'Duration', travellers: 'Travellers & Rooms' },
   Flights: { location: 'Where are you flying?', start: 'Depart', end: 'Return', travellers: 'Passengers' },
-  Trains: { location: 'Where are you going?', start: 'Depart', end: 'Return', travellers: 'Passengers' },
+  Trains: { location: 'From station', start: 'Depart', end: 'Return', travellers: 'Passengers' },
   Activity: { location: 'Where is the activity?', start: 'Start date', end: 'End date', travellers: 'Guests' },
 };
 
@@ -173,8 +176,12 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
   const [searchMessage, setSearchMessage] = useState('');
+  const [trainFrom, setTrainFrom] = useState<TrainStation | null>(TRAIN_STATIONS[0] ?? null);
+  const [trainTo, setTrainTo] = useState<TrainStation | null>(TRAIN_STATIONS[2] ?? null);
+  const [stationQuery, setStationQuery] = useState('');
 
   const copy = serviceCopy[activeService];
+  const isTrains = activeService === 'Trains';
   const destinationOptions = useMemo(() => {
     const typed = query.trim();
     const normalized = typed.toLowerCase();
@@ -189,6 +196,11 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
     if (exact) return filtered;
     return [{ name: typed, detail: 'Search for this place', search: typed }, ...filtered];
   }, [activeService, query]);
+
+  const trainStationOptions = useMemo(() => {
+    const exclude = openPopover === 'trainFrom' ? trainTo?.code : trainFrom?.code;
+    return filterTrainStations(stationQuery, exclude);
+  }, [openPopover, stationQuery, trainFrom?.code, trainTo?.code]);
 
   useEffect(() => {
     function onPointerDown(event: PointerEvent) {
@@ -209,18 +221,31 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
     setActiveService(service);
     setDestination(null);
     setQuery('');
+    setStationQuery('');
     setOpenPopover(null);
     setSearchMessage('');
+    if (service === 'Trains') {
+      setTrainFrom(TRAIN_STATIONS[0] ?? null);
+      setTrainTo(TRAIN_STATIONS[2] ?? null);
+    }
   }
 
   function togglePopover(name: Exclude<PopoverName, null>) {
-    setOpenPopover((current) => current === name ? null : name);
+    setOpenPopover((current) => {
+      const next = current === name ? null : name;
+      if (next === 'trainFrom' || next === 'trainTo') setStationQuery('');
+      return next;
+    });
     setSearchMessage('');
   }
 
   function selectDate(date: Date) {
     if (openPopover === 'start') {
       setCheckIn(date);
+      if (activeService === 'Trains') {
+        setOpenPopover(null);
+        return;
+      }
       if (date >= checkOut) setCheckOut(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1));
       setOpenPopover('end');
       return;
@@ -231,6 +256,27 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
 
   function submitSearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (activeService === 'Trains') {
+      if (!trainFrom || !trainTo) {
+        setOpenPopover(trainFrom ? 'trainTo' : 'trainFrom');
+        setSearchMessage('Choose from and to stations.');
+        return;
+      }
+      if (trainFrom.code === trainTo.code) {
+        setOpenPopover('trainTo');
+        setSearchMessage('From and to stations must be different.');
+        return;
+      }
+      const params = new URLSearchParams({
+        from: trainFrom.code,
+        to: trainTo.code,
+        date: formatQueryDate(checkIn),
+      });
+      router.push(`/trains/results?${params.toString()}`);
+      return;
+    }
+
     const city = destination?.search ?? query.trim();
     if (!city) {
       setOpenPopover('location');
@@ -289,7 +335,7 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
       return;
     }
 
-    const discoveryPath = activeService === 'Flights' ? '/flights' : activeService === 'Trains' ? '/trains' : '/activities';
+    const discoveryPath = activeService === 'Flights' ? '/flights' : '/activities';
     const params = new URLSearchParams({
       q: city,
       date: formatQueryDate(checkIn),
@@ -341,69 +387,118 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
         ))}
       </div>
 
-      <form className="search-fields" onSubmit={submitSearch}>
-        <div className="search-control search-control-location">
-          <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'location'} aria-haspopup="listbox" onClick={() => togglePopover('location')}>
-            <span>
-              <MapPin className="loc-pin" size={13} aria-hidden />
-              <Search className="loc-glass" size={16} aria-hidden />
-              {copy.location}
-            </span>
-            <strong className={destination ? undefined : 'is-placeholder'}>
-              {destination ? destination.name : (
-                <>
-                  <span className="search-loc-desk">{locationEmpty}</span>
-                  <span className="search-loc-phone">Where do you want to go?</span>
-                </>
-              )}
-              <ChevronDown size={14} />
-            </strong>
-          </button>
-          {openPopover === 'location' && (
-            <div className="search-popover location-popover">
-              <div className="popover-title"><div><b>{copy.location}</b><small>Type or choose a popular option</small></div><button type="button" aria-label="Close destination menu" onClick={() => setOpenPopover(null)}><X size={16} /></button></div>
-              <label className="destination-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search destinations or routes" /></label>
-              <div className="destination-list" role="listbox" aria-label="Destination suggestions">
-                {destinationOptions.map((item) => (
-                  <button type="button" role="option" aria-selected={destination?.name === item.name} key={item.name} onClick={() => { setDestination(item); setQuery(''); setOpenPopover(null); }}>
-                    <span className="option-icon"><MapPin size={16} /></span>
-                    <span><b>{item.name}</b><small>{item.detail}</small></span>
-                    {destination?.name === item.name && <Check size={17} />}
-                  </button>
-                ))}
-                {destinationOptions.length === 0 && <p className="empty-options">No matching destination found.</p>}
+      <form className={`search-fields${isTrains ? ' search-fields-trains' : ''}`} onSubmit={submitSearch}>
+        {isTrains ? (
+          <>
+            <StationControl
+              label="From"
+              station={trainFrom}
+              open={openPopover === 'trainFrom'}
+              name="trainFrom"
+              onToggle={togglePopover}
+              query={stationQuery}
+              onQueryChange={setStationQuery}
+              options={trainStationOptions}
+              onSelect={(station) => {
+                setTrainFrom(station);
+                setStationQuery('');
+                setOpenPopover(trainTo ? null : 'trainTo');
+              }}
+              onClose={() => setOpenPopover(null)}
+            />
+            <StationControl
+              label="To"
+              station={trainTo}
+              open={openPopover === 'trainTo'}
+              name="trainTo"
+              onToggle={togglePopover}
+              query={stationQuery}
+              onQueryChange={setStationQuery}
+              options={trainStationOptions}
+              onSelect={(station) => {
+                setTrainTo(station);
+                setStationQuery('');
+                setOpenPopover(null);
+              }}
+              onClose={() => setOpenPopover(null)}
+            />
+          </>
+        ) : (
+          <div className="search-control search-control-location">
+            <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'location'} aria-haspopup="listbox" onClick={() => togglePopover('location')}>
+              <span>
+                <MapPin className="loc-pin" size={13} aria-hidden />
+                <Search className="loc-glass" size={16} aria-hidden />
+                {copy.location}
+              </span>
+              <strong className={destination ? undefined : 'is-placeholder'}>
+                {destination ? destination.name : (
+                  <>
+                    <span className="search-loc-desk">{locationEmpty}</span>
+                    <span className="search-loc-phone">Where do you want to go?</span>
+                  </>
+                )}
+                <ChevronDown size={14} />
+              </strong>
+            </button>
+            {openPopover === 'location' && (
+              <div className="search-popover location-popover">
+                <div className="popover-title"><div><b>{copy.location}</b><small>Type or choose a popular option</small></div><button type="button" aria-label="Close destination menu" onClick={() => setOpenPopover(null)}><X size={16} /></button></div>
+                <label className="destination-search"><Search size={16} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search destinations or routes" /></label>
+                <div className="destination-list" role="listbox" aria-label="Destination suggestions">
+                  {destinationOptions.map((item) => (
+                    <button type="button" role="option" aria-selected={destination?.name === item.name} key={item.name} onClick={() => { setDestination(item); setQuery(''); setOpenPopover(null); }}>
+                      <span className="option-icon"><MapPin size={16} /></span>
+                      <span><b>{item.name}</b><small>{item.detail}</small></span>
+                      {destination?.name === item.name && <Check size={17} />}
+                    </button>
+                  ))}
+                  {destinationOptions.length === 0 && <p className="empty-options">No matching destination found.</p>}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         <DateControl label={copy.start} value={checkIn} open={openPopover === 'start'} name="start" onToggle={togglePopover}>
-          <CalendarPopover month={visibleMonth} selected={checkIn} rangeStart={checkIn} rangeEnd={checkOut} onMonthChange={setVisibleMonth} onSelect={selectDate} title={copy.start} />
+          <CalendarPopover
+            month={visibleMonth}
+            selected={checkIn}
+            rangeStart={checkIn}
+            rangeEnd={isTrains ? checkIn : checkOut}
+            onMonthChange={setVisibleMonth}
+            onSelect={selectDate}
+            title={copy.start}
+          />
         </DateControl>
 
-        <DateControl label={copy.end} value={checkOut} open={openPopover === 'end'} name="end" badge={`${nightCount} night${nightCount === 1 ? '' : 's'}`} onToggle={togglePopover}>
-          <CalendarPopover month={visibleMonth} selected={checkOut} rangeStart={checkIn} rangeEnd={checkOut} onMonthChange={setVisibleMonth} onSelect={selectDate} title={copy.end} />
-        </DateControl>
+        {!isTrains && (
+          <DateControl label={copy.end} value={checkOut} open={openPopover === 'end'} name="end" badge={`${nightCount} night${nightCount === 1 ? '' : 's'}`} onToggle={togglePopover}>
+            <CalendarPopover month={visibleMonth} selected={checkOut} rangeStart={checkIn} rangeEnd={checkOut} onMonthChange={setVisibleMonth} onSelect={selectDate} title={copy.end} />
+          </DateControl>
+        )}
 
-        <div className="search-control search-control-travellers">
-          <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'travellers'} aria-haspopup="dialog" onClick={() => togglePopover('travellers')}>
-            <span><Users size={13} aria-hidden />{copy.travellers}</span>
-            <strong>
-              <span className="search-guest-home">{travellerSummary}</span>
-              <span className="search-guest-trip">{guestTrip}</span>
-              <ChevronDown size={14} />
-            </strong>
-          </button>
-          {openPopover === 'travellers' && (
-            <div className="search-popover traveller-popover" role="dialog" aria-label="Choose travellers and rooms">
-              <div className="popover-title"><div><b>Travellers & rooms</b><small>Set who is travelling</small></div><button type="button" aria-label="Close traveller menu" onClick={() => setOpenPopover(null)}><X size={16} /></button></div>
-              <Stepper label="Adults" detail="Ages 12+" value={adults} minimum={1} maximum={10} onChange={setAdults} />
-              <Stepper label="Children" detail="Ages 0–11" value={children} minimum={0} maximum={8} onChange={setChildren} />
-              <Stepper label="Rooms" detail="Number of rooms" value={rooms} minimum={1} maximum={8} onChange={setRooms} />
-              <button type="button" className="popover-done" onClick={() => setOpenPopover(null)}>Done</button>
-            </div>
-          )}
-        </div>
+        {!isTrains && (
+          <div className="search-control search-control-travellers">
+            <button type="button" className="search-control-trigger" aria-expanded={openPopover === 'travellers'} aria-haspopup="dialog" onClick={() => togglePopover('travellers')}>
+              <span><Users size={13} aria-hidden />{copy.travellers}</span>
+              <strong>
+                <span className="search-guest-home">{travellerSummary}</span>
+                <span className="search-guest-trip">{guestTrip}</span>
+                <ChevronDown size={14} />
+              </strong>
+            </button>
+            {openPopover === 'travellers' && (
+              <div className="search-popover traveller-popover" role="dialog" aria-label="Choose travellers and rooms">
+                <div className="popover-title"><div><b>Travellers & rooms</b><small>Set who is travelling</small></div><button type="button" aria-label="Close traveller menu" onClick={() => setOpenPopover(null)}><X size={16} /></button></div>
+                <Stepper label="Adults" detail="Ages 12+" value={adults} minimum={1} maximum={10} onChange={setAdults} />
+                <Stepper label="Children" detail="Ages 0–11" value={children} minimum={0} maximum={8} onChange={setChildren} />
+                <Stepper label="Rooms" detail="Number of rooms" value={rooms} minimum={1} maximum={8} onChange={setRooms} />
+                <button type="button" className="popover-done" onClick={() => setOpenPopover(null)}>Done</button>
+              </div>
+            )}
+          </div>
+        )}
 
         <button className="search-submit" type="submit">
           <Search className="search-submit-icon" size={16} aria-hidden />
@@ -413,6 +508,94 @@ export function TravelSearch({ variant = 'default', scope = 'core' }: { variant?
       </form>
       {searchMessage && <p className="search-notice" role="status">{searchMessage}</p>}
     </section>
+  );
+}
+
+function StationControl({
+  label,
+  station,
+  open,
+  name,
+  query,
+  options,
+  onToggle,
+  onQueryChange,
+  onSelect,
+  onClose,
+}: {
+  label: string;
+  station: TrainStation | null;
+  open: boolean;
+  name: 'trainFrom' | 'trainTo';
+  query: string;
+  options: TrainStation[];
+  onToggle: (name: 'trainFrom' | 'trainTo') => void;
+  onQueryChange: (value: string) => void;
+  onSelect: (station: TrainStation) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className={`search-control search-control-location search-control-station search-control-${name}`}>
+      <button type="button" className="search-control-trigger" aria-expanded={open} aria-haspopup="listbox" onClick={() => onToggle(name)}>
+        <span>
+          <MapPin className="loc-pin" size={13} aria-hidden />
+          <Search className="loc-glass" size={16} aria-hidden />
+          {label}
+        </span>
+        <strong className={station ? undefined : 'is-placeholder'}>
+          {station ? (
+            <>
+              <span className="search-station-code">{station.code}</span>
+              <span className="search-station-name">{station.name}</span>
+            </>
+          ) : (
+            <span>Select station</span>
+          )}
+          <ChevronDown size={14} />
+        </strong>
+      </button>
+      {open && (
+        <div className="search-popover location-popover">
+          <div className="popover-title">
+            <div>
+              <b>{label} station</b>
+              <small>Type code or city</small>
+            </div>
+            <button type="button" aria-label={`Close ${label.toLowerCase()} station menu`} onClick={onClose}>
+              <X size={16} />
+            </button>
+          </div>
+          <label className="destination-search">
+            <Search size={16} />
+            <input
+              autoFocus
+              value={query}
+              onChange={(event) => onQueryChange(event.target.value)}
+              placeholder="Search station code or city"
+            />
+          </label>
+          <div className="destination-list" role="listbox" aria-label={`${label} station suggestions`}>
+            {options.map((item) => (
+              <button
+                type="button"
+                role="option"
+                aria-selected={station?.code === item.code}
+                key={item.code}
+                onClick={() => onSelect(item)}
+              >
+                <span className="option-icon"><MapPin size={16} /></span>
+                <span>
+                  <b>{item.code} · {item.name}</b>
+                  <small>{item.city}</small>
+                </span>
+                {station?.code === item.code && <Check size={17} />}
+              </button>
+            ))}
+            {options.length === 0 && <p className="empty-options">No matching station found.</p>}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
